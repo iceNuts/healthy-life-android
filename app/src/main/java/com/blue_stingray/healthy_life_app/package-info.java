@@ -1,0 +1,4 @@
+@ParametersAreNonnullByDefault
+package com.blue_stingray.healthy_life_app;
+
+import javax.annotation.ParametersAreNonnullByDefault;

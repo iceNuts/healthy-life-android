@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Healthy Life</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="device_admin_request">In order to prevent tampering with the application chose the activate option below.</string>
+    <string name="device_admin_description">Device Administration is used to prevent tampering with the application</string>
+    <string name="device_admin_disable">Removing Healthy Life as a device administrator will cause the application to stop functioning. Are you sure you want to continue?</string>
+    <string name="admin_removal_label">Remove Device Administrator</string>
+
+    <string name="lock_prefs_key">locked</string>
+    <string name="session_prefs_key">session</string>
+</resources>
