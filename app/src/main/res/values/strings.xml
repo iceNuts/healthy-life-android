@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Healthy Life</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Healthy App</string>
     <string name="action_settings">Settings</string>
     <string name="device_admin_request">In order to prevent tampering with the application chose the activate option below.</string>
     <string name="device_admin_description">Device Administration is used to prevent tampering with the application</string>
-    <string name="device_admin_disable">Removing Healthy Life as a device administrator will cause the application to stop functioning. Are you sure you want to continue?</string>
+    <string name="device_admin_disable">Removing Healthy App as a device administrator will cause the application to stop functioning. Are you sure you want to continue?</string>
     <string name="admin_removal_label">Remove Device Administrator</string>
-
     <string name="lock_prefs_key">locked</string>
     <string name="session_prefs_key">session</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="create_admin_underline"><u>Create Administrator Account</u></string>
+    <string name="create_admin">Create Administrator Account</string>
+    <string name="forgot_password_underline"><u>Forget Password?</u></string>
+    <string name="logging_in">Logging in…</string>
+    <string name="missing_email">Missing Email Address</string>
+    <string name="missing_password">Missing Password</string>
+    <string name="invalid_email">Invalid Email Address</string>
+    <string name="server_error_title">Server Error</string>
+    <string name="server_error_description">An internal server error has occurred. Please try again later.</string>
+    <string name="deserialization_error_title">Error</string>
+    <string name="deserialization_error_description">An error has occurred. Please try again later.</string>
+    <string name="network_error_title">Network Error</string>
+    <string name="network_error_description">A network error has occurred. Please make sure you are connected to the internet.</string>
+    <string name="okay">Okay</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="short_password">Password must be 6 characters</string>
+    <string name="non_matching_password">Passwords do not match</string>
+    <string name="creating_user">Creating User…</string>
+    <string name="incorrect_credentials_title">Incorrect Email or Password</string>
+    <string name="incorrect_credentials_descritpion">Your email address or password is incorrect. Please try again.</string>
+
 </resources>

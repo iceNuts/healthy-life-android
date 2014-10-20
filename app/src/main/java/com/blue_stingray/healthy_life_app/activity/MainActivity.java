@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.Menu;
@@ -22,6 +23,10 @@ public class MainActivity extends BaseActivity {
 
         // Start services in case being run for the first time
         starter.startServices();
+        if (!prefs.isLoggedIn()) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
         setContentView(R.layout.activity_main);
     }
 

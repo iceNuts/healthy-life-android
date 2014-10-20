@@ -29,22 +29,22 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField "String", "ENDPOINT_URL", '"https://replaceme/api/v1"'
+            buildConfigField "String", "ENDPOINT_URL", '"https://replaceme/api"'
             runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            buildConfigField "String", "ENDPOINT_URL", '"http://replaceme/api/v1"'
+            buildConfigField "String", "ENDPOINT_URL", '"http://healthyapp.herokuapp.com/api"'
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:20.+'
+    compile 'com.android.support:appcompat-v7:20.0.0'
     compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile 'org.roboguice:roboguice:2.0'
-    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.squareup.retrofit:retrofit:1.7.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.google.guava:guava:18.0'

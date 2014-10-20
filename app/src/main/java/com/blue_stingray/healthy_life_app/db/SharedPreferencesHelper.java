@@ -13,15 +13,15 @@ import com.google.inject.Singleton;
 @Singleton
 public class SharedPreferencesHelper {
 
-    private final String LOCK_KEY;
+    private final String LOCK_KEY ;
     private final String SESSION_KEY;
     private SharedPreferences prefs;
 
     @Inject
     public SharedPreferencesHelper(Context context) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         LOCK_KEY = context.getString(R.string.lock_prefs_key);
         SESSION_KEY = context.getString(R.string.session_prefs_key);
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public boolean isDeviceLocked() {
@@ -33,6 +33,10 @@ public class SharedPreferencesHelper {
                 .edit()
                 .putBoolean(LOCK_KEY, locked)
                 .apply();
+    }
+
+    public boolean isLoggedIn() {
+        return getSession() != null;
     }
 
     public String getSession() {
