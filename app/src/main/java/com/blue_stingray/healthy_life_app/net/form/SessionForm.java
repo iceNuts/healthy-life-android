@@ -13,19 +13,21 @@ public class SessionForm {
     private final String password;
     private final DeviceForm device;
 
-    public SessionForm(Context context, CharSequence email, CharSequence password) {
+    public SessionForm(Context context, CharSequence email, CharSequence password, String gcmId) {
         this.email = email.toString();
         this.password = password.toString();
-        this.device = new DeviceForm(context);
+        this.device = new DeviceForm(context, gcmId);
     }
 
     public static final class DeviceForm {
-        private final String device_id;
-        private final String device_name;
+        private final String android_id;
+        private final String name;
+        private final String gcm_id;
 
-        public DeviceForm(Context context) {
-            this.device_id =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-            this.device_name = Build.MANUFACTURER + " " + Build.MODEL;
+        public DeviceForm(Context context, String gcmId) {
+            this.android_id =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            this.name = Build.MANUFACTURER + " " + Build.MODEL;
+            this.gcm_id = gcmId;
         }
     }
 }

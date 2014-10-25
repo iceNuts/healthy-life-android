@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.misc.Dialogs;
 import com.blue_stingray.healthy_life_app.misc.FormValidationManager;
@@ -33,7 +32,7 @@ public class LoginActivity extends BaseActivity {
     private Button loginButton;
 
     @InjectView(R.id.create_admin)
-    private TextView registerButton;
+    private Button registerButton;
 
     @Inject
     private RestInterface rest;
@@ -70,7 +69,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<Session>(LoginActivity.this, progressDialog) {
+            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText(), ""), new RetrofitDialogCallback<Session>(LoginActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(Session session, Response response) {
                     prefs.setSession(session.token);

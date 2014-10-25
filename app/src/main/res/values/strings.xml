@@ -13,9 +13,8 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="create_admin_underline"><u>Create Administrator Account</u></string>
     <string name="create_admin">Create Administrator Account</string>
-    <string name="forgot_password_underline"><u>Forget Password?</u></string>
+    <string name="forgot_password">Forget Password?</string>
     <string name="logging_in">Logging in…</string>
     <string name="missing_email">Missing Email Address</string>
     <string name="missing_password">Missing Password</string>

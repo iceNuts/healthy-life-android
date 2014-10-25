@@ -53,19 +53,27 @@
         android:layout_alignRight="@+id/passwordField"
         android:layout_alignEnd="@+id/passwordField"/>
 
-    <TextView
+    <Button
+        android:background="@drawable/link_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_admin_underline"
+        android:text="@string/create_admin"
+        android:textSize="14dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:id="@+id/create_admin"
         android:layout_below="@+id/registerButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp" />
+        android:layout_marginTop="20dp" />
 
-    <TextView
+    <Button
+        android:background="@drawable/link_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/forgot_password_underline"
+        android:text="@string/forgot_password"
+        android:textSize="14dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/forgot_password"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"

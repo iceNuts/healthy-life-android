@@ -2,4 +2,5 @@
 
     <color name="blue_primary">#0099CC</color>
     <color name="blue_primary_dark">#006A92</color>
+    <color name="dark_tint">#15000000</color>
 </resources>
