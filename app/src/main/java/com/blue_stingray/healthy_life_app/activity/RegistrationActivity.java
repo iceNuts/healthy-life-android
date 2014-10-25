@@ -1,10 +1,13 @@
 package com.blue_stingray.healthy_life_app.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.misc.Dialogs;
 import com.blue_stingray.healthy_life_app.misc.FormValidationManager;
 import com.blue_stingray.healthy_life_app.misc.ValidationRule;
 import com.blue_stingray.healthy_life_app.model.User;
@@ -12,6 +15,9 @@ import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
 import com.google.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,8 +57,8 @@ public class RegistrationActivity extends BaseActivity {
         validationManager.addField(confirmPasswordField, ValidationRule.newConfirmPasswordValidationRule(this, passwordField), passwordField);
 
         registerButton.setOnClickListener(new RegisterButtonListener());
-
     }
+
 
     private class RegisterButtonListener extends FormSubmitClickListener {
 
@@ -62,15 +68,23 @@ public class RegistrationActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createUser(new UserForm(emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
+            rest.createUser(new UserForm(RegistrationActivity.this, emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(User user, Response response) {
+                    AlertDialog successDialog = Dialogs.newDismissiveDialog(RegistrationActivity.this, R.string.registration_success_title, R.string.registration_success_description);
+                    successDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            finish();
+                        }
+                    });
+                    successDialog.show();
 
                 }
 
                 @Override
                 public void onFailure(RetrofitError retrofitError) {
-
+                    emailField.setError(getString(R.string.email_in_use));
                 }
             });
         }

@@ -34,6 +34,8 @@
     <string name="non_matching_password">Passwords do not match</string>
     <string name="creating_user">Creating User…</string>
     <string name="incorrect_credentials_title">Incorrect Email or Password</string>
-    <string name="incorrect_credentials_descritpion">Your email address or password is incorrect. Please try again.</string>
-
+    <string name="incorrect_credentials_description">Your email address or password is incorrect. Please try again.</string>
+    <string name="registration_success_title">Registration Successful</string>
+    <string name="registration_success_description">You have successfully registered. Please check your email to verify your account before logging in.</string>
+    <string name="email_in_use">Email address is already in use.</string>
 </resources>

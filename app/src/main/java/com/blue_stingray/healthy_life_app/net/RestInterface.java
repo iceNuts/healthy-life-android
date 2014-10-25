@@ -1,9 +1,9 @@
 package com.blue_stingray.healthy_life_app.net;
 
-import com.blue_stingray.healthy_life_app.net.form.SessionForm;
-import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.net.form.SessionForm;
+import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import retrofit.Callback;
 import retrofit.http.*;
 

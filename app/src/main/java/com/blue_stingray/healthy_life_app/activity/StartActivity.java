@@ -12,7 +12,7 @@ import com.blue_stingray.healthy_life_app.service.ServiceStarter;
 import com.google.inject.Inject;
 
 
-public class MainActivity extends BaseActivity {
+public class StartActivity extends BaseActivity {
 
     @Inject
     private ServiceStarter starter;

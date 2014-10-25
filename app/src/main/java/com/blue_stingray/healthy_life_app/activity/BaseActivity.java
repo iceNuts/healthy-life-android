@@ -1,13 +1,14 @@
 package com.blue_stingray.healthy_life_app.activity;
 
+import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Bundle;
-import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.receiver.UninstallBlockingAdminReceiver;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
 
@@ -24,8 +25,6 @@ public abstract class BaseActivity extends RoboActivity {
     private ComponentName adminReceiverName;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +37,19 @@ public abstract class BaseActivity extends RoboActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!isAdmin() && prefs.isDeviceLocked()) {
+        int gmsStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if(gmsStatus != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(gmsStatus)) {
+                Dialog gmsDialog = GooglePlayServicesUtil.getErrorDialog(gmsStatus, this, 0);
+                gmsDialog.setCancelable(false);
+                gmsDialog.show();
+            } else {
+                GooglePlayServicesUtil.showErrorNotification(gmsStatus, this);
+                finish();
+            }
+        } else if(!isAdmin() && prefs.isDeviceLocked()) {
             startActivity(UninstallBlockingAdminReceiver.getAddIntent(this));
+            finish();
         }
     }
 

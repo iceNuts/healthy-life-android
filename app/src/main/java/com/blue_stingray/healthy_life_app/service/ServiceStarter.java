@@ -11,7 +11,7 @@ import com.google.inject.Singleton;
 
 
 /**
- * Handles managing background services and recievers
+ * Handles managing background services and receivers
  */
 @Singleton
 public class ServiceStarter {

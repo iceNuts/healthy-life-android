@@ -1,7 +1,12 @@
 package com.blue_stingray.healthy_life_app.model;
 
 /**
- * Created by nick on 10/5/14.
+ * Session Model
  */
 public class Session {
+    public final String token;
+
+    public Session(String token) {
+        this.token = token;
+    }
 }

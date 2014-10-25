@@ -70,15 +70,17 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createSession(new SessionForm(emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<Session>(LoginActivity.this, progressDialog) {
+            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<Session>(LoginActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(Session session, Response response) {
-
+                    prefs.setSession(session.token);
+                    startActivity(new Intent(LoginActivity.this, StartActivity.class));
+                    finish();
                 }
 
                 @Override
                 public void onFailure(RetrofitError retrofitError) {
-                    Dialogs.newDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_descritpion).show();
+                    Dialogs.newDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
                 }
             });
         }
