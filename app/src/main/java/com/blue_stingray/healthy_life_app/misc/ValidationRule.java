@@ -15,15 +15,31 @@ public class ValidationRule {
 
     private List<ConstraintWithMessage> constraints = Lists.newArrayList();
 
+    /**
+     * Validates the CharSequence according to the added constraints
+     * @param toValidate the CharSequence to validate
+     * @return whether the CharSequence is valid
+     */
     public boolean isValid(CharSequence toValidate) {
         return getError(toValidate) == null;
     }
 
+    /**
+     * Add a constraint to the validation rule
+     * @param constraint a ValidationConstraint to be evaluated
+     * @param message The message to be displayed if the constraint fails
+     * @return the ValidationRule with the added constraint
+     */
     public ValidationRule addConstraint(ValidationConstraint constraint, String message) {
         constraints.add(new ConstraintWithMessage(constraint, message));
         return this;
     }
 
+    /**
+     * Get the error with the given CharSequence
+     * @param toValidate the CharSequence to validate
+     * @return The error message if invalid, otherwise null
+     */
     public String getError(CharSequence toValidate) {
         for (ConstraintWithMessage constraintWithMessage : constraints) {
             if (!constraintWithMessage.constraint.isValid(toValidate)) {
@@ -33,6 +49,9 @@ public class ValidationRule {
         return null;
     }
 
+    /**
+     * A constraint on allowable CharSequences
+     */
     public interface ValidationConstraint {
         public boolean isValid(CharSequence chars);
     }
@@ -47,6 +66,11 @@ public class ValidationRule {
         }
     }
 
+    /**
+     * Creates a new ValidationRule for passwords
+     * @param ctx a context
+     * @return the ValidationRule
+     */
     public static ValidationRule newPasswordValidationRule(Context ctx) {
         return new ValidationRule()
                 .addConstraint(
@@ -67,6 +91,12 @@ public class ValidationRule {
                 );
     }
 
+    /**
+     * Creates a new ValidationRule for password confirmation
+     * @param ctx a context
+     * @param toConfirm The field the CharSequence should be identical to
+     * @return the ValidationRule
+     */
     public static ValidationRule newConfirmPasswordValidationRule(Context ctx, final EditText toConfirm) {
         return new ValidationRule()
                 .addConstraint(new ValidationConstraint() {
@@ -77,6 +107,11 @@ public class ValidationRule {
                 }, ctx.getString(R.string.non_matching_password));
     }
 
+    /**
+     * Creates a new ValidationRule for email validation
+     * @param ctx a context
+     * @return the ValidationRule
+     */
     public static ValidationRule newEmailValidationRule(Context ctx) {
         return new ValidationRule()
                 .addConstraint(

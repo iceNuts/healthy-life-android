@@ -47,8 +47,8 @@ public abstract class BaseActivity extends RoboActivity {
                 GooglePlayServicesUtil.showErrorNotification(gmsStatus, this);
                 finish();
             }
-        } else if(!isAdmin() && prefs.isDeviceLocked()) {
-            startActivity(UninstallBlockingAdminReceiver.getAddIntent(this));
+        } else if(!isDeviceAdmin() && prefs.isDeviceLocked()) {
+            promptForAdmin();
             finish();
         }
     }
@@ -56,7 +56,14 @@ public abstract class BaseActivity extends RoboActivity {
     /**
      * Whether the application is registered as a device administrator
      */
-    private boolean isAdmin() {
+    protected boolean isDeviceAdmin() {
         return devicePolicyManager.isAdminActive(adminReceiverName);
+    }
+
+    /**
+     * Starts an activity to add Healthy App as a device admin
+     */
+    protected void promptForAdmin() {
+        startActivity(UninstallBlockingAdminReceiver.getAddIntent(this));
     }
 }

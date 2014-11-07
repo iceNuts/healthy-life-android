@@ -7,10 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.misc.Dialogs;
 import com.blue_stingray.healthy_life_app.misc.FormValidationManager;
 import com.blue_stingray.healthy_life_app.misc.ValidationRule;
 import com.blue_stingray.healthy_life_app.model.Session;
+import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
@@ -20,6 +22,12 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.inject.InjectView;
 
+import java.math.BigInteger;
+import java.util.Random;
+
+/**
+ * Activity for user login
+ */
 public class LoginActivity extends BaseActivity {
 
     @InjectView(R.id.passwordField)
@@ -69,10 +77,11 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText(), ""), new RetrofitDialogCallback<Session>(LoginActivity.this, progressDialog) {
+            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText(), new BigInteger(128, new Random()).toString(36)), new RetrofitDialogCallback<SessionDevice>(LoginActivity.this, progressDialog) {
                 @Override
-                public void onSuccess(Session session, Response response) {
-                    prefs.setSession(session.token);
+                public void onSuccess(SessionDevice sessionDevice, Response response) {
+                    prefs.setSession(sessionDevice.session.token);
+                    prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     startActivity(new Intent(LoginActivity.this, StartActivity.class));
                     finish();
                 }

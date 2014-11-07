@@ -12,7 +12,7 @@ public class UserForm {
     private final String email;
     private final String password;
 
-    public UserForm(Context context, CharSequence email, CharSequence password) {
+    public UserForm(CharSequence email, CharSequence password) {
         this.email = email.toString();
         this.password = password.toString();
     }

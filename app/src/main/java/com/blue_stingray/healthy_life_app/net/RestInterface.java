@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.net;
 
 import com.blue_stingray.healthy_life_app.model.Session;
+import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
@@ -42,7 +43,7 @@ public interface RestInterface {
 
     //Sessions
     @POST("/session")
-    void createSession(@Body SessionForm sessionForm, Callback<Session> cb);
+    void createSession(@Body SessionForm sessionForm, Callback<SessionDevice> cb);
 
     @DELETE("/session")
     void destroySession(Callback cb);

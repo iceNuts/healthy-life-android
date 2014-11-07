@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 
+import java.math.BigInteger;
+import java.util.Random;
+
 /**
  * Form for logging in
  */
@@ -25,7 +28,7 @@ public class SessionForm {
         private final String gcm_id;
 
         public DeviceForm(Context context, String gcmId) {
-            this.android_id =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            this.android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             this.name = Build.MANUFACTURER + " " + Build.MODEL;
             this.gcm_id = gcmId;
         }

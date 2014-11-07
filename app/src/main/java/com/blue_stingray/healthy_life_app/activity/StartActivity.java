@@ -23,19 +23,18 @@ public class StartActivity extends BaseActivity {
 
         // Start services in case being run for the first time
         starter.startServices();
-        if (!prefs.isLoggedIn()) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+        switch (prefs.getState()) {
+            case NONE:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case LOGGED_IN:
+                startActivity(new Intent(this, PostLoginActivity.class));
+                break;
+            case READY:
+                startActivity(new Intent(this, MainActivity.class));
+                break;
         }
-        setContentView(R.layout.activity_main);
-    }
-
-    public static class PrefsFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.main_prefs);
-        }
+        finish();
     }
 
 }

@@ -1,3 +1,4 @@
+<!-- Button that appears like a link and darkens when pressed -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>

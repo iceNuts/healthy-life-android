@@ -14,7 +14,5 @@ public class App extends Application {
 
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
                 RoboGuice.newDefaultRoboModule(this), new GuiceModule());
-
-        // Start all the services on launch
     }
 }

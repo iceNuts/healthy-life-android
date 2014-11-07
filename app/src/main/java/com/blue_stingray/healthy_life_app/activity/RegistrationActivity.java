@@ -20,6 +20,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.inject.InjectView;
 
+/**
+ * Activity for user registration
+ */
 public class RegistrationActivity extends BaseActivity {
 
     @InjectView(R.id.passwordField)
@@ -65,7 +68,7 @@ public class RegistrationActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createUser(new UserForm(RegistrationActivity.this, emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
+            rest.createUser(new UserForm(emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(User user, Response response) {
                     AlertDialog successDialog = Dialogs.newDismissiveDialog(RegistrationActivity.this, R.string.registration_success_title, R.string.registration_success_description);

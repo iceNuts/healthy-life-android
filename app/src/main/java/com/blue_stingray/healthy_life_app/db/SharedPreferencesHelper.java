@@ -13,15 +13,40 @@ import com.google.inject.Singleton;
 @Singleton
 public class SharedPreferencesHelper {
 
-    private final String LOCK_KEY ;
-    private final String SESSION_KEY;
+    private final static String SESSION_KEY = "session";
+    private final static String STATE_KEY = "state";
+    private final String LOCK_KEY;
     private SharedPreferences prefs;
+
+    public static enum State {
+        NONE(0),
+        LOGGED_IN(1),
+        READY(2);
+
+        public final int val;
+
+        State(int val) {
+            this.val = val;
+        }
+
+        public static State from(int val) {
+            switch (val) {
+                case 0:
+                    return NONE;
+                case 1:
+                    return LOGGED_IN;
+                case 2:
+                    return READY;
+                default:
+                    throw new IllegalArgumentException("invalid val");
+            }
+        }
+    }
 
     @Inject
     public SharedPreferencesHelper(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         LOCK_KEY = context.getString(R.string.lock_prefs_key);
-        SESSION_KEY = context.getString(R.string.session_prefs_key);
     }
 
     public boolean isDeviceLocked() {
@@ -44,9 +69,27 @@ public class SharedPreferencesHelper {
     }
 
     public void setSession(String session) {
+        if (session == null) {
+            throw  new NullPointerException("session must not be null");
+        }
         prefs
                 .edit()
                 .putString(SESSION_KEY, session)
                 .apply();
+    }
+
+    public void setState(State state) {
+        if (state == null) {
+            throw new NullPointerException("state may not be null");
+        }
+        prefs
+                .edit()
+                .putInt(STATE_KEY, state.val)
+                .apply();
+    }
+
+    public State getState() {
+        int current = prefs.getInt(STATE_KEY, 0);
+        return State.from(current);
     }
 }

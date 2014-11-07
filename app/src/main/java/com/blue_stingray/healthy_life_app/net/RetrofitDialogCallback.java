@@ -7,14 +7,18 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.util.Stack;
+
 /**
- * Retrofit Callback for handling network events with loading dialogs
+ * Retrofit Callback for handling network events with loading dialogs. Will dismiss the progress dialog and show an
+ * appropriate one for common errors.
  */
 public abstract class RetrofitDialogCallback<T> implements Callback<T> {
     private Context context;
     private ProgressDialog dialog;
 
     public RetrofitDialogCallback(Context context, ProgressDialog dialog) {
+        this.context = context;
         this.dialog = dialog;
     }
 
