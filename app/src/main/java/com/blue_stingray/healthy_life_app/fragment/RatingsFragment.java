@@ -11,6 +11,7 @@ public class RatingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_ratings, container,false);
+        getActivity().setTitle("My Rating");
         return view;
     }
 }

@@ -12,11 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.blue_stingray.healthy_life_app.R;
-
+import com.blue_stingray.healthy_life_app.adapter.AppListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +22,12 @@ public class ManageGoalsFragment extends Fragment {
 
     private ProgressDialog loadingDialog;
     private ListView appList;
-    private ArrayList<String> apps;
+    private ArrayList<ApplicationInfo> apps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_goals, container,false);
+        getActivity().setTitle("Manage Goals");
         appList = (ListView) view.findViewById(R.id.apps);
         loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
         new CreateList().start();
@@ -62,7 +61,7 @@ public class ManageGoalsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, apps);
+                final AppListAdapter adapter = new AppListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
             }
         });
@@ -72,11 +71,17 @@ public class ManageGoalsFragment extends Fragment {
         @Override
         public void run() {
             try {
+                int flags = PackageManager.GET_META_DATA |
+                        PackageManager.GET_SHARED_LIBRARY_FILES |
+                        PackageManager.GET_UNINSTALLED_PACKAGES;
+
                 final PackageManager pm = getActivity().getPackageManager();
                 apps = new ArrayList<>();
-                List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                List<ApplicationInfo> packages = pm.getInstalledApplications(flags);
                 for (ApplicationInfo packageInfo : packages) {
-                    apps.add(packageInfo.loadLabel(pm).toString());
+                    if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                        apps.add(packageInfo);
+                    }
                 }
             } finally {
                 createList();

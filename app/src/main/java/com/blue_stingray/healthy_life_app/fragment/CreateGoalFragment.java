@@ -11,6 +11,7 @@ public class CreateGoalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_create_goal, container,false);
+        getActivity().setTitle("Create Goal");
         return view;
     }
 }

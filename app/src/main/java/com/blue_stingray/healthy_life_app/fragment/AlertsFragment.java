@@ -11,6 +11,7 @@ public class AlertsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_alerts, container,false);
+        getActivity().setTitle("Usage Alerts");
         return view;
     }
 }
