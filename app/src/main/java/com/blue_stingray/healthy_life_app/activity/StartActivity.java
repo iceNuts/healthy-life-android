@@ -1,13 +1,8 @@
 package com.blue_stingray.healthy_life_app.activity;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.view.Menu;
-import android.view.MenuItem;
-import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
+
 import com.blue_stingray.healthy_life_app.service.ServiceStarter;
 import com.google.inject.Inject;
 

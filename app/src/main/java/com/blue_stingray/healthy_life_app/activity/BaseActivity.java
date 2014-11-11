@@ -16,7 +16,7 @@ import roboguice.activity.RoboActivity;
  * Base activity providing common functionality used by all other activities
  */
 public abstract class BaseActivity extends RoboActivity {
-    protected final String LOG_TAG = getClass().getSimpleName();
+    protected final String LOG_TAG = ((Object) this).getClass().getSimpleName();
     @Inject
     protected DatabaseHelper databaseHelper;
     @Inject
