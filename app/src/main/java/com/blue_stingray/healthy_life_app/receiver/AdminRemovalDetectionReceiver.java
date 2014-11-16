@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import com.blue_stingray.healthy_life_app.activity.AdminRemovalActivity;
-import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.misc.Intents;
 import com.google.inject.Inject;
 

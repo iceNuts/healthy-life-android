@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import roboguice.inject.InjectView;
 
 /**

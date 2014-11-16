@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.util.Log;
-import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
+import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.misc.Intents;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.google.inject.Inject;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import roboguice.service.RoboService;
 
-import static com.blue_stingray.healthy_life_app.db.DatabaseHelper.*;
+import static com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper.*;
 
 /**
  * Periodically logs application changes

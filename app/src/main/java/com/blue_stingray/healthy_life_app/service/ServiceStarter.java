@@ -3,7 +3,7 @@ package com.blue_stingray.healthy_life_app.service;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.receiver.AdminRemovalDetectionReceiver;
 import com.blue_stingray.healthy_life_app.receiver.SampleAppChangeReceiver;
 import com.google.inject.Inject;

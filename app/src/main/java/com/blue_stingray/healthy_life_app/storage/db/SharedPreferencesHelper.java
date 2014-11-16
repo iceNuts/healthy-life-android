@@ -1,4 +1,4 @@
-package com.blue_stingray.healthy_life_app.db;
+package com.blue_stingray.healthy_life_app.storage.db;
 
 import android.content.Context;
 import android.content.SharedPreferences;

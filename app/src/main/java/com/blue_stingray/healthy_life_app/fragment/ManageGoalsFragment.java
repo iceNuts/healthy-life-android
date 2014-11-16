@@ -74,6 +74,7 @@ public class ManageGoalsFragment extends Fragment {
 
                         Application app = new Application(getActivity().getPackageManager(), apps.get(position));
 
+
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("appinfo", app);
 

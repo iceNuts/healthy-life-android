@@ -1,8 +1,8 @@
 package com.blue_stingray.healthy_life_app.model;
 
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 
 import java.io.Serializable;
 
@@ -18,6 +18,10 @@ public class Application implements Serializable {
 
     public String getName() {
         return info.loadLabel(pm).toString();
+    }
+
+    public Drawable getIcon() {
+        return info.loadIcon(pm);
     }
 
     public boolean hasGoal() {
