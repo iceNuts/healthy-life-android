@@ -3,13 +3,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
-apply plugin: 'android'
+
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/groups/public'
+    }
 }
 
 android {
@@ -55,4 +59,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services:6.1.11'
+    compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
 }

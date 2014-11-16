@@ -4,8 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -19,10 +17,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.adapter.AppListAdapter;
+import com.blue_stingray.healthy_life_app.model.Application;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import android.util.Log;
 
 public class ManageGoalsFragment extends Fragment {
@@ -50,7 +47,6 @@ public class ManageGoalsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle item selection
         switch (item.getItemId()) {
             case R.id.action_create_goal:
                 Fragment fragment = new CreateGoalFragment();
@@ -72,9 +68,21 @@ public class ManageGoalsFragment extends Fragment {
                 appList.setAdapter(adapter);
                 appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Log.d("App Adapter View", String.valueOf(i));
-                        Log.d("App Adapter View", String.valueOf(apps.get(i)));
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        Log.d("App Adapter View", String.valueOf(position));
+                        Log.d("App Adapter View", String.valueOf(apps.get(position)));
+
+                        Application app = new Application(getActivity().getPackageManager(), apps.get(position));
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("appinfo", app);
+
+                        Fragment fragment = new AppUsageFragment();
+                        fragment.setArguments(bundle);
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_container, fragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
 
                     }
                 });
