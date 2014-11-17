@@ -3,8 +3,11 @@ package com.blue_stingray.healthy_life_app.fragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,17 +15,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.adapter.AppListAdapter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import android.util.Log;
 
 public class ManageGoalsFragment extends Fragment {
 
     private ProgressDialog loadingDialog;
     private ListView appList;
-    private ArrayList<ApplicationInfo> apps;
+    private ArrayList<ResolveInfo> apps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +70,12 @@ public class ManageGoalsFragment extends Fragment {
             public void run() {
                 final AppListAdapter adapter = new AppListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
+                appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        
+                    }
+                });
             }
         });
     }
@@ -71,18 +84,11 @@ public class ManageGoalsFragment extends Fragment {
         @Override
         public void run() {
             try {
-                int flags = PackageManager.GET_META_DATA |
-                        PackageManager.GET_SHARED_LIBRARY_FILES |
-                        PackageManager.GET_UNINSTALLED_PACKAGES;
-
                 final PackageManager pm = getActivity().getPackageManager();
-                apps = new ArrayList<>();
-                List<ApplicationInfo> packages = pm.getInstalledApplications(flags);
-                for (ApplicationInfo packageInfo : packages) {
-                    if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                        apps.add(packageInfo);
-                    }
-                }
+                Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                List<ResolveInfo> resolveApps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
+                apps = new ArrayList<ResolveInfo>(resolveApps);
             } finally {
                 createList();
                 loadingDialog.dismiss();
