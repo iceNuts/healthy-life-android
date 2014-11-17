@@ -1,15 +1,12 @@
 package com.blue_stingray.healthy_life_app.fragment;
 
-
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.support.v4.app.Fragment;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
 import org.eazegraph.lib.charts.PieChart;

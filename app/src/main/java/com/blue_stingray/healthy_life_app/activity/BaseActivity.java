@@ -11,11 +11,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
+import roboguice.activity.RoboFragmentActivity;
 
 /**
  * Base activity providing common functionality used by all other activities
  */
-public abstract class BaseActivity extends RoboActivity {
+public abstract class BaseActivity extends RoboFragmentActivity {
+
     protected final String LOG_TAG = ((Object) this).getClass().getSimpleName();
     @Inject
     protected DatabaseHelper databaseHelper;

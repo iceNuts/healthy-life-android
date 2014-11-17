@@ -15,6 +15,7 @@
     <string name="create_admin">Create Administrator Account</string>
     <string name="forgot_password">Forget Password?</string>
     <string name="logging_in">Logging in…</string>
+    <string name="creating_goal">Creating goal...</string>
     <string name="missing_email">Missing Email Address</string>
     <string name="missing_password">Missing Password</string>
     <string name="invalid_email">Invalid Email Address</string>
@@ -74,4 +75,9 @@
         <item>29 hours</item>
         <item>30 hours</item>
     </string-array>
+
+    <!-- Preference Support fragment -->
+    <string name="back_button_label">Back</string>
+    <string name="next_button_label">Next</string>
+    <string name="skip_button_label">Skip</string>
 </resources>

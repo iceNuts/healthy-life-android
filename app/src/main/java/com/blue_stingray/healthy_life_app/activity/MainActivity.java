@@ -1,9 +1,9 @@
 package com.blue_stingray.healthy_life_app.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.fragment.AlertsFragment;
 import com.blue_stingray.healthy_life_app.fragment.LifelineRequestFragment;
@@ -19,6 +18,8 @@ import com.blue_stingray.healthy_life_app.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.fragment.RatingsFragment;
 import com.blue_stingray.healthy_life_app.fragment.SettingsFragment;
+
+import roboguice.inject.FragmentManagerProvider;
 
 /**
  * Main activity for starts
@@ -121,7 +122,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setFragment(Fragment fragment) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
