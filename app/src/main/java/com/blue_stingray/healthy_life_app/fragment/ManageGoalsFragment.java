@@ -73,7 +73,9 @@ public class ManageGoalsFragment extends Fragment {
                 appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        
+                        Log.d("App Adapter View", String.valueOf(i));
+                        Log.d("App Adapter View", String.valueOf(apps.get(i)));
+
                     }
                 });
             }

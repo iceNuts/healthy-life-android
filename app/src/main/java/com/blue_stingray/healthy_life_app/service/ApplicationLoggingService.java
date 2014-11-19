@@ -9,6 +9,11 @@ import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.misc.Intents;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.google.inject.Inject;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import roboguice.service.RoboService;
 
 import static com.blue_stingray.healthy_life_app.db.DatabaseHelper.*;
@@ -21,12 +26,15 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private DatabaseHelper dbHelper;
     private long lastLogTime;
     private ComponentName lastComponent;
+    private Map<String, String> lastTime;
+    private ApplicationChangeReceiver appChangeReceiver;
+    private ScreenStateReceiver screenStateReceiver;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        new ApplicationChangeReceiver();
-        ScreenStateReceiver screenStateReceiver = new ScreenStateReceiver();
+        appChangeReceiver = new ApplicationChangeReceiver();
+        screenStateReceiver = new ScreenStateReceiver();
         registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
         return START_STICKY;
     }
@@ -34,6 +42,24 @@ public class ApplicationLoggingService extends RoboService {
     @Override
     public IBinder onBind(Intent intent) {
         throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support binding");
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(appChangeReceiver);
+        unregisterReceiver(screenStateReceiver);
+
+        // Doing something else to notify
+    }
+
+    private Map<String, String> currentTime() {
+        Map<String, String> timeInfo = new HashMap<String, String>();
+        Calendar c = Calendar.getInstance();
+        timeInfo.put("date", String.valueOf(c.get(Calendar.DATE)));
+        timeInfo.put("date", String.valueOf(c.get(Calendar.HOUR)));
+        timeInfo.put("date", String.valueOf(c.get(Calendar.MINUTE)));
+        timeInfo.put("date", String.valueOf(c.get(Calendar.SECOND)));
+        return timeInfo;
     }
 
     private void logLast(final ComponentName application, final long newLogTime) {
@@ -98,8 +124,17 @@ public class ApplicationLoggingService extends RoboService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (lastComponent != null) {
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
+            ComponentName currentComponent = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
+            if (currentComponent != null) {
+                Map<String, String> currentTime = currentTime();
+                if (lastComponent != null) {
+
+
+
+                } else {
+                    lastComponent = currentComponent;
+                    lastTime = currentTime;
+                }
             }
         }
 

@@ -37,6 +37,8 @@ public class ApplicationDetectionService extends RoboService {
         throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support binding");
     }
 
+    // write back to database to store the time usage
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -69,12 +71,11 @@ public class ApplicationDetectionService extends RoboService {
                     if(currentComponent != null && !(currentComponent.equals(lastComponent))) {
                         Intent broadcast = new Intent();
 
-                        if(lastComponent == null || !lastComponent.getPackageName().equals(currentComponent.getPackageName())) {
+                        if (lastComponent == null || !lastComponent.getPackageName().equals(currentComponent.getPackageName())) {
                             broadcast.setAction(Intents.Monitor.APP_CHANGE);
                         } else {
                             broadcast.setAction(Intents.Monitor.ACTIVITY_CHANGE);
                         }
-
 
                         Log.d(LOG_TAG, "App: " + currentComponent.getPackageName() + " Activity: " + currentComponent.getClassName());
 
@@ -82,6 +83,7 @@ public class ApplicationDetectionService extends RoboService {
 
                         localBroadcastManager.sendBroadcast(broadcast);
                         lastComponent = currentComponent;
+
                     }
                 }
             }

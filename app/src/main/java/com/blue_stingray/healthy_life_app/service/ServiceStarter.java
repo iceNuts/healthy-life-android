@@ -40,6 +40,7 @@ public class ServiceStarter {
             }
 
             applicationContext.startService(new Intent(applicationContext, ApplicationDetectionService.class));
+            applicationContext.startService(new Intent(applicationContext, ApplicationLoggingService.class));
             new SampleAppChangeReceiver(applicationContext);
             new AdminRemovalDetectionReceiver(applicationContext);
 

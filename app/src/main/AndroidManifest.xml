@@ -65,6 +65,8 @@
 
         <service android:name="com.blue_stingray.healthy_life_app.service.ApplicationDetectionService" >
         </service>
+        <service android:name="com.blue_stingray.healthy_life_app.service.ApplicationLoggingService" >
+        </service>
 
         <activity
             android:name="com.blue_stingray.healthy_life_app.activity.PostLoginActivity"
