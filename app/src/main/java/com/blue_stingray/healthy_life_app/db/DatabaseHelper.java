@@ -23,63 +23,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String USER_TABLE = "user";
     public static final String NAME = "name";
+    public static final String USER_ID = "user_id";
     public static final String EMAIL = "email";
     private static final String USER_CREATE = tableCreateString(
             USER_TABLE,
+            USER_ID + "integer not null",
             NAME + " text not null",
             EMAIL + " text not null"
     );
 
-    public static final String CURRENT_USER_TABLE = "current_user";
-    public static final String USER_ID = "user_id";
-    private static final String CURRENT_USER_CREATE = tableCreateString(
-        CURRENT_USER_TABLE,
-            USER_ID + "integer not null",
-            foreignKey(USER_ID, USER_TABLE)
-    );
-
-    public static final String DEVICE_TABLE = "device";
-    public static final String DEVICE_NAME = "name";
-    private static final String DEVICE_CREATE = tableCreateString(
-            DEVICE_TABLE,
-            DEVICE_NAME + " string not null",
-            USER_ID + " integer not null",
-            foreignKey(USER_ID, USER_TABLE)
-    );
-
-    public static final String CURRENT_DEVICE_TABLE = "current_device";
-    public static final String DEVICE_ID = "device_id";
-    private static final String CURRENT_DEVICE_CREATE = tableCreateString(
-            CURRENT_DEVICE_TABLE,
-            DEVICE_ID + "integer not null",
-            foreignKey(DEVICE_ID, DEVICE_TABLE)
-    );
-
-    public static final String APPLICATION_TABLE = "application";
-    public static final String PACKAGE_NAME = "package";
-    public static final String APPLICATION_NAME = "name";
-    public static final String VERSION_CODE = "version";
+    public static final String APPLICATION_TABLE = "application_table";
+    public static final String PACKAGE_NAME = "package_name";
     private static final String APPLICATION_CREATE = tableCreateString(
             APPLICATION_TABLE,
-            PACKAGE_NAME + " text not null",
-            APPLICATION_NAME + " text not null",
-            VERSION_CODE + " integer not null",
-            DEVICE_ID + " integer not null",
-            foreignKey(DEVICE_ID, DEVICE_TABLE)
+            PACKAGE_NAME + " text not null"
     );
 
     public static final String APPLICATION_USAGE_TABLE = "application_usage";
+    public static final String USAGE_YEAR = "usage_year";
+    public static final String USAGE_MONTH = "usage_month";
+    public static final String USAGE_DAY = "usage_day";
+    public static final String USAGE_DAY_OF_WEEK = "usage_day_of_week";
     public static final String START_TIME = "start_time";
     public static final String END_TIME = "end_time";
-    public static final String APPLICATION_ID = "application_id";
     private static final String APPLICATION_USAGE_CREATE = tableCreateString(
             APPLICATION_USAGE_TABLE,
+            USAGE_YEAR + " integer not null",
+            USAGE_MONTH + " integer not null",
+            USAGE_DAY + " integer not null",
+            USAGE_DAY_OF_WEEK + "integer not null",
             START_TIME + " integer not null",
             END_TIME + " integer not null",
-            APPLICATION_ID + " integer not null",
-            foreignKey(APPLICATION_ID, APPLICATION_TABLE)    
-    ) +
-            indexCreateString(END_TIME, APPLICATION_USAGE_TABLE);
+            PACKAGE_NAME + " text not null",
+            USER_ID + " integer not null",
+            foreignKey(USER_ID, USER_TABLE),
+            foreignKey(PACKAGE_NAME, APPLICATION_TABLE)
+    );
+
+    public static final String GOAL_TABLE = "goal";
 
 
     private static final String DB_NAME = "app.db";
@@ -96,11 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         for (String tableCreateString : new String[] {
                 USER_CREATE, 
-                CURRENT_USER_CREATE, 
-                DEVICE_CREATE, 
-                APPLICATION_CREATE,
                 APPLICATION_USAGE_CREATE,
-                CURRENT_DEVICE_CREATE
         }) {
             db.execSQL(tableCreateString);
         }
@@ -110,11 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         for (String tableName : new String[] {
                 USER_TABLE,
-                CURRENT_USER_TABLE,
-                DEVICE_TABLE,
-                APPLICATION_TABLE,
                 APPLICATION_USAGE_TABLE,
-                CURRENT_DEVICE_TABLE
         }) {
             db.execSQL("DROP TABLE IF EXISTS " + tableName);
         }
@@ -128,23 +101,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    private void populateApplicationsTable(SQLiteDatabase db) {
-        PackageManager pm = context.getPackageManager();
-        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        db.beginTransaction();
-        for (ResolveInfo info : pm.queryIntentActivities(mainIntent, 0) ) {
-            ApplicationInfo appInfo = info.activityInfo.applicationInfo;
-            ContentValues values = new ContentValues();
-            values.put(PACKAGE_NAME, appInfo.packageName);
-            values.put(APPLICATION_NAME, pm.getApplicationLabel(appInfo).toString());
-            try {
-                values.put(VERSION_CODE, pm.getPackageInfo(appInfo.packageName, 0).versionCode);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.wtf(getClass().getSimpleName(), e);
-            }
-        }
-        db.endTransaction();
-    }
+//    private void populateApplicationsTable(SQLiteDatabase db) {
+//        PackageManager pm = context.getPackageManager();
+//        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+//        db.beginTransaction();
+//        for (ResolveInfo info : pm.queryIntentActivities(mainIntent, 0) ) {
+//            ApplicationInfo appInfo = info.activityInfo.applicationInfo;
+//            ContentValues values = new ContentValues();
+//            values.put(PACKAGE_NAME, appInfo.packageName);
+//            values.put(APPLICATION_NAME, pm.getApplicationLabel(appInfo).toString());
+//            try {
+//                values.put(VERSION_CODE, pm.getPackageInfo(appInfo.packageName, 0).versionCode);
+//            } catch (PackageManager.NameNotFoundException e) {
+//                Log.wtf(getClass().getSimpleName(), e);
+//            }
+//        }
+//        db.endTransaction();
+//    }
 
     private static String tableCreateString(String tableName, String... columns) {
         StringBuilder sb = new StringBuilder()
