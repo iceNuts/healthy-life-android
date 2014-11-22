@@ -24,11 +24,15 @@ public class ApplicationDetectionService extends RoboService {
     private static final int POLL_DELAY_MS = 500;
     private final String LOG_TAG = getClass().getSimpleName();
     private Thread activityPollThread;
+    private boolean ISSTARTED = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        startDetection();
+        if (!ISSTARTED) {
+            startDetection();
+            ISSTARTED = true;
+        }
         return START_STICKY;
     }
 

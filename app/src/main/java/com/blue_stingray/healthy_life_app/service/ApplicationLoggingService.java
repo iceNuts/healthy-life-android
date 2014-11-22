@@ -45,11 +45,10 @@ public class ApplicationLoggingService extends RoboService {
         if (db == null) {
             dbHelper = new DatabaseHelper(getApplicationContext());
             db = dbHelper.getWritableDatabase();
+            appChangeReceiver = new ApplicationChangeReceiver();
+            screenStateReceiver = new ScreenStateReceiver();
+            registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
         }
-
-        appChangeReceiver = new ApplicationChangeReceiver();
-        screenStateReceiver = new ScreenStateReceiver();
-        registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
         return START_STICKY;
     }
 
@@ -61,7 +60,7 @@ public class ApplicationLoggingService extends RoboService {
     @Override
     public void onDestroy() {
         db.close();
-        unregisterReceiver(appChangeReceiver);
+        dbHelper.close();
         unregisterReceiver(screenStateReceiver);
 
         // Doing something else to notify
@@ -125,7 +124,8 @@ public class ApplicationLoggingService extends RoboService {
                             String lastDay = appUsageCursor.getString(appUsageCursor.getColumnIndex(USAGE_DAY));
 
                             // SPLIT TIME :(
-                            if (lastDay != logTime.get("day")) {
+
+                            if (!lastDay.equals(logTime.get("day"))) {
 
                                 // Generate the ZERO timestamp
 
