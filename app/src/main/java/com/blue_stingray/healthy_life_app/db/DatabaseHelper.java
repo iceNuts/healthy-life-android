@@ -27,16 +27,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String EMAIL = "email";
     private static final String USER_CREATE = tableCreateString(
             USER_TABLE,
-            USER_ID + "integer not null",
+            USER_ID + " integer not null",
             NAME + " text not null",
             EMAIL + " text not null"
     );
 
-    public static final String APPLICATION_TABLE = "application_table";
+    public static final String GOAL_TABLE = "goal_table";
     public static final String PACKAGE_NAME = "package_name";
-    private static final String APPLICATION_CREATE = tableCreateString(
-            APPLICATION_TABLE,
-            PACKAGE_NAME + " text not null"
+    public static final String TIME_LIMIT = "time_limit";
+    private static final String GOAL_CREATE = tableCreateString(
+            GOAL_TABLE,
+            PACKAGE_NAME + " text not null",
+            TIME_LIMIT + " integer not null"
     );
 
     public static final String APPLICATION_USAGE_TABLE = "application_usage";
@@ -51,17 +53,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             USAGE_YEAR + " integer not null",
             USAGE_MONTH + " integer not null",
             USAGE_DAY + " integer not null",
-            USAGE_DAY_OF_WEEK + "integer not null",
+            USAGE_DAY_OF_WEEK + " integer not null",
             START_TIME + " integer not null",
             END_TIME + " integer not null",
             PACKAGE_NAME + " text not null",
             USER_ID + " integer not null",
             foreignKey(USER_ID, USER_TABLE),
-            foreignKey(PACKAGE_NAME, APPLICATION_TABLE)
-    );
-
-    public static final String GOAL_TABLE = "goal";
-
+            foreignKey(PACKAGE_NAME, GOAL_TABLE)
+    ) + indexCreateString(END_TIME, APPLICATION_USAGE_TABLE);
 
     private static final String DB_NAME = "app.db";
     private static final int SCHEMA_VERSION = 1;
@@ -78,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (String tableCreateString : new String[] {
                 USER_CREATE, 
                 APPLICATION_USAGE_CREATE,
+                GOAL_CREATE
         }) {
             db.execSQL(tableCreateString);
         }
@@ -88,9 +88,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (String tableName : new String[] {
                 USER_TABLE,
                 APPLICATION_USAGE_TABLE,
+                GOAL_TABLE
         }) {
             db.execSQL("DROP TABLE IF EXISTS " + tableName);
         }
+        onCreate(db);
     }
 
     public void populateInitialDb(SQLiteDatabase db, User user) {
@@ -100,24 +102,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void tearDownDb(SQLiteDatabase db) {
 
     }
-
-//    private void populateApplicationsTable(SQLiteDatabase db) {
-//        PackageManager pm = context.getPackageManager();
-//        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-//        db.beginTransaction();
-//        for (ResolveInfo info : pm.queryIntentActivities(mainIntent, 0) ) {
-//            ApplicationInfo appInfo = info.activityInfo.applicationInfo;
-//            ContentValues values = new ContentValues();
-//            values.put(PACKAGE_NAME, appInfo.packageName);
-//            values.put(APPLICATION_NAME, pm.getApplicationLabel(appInfo).toString());
-//            try {
-//                values.put(VERSION_CODE, pm.getPackageInfo(appInfo.packageName, 0).versionCode);
-//            } catch (PackageManager.NameNotFoundException e) {
-//                Log.wtf(getClass().getSimpleName(), e);
-//            }
-//        }
-//        db.endTransaction();
-//    }
 
     private static String tableCreateString(String tableName, String... columns) {
         StringBuilder sb = new StringBuilder()

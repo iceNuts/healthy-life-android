@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.service;
 
 import android.content.*;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.util.Log;
@@ -11,9 +12,12 @@ import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.google.inject.Inject;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import roboguice.service.RoboService;
@@ -23,17 +27,26 @@ import static com.blue_stingray.healthy_life_app.db.DatabaseHelper.*;
 /**
  * Periodically logs application changes
  */
+
 public class ApplicationLoggingService extends RoboService {
 
     @Inject private DatabaseHelper dbHelper;
-    private ComponentName lastComponent;
-    private Map<String, String> lastTime;
     private ApplicationChangeReceiver appChangeReceiver;
     private ScreenStateReceiver screenStateReceiver;
+    private SQLiteDatabase db = null;
+    private ComponentName lastComponent;
+
+    private final int STARTFLAG = 1001;
+    private final int ENDFLAG = 1002;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        if (db == null) {
+            dbHelper = new DatabaseHelper(getApplicationContext());
+            db = dbHelper.getWritableDatabase();
+        }
+
         appChangeReceiver = new ApplicationChangeReceiver();
         screenStateReceiver = new ScreenStateReceiver();
         registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
@@ -47,11 +60,14 @@ public class ApplicationLoggingService extends RoboService {
 
     @Override
     public void onDestroy() {
+        db.close();
         unregisterReceiver(appChangeReceiver);
         unregisterReceiver(screenStateReceiver);
 
         // Doing something else to notify
     }
+
+    // Android holds a different date/month count
 
     private Map<String, String> currentTime() {
         Map<String, String> timeInfo = new HashMap<String, String>();
@@ -60,65 +76,126 @@ public class ApplicationLoggingService extends RoboService {
         timeInfo.put("month", String.valueOf(c.get(Calendar.MONTH)));
         timeInfo.put("day", String.valueOf(c.get(Calendar.DATE)));
         timeInfo.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
-        timeInfo.put("timestamp", String.valueOf(new Timestamp(new Date().getTime())));
+        timeInfo.put("timestamp", String.valueOf(new Date().getTime()/1000));
         return timeInfo;
     }
 
-    private void logAppUsage(final ComponentName application, final Map<String, String> logTime, final boolean startFlag) {
+    private void logAppUsage(final ComponentName application, final Map<String, String> logTime, final int flag) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.beginTransaction();
                 try {
-                    // log the end time
-                    if (!startFlag) {
-                        // judge if there is a gap between lastTime and logTime
-                        String startTimestamp =  lastTime.get("timestamp");
-                        String startDate = lastTime.get("day");
-                        // start & end time are in the same day
-                        if (startDate == logTime.get("day")) {
-                            // simply update the end time field
-                            ContentValues cv = new ContentValues();
-                            cv.put(END_TIME, logTime.get("timestamp"));
-                            db.update(APPLICATION_USAGE_TABLE, cv, "?=?", new String[]{END_TIME, startTimestamp});
-                        }
-                        // split the time
-                        else {
-                            ContentValues cv = new ContentValues();
-                            String dateString = logTime.get("year")+"-"+logTime.get("month")+"-"+logTime.get("day")+" 0:0:0.0";
-                            String firstPeriodEndTime = String.valueOf(Timestamp.valueOf(dateString));
-                            cv.put(END_TIME, firstPeriodEndTime);
-                            db.update(APPLICATION_USAGE_TABLE, cv, "?=?", new String[]{END_TIME, startTimestamp});
 
-                            ContentValues newStat = new ContentValues();
-                            newStat.put(USAGE_YEAR, logTime.get("year"));
-                            newStat.put(USAGE_MONTH, logTime.get("month"));
-                            newStat.put(USAGE_DAY, logTime.get("day"));
-                            newStat.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
-                            newStat.put(START_TIME, firstPeriodEndTime);
-                            newStat.put(END_TIME, logTime.get("timestamp"));
-                            newStat.put(PACKAGE_NAME, application.getPackageName());
-                            newStat.put(USER_ID, "test");
-                            db.insert(APPLICATION_USAGE_TABLE, null, newStat);
+                    // log the end time
+
+                    if (flag == ENDFLAG) {
+
+                        // Begin Finding
+
+                        Cursor appUsageCursor = db.rawQuery(
+                                "SELECT * FROM application_usage WHERE package_name = ? AND end_time = ?",
+                                new String[]{
+                                    application.getPackageName(),
+                                    "-1"
+                                }
+                        );
+
+                        int appUsageCount = appUsageCursor.getCount();
+
+                        // FAILED TO Find
+
+                        if (appUsageCount == 0) {
                         }
+
+                        // ERROR DELETE ALL
+
+                        else if (appUsageCount > 1) {
+                            db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=?", new String[]{
+                                application.getPackageName(),
+                                "-1"
+                            });
+                        }
+
+                        // ONLY ONE ENTRY NICE :-)
+
+                        else {
+
+                            appUsageCursor.moveToFirst();
+                            String lastDay = appUsageCursor.getString(appUsageCursor.getColumnIndex(USAGE_DAY));
+
+                            // SPLIT TIME :(
+                            if (lastDay != logTime.get("day")) {
+
+                                // Generate the ZERO timestamp
+
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
+                                c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
+                                c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
+                                c.set(Calendar.MINUTE, 0);
+                                c.set(Calendar.HOUR_OF_DAY, 0);
+                                c.set(Calendar.SECOND, 0);
+                                c.set(Calendar.MILLISECOND, 0);
+                                String zeroTime = String.valueOf(c.getTimeInMillis()/1000);
+
+                                // Update the one-day bound
+
+                                ContentValues updateValues = new ContentValues();
+                                updateValues.put(END_TIME, zeroTime);
+                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=?", new String[]{
+                                        application.getPackageName(),
+                                        "-1"
+                                });
+
+                                // Insert a new day
+
+                                ContentValues newUsage = new ContentValues();
+                                newUsage.put(USAGE_YEAR, logTime.get("year"));
+                                newUsage.put(USAGE_MONTH, logTime.get("month"));
+                                newUsage.put(USAGE_DAY, logTime.get("day"));
+                                newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
+                                newUsage.put(START_TIME, zeroTime);
+                                newUsage.put(END_TIME, logTime.get("timestamp"));
+                                newUsage.put(PACKAGE_NAME, application.getPackageName());
+                                newUsage.put(USER_ID, "0");
+                                db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
+
+                            }
+                            // BEST : NO Need to Split
+                            else {
+                                ContentValues updateValues = new ContentValues();
+                                updateValues.put(END_TIME, logTime.get("timestamp"));
+                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=?", new String[]{
+                                        application.getPackageName(),
+                                        "-1"
+                                });
+                            }
+                        }
+                        appUsageCursor.close();
                     }
+
                     // log start time
-                    else {
+
+                    else if (flag == STARTFLAG) {
                         ContentValues newStat = new ContentValues();
                         newStat.put(USAGE_YEAR, logTime.get("year"));
                         newStat.put(USAGE_MONTH, logTime.get("month"));
                         newStat.put(USAGE_DAY, logTime.get("day"));
                         newStat.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
                         newStat.put(START_TIME, logTime.get("timestamp"));
-                        newStat.put(END_TIME, logTime.get("timestamp"));
+                        newStat.put(END_TIME, "-1");
                         newStat.put(PACKAGE_NAME, application.getPackageName());
-                        newStat.put(USER_ID, "test");
-                        db.insert(APPLICATION_USAGE_TABLE, null, newStat);
+                        newStat.put(USER_ID, "0");
+                        db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newStat);
                     }
-                } finally {
+                }
+
+                // Clean up
+
+                finally {
+                    db.setTransactionSuccessful();
                     db.endTransaction();
-                    db.close();
                 }
 
             }
@@ -152,16 +229,18 @@ public class ApplicationLoggingService extends RoboService {
             ComponentName currentComponent = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
             if (currentComponent != null) {
                 Map<String, String> currentTime = currentTime();
-                if (lastComponent != null) {
-                    if (lastComponent.getPackageName()==currentComponent.getPackageName())
-                        return;
-                    logAppUsage(currentComponent, currentTime, true);
-                    logAppUsage(lastComponent, currentTime, false);
-                } else {
-                    logAppUsage(currentComponent, currentTime, true);
+                // App Changed
+                Log.d("Logging", currentComponent.getPackageName());
+                if (lastComponent != currentComponent) {
+                    // Log the CURRENT APP START TIME
+                    logAppUsage(currentComponent, currentTime, STARTFLAG);
+                    // Log the LAST APP END TIME
+                    if (lastComponent != null) {
+                        Log.d("Logging", lastComponent.getPackageName());
+                        logAppUsage(lastComponent, currentTime, ENDFLAG);
+                    }
                 }
                 lastComponent = currentComponent;
-                lastTime = currentTime;
             }
         }
 
