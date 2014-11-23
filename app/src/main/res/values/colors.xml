@@ -6,4 +6,5 @@
     <color name="grey_background_light">#EEEEEE</color>
     <color name="grey_text_light">#ffa5a5a5</color>
     <color name="grey_text_dark">#ff282828</color>
+    <color name="transparent">#00000000</color>
 </resources>

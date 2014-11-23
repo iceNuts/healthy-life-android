@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
 
     <supports-screens android:smallScreens="false" />
@@ -42,6 +43,10 @@
             android:name="com.blue_stingray.healthy_life_app.activity.RegistrationActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
+        <activity
+            android:name=".activity.BlockerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent" />
 
         <receiver android:name="com.blue_stingray.healthy_life_app.receiver.BootCompleteReceiver" >
             <intent-filter>
@@ -67,6 +72,8 @@
         <service android:name="com.blue_stingray.healthy_life_app.service.ApplicationDetectionService" >
         </service>
         <service android:name="com.blue_stingray.healthy_life_app.service.ApplicationLoggingService" >
+        </service>
+        <service android:name=".service.ApplicationBlockerService" >
         </service>
 
         <activity

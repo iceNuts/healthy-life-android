@@ -39,4 +39,7 @@
     <string name="title_activity_post_login">Account Setup</string>
     <string name="post_login_admin_prompt">Please tap the button below to enable Healthy App as a device administrator. This is required to prevent uninstalling the application.</string>
     <string name="enable_device_admin">Enable Device Administrator</string>
+    <string name="app_usage_limit_reached">Sorry, this App is no longer available to use today, please request more time from Administrator</string>
+    <string name="app_alert_close">Close</string>
+    <string name="app_alert_request">Request</string>
 </resources>

@@ -1,11 +1,18 @@
 package com.blue_stingray.healthy_life_app.service;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+
+import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.misc.Intents;
 import roboguice.service.RoboService;
 
@@ -73,6 +80,7 @@ public class ApplicationDetectionService extends RoboService {
                     ComponentName currentComponent = currentTask.baseIntent.getComponent();
 
                     if(currentComponent != null && !(currentComponent.equals(lastComponent))) {
+
                         Intent broadcast = new Intent();
 
                         if (lastComponent == null || !lastComponent.getPackageName().equals(currentComponent.getPackageName())) {
@@ -94,5 +102,4 @@ public class ApplicationDetectionService extends RoboService {
         });
         activityPollThread.start();
     }
-
 }
