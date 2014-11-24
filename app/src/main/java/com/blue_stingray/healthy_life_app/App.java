@@ -2,7 +2,7 @@ package com.blue_stingray.healthy_life_app;
 
 import android.app.Application;
 
-import com.blue_stingray.healthy_life_app.misc.GuiceModule;
+import com.blue_stingray.healthy_life_app.vendor.guice.GuiceModule;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
 
 import roboguice.RoboGuice;

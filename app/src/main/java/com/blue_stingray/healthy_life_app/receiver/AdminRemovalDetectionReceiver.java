@@ -4,9 +4,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import com.blue_stingray.healthy_life_app.activity.AdminRemovalActivity;
+
+import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.ui.activity.AdminRemovalActivity;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
-import com.blue_stingray.healthy_life_app.misc.Intents;
 import com.google.inject.Inject;
 
 /**
@@ -18,20 +19,20 @@ public class AdminRemovalDetectionReceiver extends SelfAttachingReceiver {
     private SharedPreferencesHelper prefs;
 
     public AdminRemovalDetectionReceiver(Context context) {
-        super(context, buildIntentFilter());
+        super(context, buildIntentFilter(context));
     }
 
-    private static IntentFilter buildIntentFilter() {
+    private static IntentFilter buildIntentFilter(Context context) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intents.Monitor.ACTIVITY_CHANGE);
-        filter.addAction(Intents.Monitor.APP_CHANGE);
+        filter.addAction(context.getString(R.string.activity_change));
+        filter.addAction(context.getString(R.string.app_change));
         return filter;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         //TODO Verify it works correctly when going directly from settings
-        ComponentName component = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
+        ComponentName component = intent.getParcelableExtra(context.getString(R.string.component_name));
         if(prefs.isDeviceLocked() && "com.android.settings.Settings$DeviceAdminSettingsActivity".equals(component.getClassName())) {
             Intent launchIntent = new Intent(context, AdminRemovalActivity.class);
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

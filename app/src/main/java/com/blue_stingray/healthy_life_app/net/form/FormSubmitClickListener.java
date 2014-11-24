@@ -3,7 +3,7 @@ package com.blue_stingray.healthy_life_app.net.form;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.view.View;
-import com.blue_stingray.healthy_life_app.misc.FormValidationManager;
+import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 
 /**
  * Click listener for forms that rely on a network action. Will validate the form then show a progress message and call

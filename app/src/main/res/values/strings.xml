@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Intents -->
+    <string name="app_change">JZ_APP_CHANGE</string>
+    <string name="activity_change">JZ_ACTIVITY_CHANGE</string>
+    <string name="component_name">JZ_COMPONENT_NAME</string>
+
     <string name="app_name">Healthy App</string>
     <string name="action_settings">Settings</string>
     <string name="device_admin_request">In order to prevent tampering with the application chose the activate option below.</string>
