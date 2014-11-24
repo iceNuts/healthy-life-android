@@ -1,9 +1,6 @@
 package com.blue_stingray.healthy_life_app.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,24 +12,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.adapter.AppListAdapter;
+import com.blue_stingray.healthy_life_app.misc.FragmentHelper;
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.storage.cache.Cache;
+
 import java.util.ArrayList;
-import java.util.List;
 import android.util.Log;
 
-public class ManageGoalsFragment extends Fragment {
+import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
+
+public class ManageGoalsFragment extends RoboFragment {
+
+    @InjectView(R.id.apps)
+    private ListView appList;
 
     private ProgressDialog loadingDialog;
-    private ListView appList;
-    private ArrayList<ResolveInfo> apps;
+    private ArrayList<Application> apps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_goals, container,false);
         getActivity().setTitle("Manage Goals");
-        appList = (ListView) view.findViewById(R.id.apps);
         loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
         new CreateList().start();
         setHasOptionsMenu(true);
@@ -49,11 +54,7 @@ public class ManageGoalsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_goal:
-                Fragment fragment = new CreateGoalFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                FragmentHelper.injectFragment(new CreateGoalFragment(), getFragmentManager(), R.id.frame_container);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -72,19 +73,14 @@ public class ManageGoalsFragment extends Fragment {
                         Log.d("App Adapter View", String.valueOf(position));
                         Log.d("App Adapter View", String.valueOf(apps.get(position)));
 
-                        Application app = new Application(getActivity().getPackageManager(), apps.get(position));
-
+                        Application app = apps.get(position);
 
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("appinfo", app);
 
                         Fragment fragment = new AppUsageFragment();
                         fragment.setArguments(bundle);
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_container, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-
+                        FragmentHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
                     }
                 });
             }
@@ -95,11 +91,18 @@ public class ManageGoalsFragment extends Fragment {
         @Override
         public void run() {
             try {
-                final PackageManager pm = getActivity().getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                List<ResolveInfo> resolveApps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
-                apps = new ArrayList<ResolveInfo>(resolveApps);
+                Cache<String, Application> appCache = ((App) getActivity().getApplication()).appCache;
+
+                if(appCache.size() > 0) {
+                    apps = new ArrayList<Application>(appCache.snapshot().values());
+                } else {
+                    apps = Application.createFromUserApplications(getActivity());
+
+                    // populate app cache
+                    for(Application app : apps) {
+                        appCache.put(app.getName(), app);
+                    }
+                }
             } finally {
                 createList();
                 loadingDialog.dismiss();

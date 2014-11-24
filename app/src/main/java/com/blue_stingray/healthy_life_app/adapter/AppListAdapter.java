@@ -3,16 +3,14 @@ package com.blue_stingray.healthy_life_app.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.blue_stingray.healthy_life_app.R;
-
+import com.blue_stingray.healthy_life_app.model.Application;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,14 +19,14 @@ public class AppListAdapter extends BaseAdapter {
 
     private PackageManager pm;
     private LayoutInflater inflater;
-    private List<ResolveInfo> apps;
+    private List<Application> apps;
 
-    public AppListAdapter(Activity activity, List<ResolveInfo> apps) {
+    public AppListAdapter(Activity activity, List<Application> apps) {
         this.pm = activity.getPackageManager();
-        Collections.sort(apps, new Comparator<ResolveInfo>() {
+        Collections.sort(apps, new Comparator<Application>() {
             @Override
-            public int compare(ResolveInfo lhs, ResolveInfo rhs) {
-                return lhs.loadLabel(pm).toString().compareTo(rhs.loadLabel(pm).toString());
+            public int compare(Application lhs, Application rhs) {
+                return lhs.getName().compareTo(rhs.getName());
             }
         });
         this.apps = apps;
@@ -56,13 +54,9 @@ public class AppListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.app_list_row, parent, false);
         }
 
-        TextView appName = (TextView) convertView.findViewById(R.id.app_name);
-        ImageView appIcon = (ImageView) convertView.findViewById(R.id.app_icon);
-
-        ResolveInfo info = apps.get(position);
-
-        appIcon.setImageDrawable(info.loadIcon(pm));
-        appName.setText(info.loadLabel(pm).toString());
+        Application app = apps.get(position);
+        ((TextView) convertView.findViewById(R.id.app_name)).setText(app.getName());
+        ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
 
         return convertView;
     }

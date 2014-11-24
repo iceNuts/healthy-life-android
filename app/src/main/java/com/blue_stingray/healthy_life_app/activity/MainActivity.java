@@ -2,8 +2,6 @@ package com.blue_stingray.healthy_life_app.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -18,8 +16,7 @@ import com.blue_stingray.healthy_life_app.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.fragment.RatingsFragment;
 import com.blue_stingray.healthy_life_app.fragment.SettingsFragment;
-
-import roboguice.inject.FragmentManagerProvider;
+import com.blue_stingray.healthy_life_app.misc.FragmentHelper;
 
 /**
  * Main activity for starts
@@ -79,14 +76,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        // Handle your other action bar items...
-
-        return super.onOptionsItemSelected(item);
+        return actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -99,33 +89,26 @@ public class MainActivity extends BaseActivity {
     private void selectItem(int position) {
         switch(position) {
             case 0:
-                setFragment(new ProfileFragment());
+                FragmentHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 1:
-                setFragment(new AlertsFragment());
+                FragmentHelper.injectFragment(new AlertsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 2:
-                setFragment(new RatingsFragment());
+                FragmentHelper.injectFragment(new RatingsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 3:
-                setFragment(new LifelineRequestFragment());
+                FragmentHelper.injectFragment(new LifelineRequestFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 4:
-                setFragment(new ManageGoalsFragment());
+                FragmentHelper.injectFragment(new ManageGoalsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 5:
-                setFragment(new SettingsFragment());
+                FragmentHelper.injectFragment(new SettingsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
         }
 
         drawerLayout.closeDrawers();
-    }
-
-    private void setFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
 }
