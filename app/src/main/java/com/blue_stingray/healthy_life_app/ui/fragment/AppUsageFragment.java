@@ -20,6 +20,7 @@ public class AppUsageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_app_usage, container,false);
+        getActivity().setTitle(R.string.title_app_usage);
         app = (Application) getArguments().getSerializable("appinfo");
         getActivity().setTitle(app.getName());
         if(app.hasGoal()) {

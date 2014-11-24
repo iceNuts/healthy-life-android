@@ -12,7 +12,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("Settings");
+        getActivity().setTitle(R.string.title_user_settings);
         addPreferencesFromResource(R.xml.main_prefs);
     }
 }

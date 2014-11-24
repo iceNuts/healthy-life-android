@@ -13,8 +13,8 @@ import com.blue_stingray.healthy_life_app.R;
 public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_profile, container,false);
-        getActivity().setTitle("My Profile");
+        View view = inflater.inflate(R.layout.fragment_profile, container,false);
+        getActivity().setTitle(R.string.title_user_profile);
         return view;
     }
 }

@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- App Info -->
+    <string name="app_name">Healthy App</string>
+
     <!-- Intents -->
     <string name="app_change">JZ_APP_CHANGE</string>
     <string name="activity_change">JZ_ACTIVITY_CHANGE</string>
     <string name="component_name">JZ_COMPONENT_NAME</string>
 
-    <string name="app_name">Healthy App</string>
-    <string name="action_settings">Settings</string>
-    <string name="device_admin_request">In order to prevent tampering with the application chose the activate option below.</string>
-    <string name="device_admin_description">Device Administration is used to prevent tampering with the application</string>
-    <string name="device_admin_disable">Removing Healthy App as a device administrator will cause the application to stop functioning. Are you sure you want to continue?</string>
-    <string name="admin_removal_label">Remove Device Administrator</string>
-    <string name="lock_prefs_key">locked</string>
+    <!-- View Titles -->
+    <string name="title_activity_post_login">Account Setup</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="create_admin">Create Administrator Account</string>
-    <string name="forgot_password">Forget Password?</string>
-    <string name="logging_in">Logging in…</string>
-    <string name="creating_goal">Creating goal...</string>
-    <string name="missing_email">Missing Email Address</string>
-    <string name="missing_password">Missing Password</string>
-    <string name="invalid_email">Invalid Email Address</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_usage_alerts">Usage Alerts</string>
+    <string name="title_app_usage">App Usage</string>
+    <string name="title_create_goal">Create Goal</string>
+    <string name="title_lifeline_request">Lifeline Requests</string>
+    <string name="title_manage_goals">Manage Goals</string>
+    <string name="title_user_profile">My Profile</string>
+    <string name="title_user_rating">My Rating</string>
+    <string name="title_user_settings">Settings</string>
+
+    <!-- HTTP -->
     <string name="server_error_title">Server Error</string>
     <string name="server_error_description">An internal server error has occurred. Please try again later.</string>
     <string name="deserialization_error_title">Error</string>
@@ -31,7 +30,23 @@
     <string name="network_error_title">Network Error</string>
     <string name="network_error_description">A network error has occurred. Please make sure you are connected to the internet.</string>
     <string name="okay">Okay</string>
-    <string name="title_activity_registration">RegistrationActivity</string>
+
+    <!-- Device Admin -->
+    <string name="device_admin_request">In order to prevent tampering with the application choose the activate option below.</string>
+    <string name="device_admin_description">Device Administration is used to prevent tampering with the application</string>
+    <string name="device_admin_disable">Removing Healthy App as a device administrator will cause the application to stop functioning. Are you sure you want to continue?</string>
+    <string name="post_login_admin_prompt">Please tap the button below to enable Healthy App as a device administrator. This is required to prevent uninstalling the application.</string>
+
+    <!-- Login / Registration -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="create_admin">Create Administrator Account</string>
+    <string name="forgot_password">Forget Password?</string>
+    <string name="logging_in">Logging in…</string>
+    <string name="missing_email">Missing Email Address</string>
+    <string name="missing_password">Missing Password</string>
+    <string name="invalid_email">Invalid Email Address</string>
     <string name="register">Register</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="short_password">Password must be 6 characters</string>
@@ -42,9 +57,15 @@
     <string name="registration_success_title">Registration Successful</string>
     <string name="registration_success_description">You have successfully registered. Please check your email to verify your account before logging in.</string>
     <string name="email_in_use">Email address is already in use.</string>
-    <string name="title_activity_post_login">Account Setup</string>
-    <string name="post_login_admin_prompt">Please tap the button below to enable Healthy App as a device administrator. This is required to prevent uninstalling the application.</string>
+
+    <!-- Settings Fragment -->
+    <string name="action_settings">Settings</string>
+    <string name="admin_removal_label">Remove Device Administrator</string>
+    <string name="lock_prefs_key">locked</string>
     <string name="enable_device_admin">Enable Device Administrator</string>
+
+    <!-- Create Goal Fragment -->
+    <string name="creating_goal">Creating goal...</string>
     <string-array name="goal_type">
         <item>Daily</item>
         <item>Weekly</item>

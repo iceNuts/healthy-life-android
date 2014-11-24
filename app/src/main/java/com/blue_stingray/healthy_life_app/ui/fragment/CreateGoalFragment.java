@@ -65,7 +65,7 @@ public class CreateGoalFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Create Goal");
+        getActivity().setTitle(R.string.title_create_goal);
 
         validationManager = new FormValidationManager();
 

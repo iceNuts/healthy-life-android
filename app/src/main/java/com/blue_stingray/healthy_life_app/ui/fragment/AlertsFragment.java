@@ -13,8 +13,9 @@ import com.blue_stingray.healthy_life_app.R;
 public class AlertsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_alerts, container,false);
-        getActivity().setTitle("Usage Alerts");
+        View view = inflater.inflate(R.layout.fragment_alerts, container,false);
+        getActivity().setTitle(R.string.title_usage_alerts);
+
         return view;
     }
 }
