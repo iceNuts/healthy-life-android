@@ -4,28 +4,24 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.*;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.os.Process;
 import android.util.Log;
-import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
-import com.blue_stingray.healthy_life_app.misc.Intents;
+
+import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.google.inject.Inject;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import roboguice.service.RoboService;
 
-import static com.blue_stingray.healthy_life_app.db.DatabaseHelper.*;
+import static com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper.*;
 
 /**
  * Periodically logs application changes
@@ -245,12 +241,12 @@ public class ApplicationLoggingService extends RoboService {
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
 
         public ApplicationChangeReceiver() {
-            super(ApplicationLoggingService.this, new IntentFilter(Intents.Monitor.APP_CHANGE));
+            super(ApplicationLoggingService.this, new IntentFilter(getString(R.string.app_change)));
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ComponentName currentComponent = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
+            ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
             if (currentComponent != null) {
                 Map<String, String> currentTime = currentTime();
                 // App Changed

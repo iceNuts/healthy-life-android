@@ -1,7 +1,6 @@
 package com.blue_stingray.healthy_life_app.net;
 
-import android.content.SharedPreferences;
-import com.blue_stingray.healthy_life_app.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 import retrofit.RequestInterceptor;
 

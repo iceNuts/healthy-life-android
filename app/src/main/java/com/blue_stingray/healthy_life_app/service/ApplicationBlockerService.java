@@ -13,8 +13,8 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.view.View;
 
+import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.activity.BlockerActivity;
-import com.blue_stingray.healthy_life_app.misc.Intents;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 
 import java.util.Map;
@@ -73,12 +73,12 @@ public class ApplicationBlockerService  extends RoboService{
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
 
         public ApplicationChangeReceiver() {
-            super(ApplicationBlockerService.this, new IntentFilter(Intents.Monitor.APP_CHANGE));
+            super(ApplicationBlockerService.this, new IntentFilter(getString(R.string.app_change)));
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ComponentName currentComponent = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
+            ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
             Log.d("kill", currentComponent.getPackageName());
             if (currentComponent.getPackageName().equals("com.android.calendar")) {
                 Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);

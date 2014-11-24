@@ -1,8 +1,14 @@
 package com.blue_stingray.healthy_life_app.net;
 
+import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.model.Goal;
+import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.net.form.AppForm;
+import com.blue_stingray.healthy_life_app.net.form.GoalForm;
+import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import retrofit.Callback;
@@ -15,7 +21,7 @@ import java.util.List;
  */
 public interface RestInterface {
 
-    //Users
+    // Users
     @GET("/user")
     void getUser(Callback<User> cb);
 
@@ -41,10 +47,22 @@ public interface RestInterface {
     void destroyUser(@Path("id") int id, Callback cb);
 
 
-    //Sessions
+    // Sessions
     @POST("/session")
     void createSession(@Body SessionForm sessionForm, Callback<SessionDevice> cb);
 
     @DELETE("/session")
     void destroySession(Callback cb);
+
+    // Apps
+    @POST("/app")
+    void createApp(@Body AppForm appForm, Callback<Application> cb);
+
+    // Icons
+    @POST("/icon")
+    void createIcon(@Body IconForm iconForm, Callback<Icon> cb);
+
+    // Goals
+    @POST("/goal")
+    void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
 }

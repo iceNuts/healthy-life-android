@@ -1,5 +1,7 @@
 package com.blue_stingray.healthy_life_app.net;
 
+import android.util.Log;
+
 import com.blue_stingray.healthy_life_app.BuildConfig;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -18,7 +20,13 @@ public class RestInterfaceProvider implements Provider<RestInterface> {
         return new RestAdapter.Builder()
                 .setRequestInterceptor(interceptor)
                 .setEndpoint(BuildConfig.ENDPOINT_URL)
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLog(new RestAdapter.Log() {
+                    @Override
+                    public void log(String msg) {
+                        Log.i("healthy", msg);
+                    }
+                })
                 .build()
                 .create(RestInterface.class);
     }

@@ -12,11 +12,10 @@ import android.os.*;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
+
 
 import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.misc.Intents;
+
 import roboguice.service.RoboService;
 
 import javax.inject.Inject;
@@ -107,14 +106,14 @@ public class ApplicationDetectionService extends RoboService {
                         Intent broadcast = new Intent();
 
                         if (lastComponent == null || !lastComponent.getPackageName().equals(currentComponent.getPackageName())) {
-                            broadcast.setAction(Intents.Monitor.APP_CHANGE);
+                            broadcast.setAction(getString(R.string.app_change));
                         } else {
-                            broadcast.setAction(Intents.Monitor.ACTIVITY_CHANGE);
+                            broadcast.setAction(getString(R.string.activity_change));
                         }
 
                         Log.d(LOG_TAG, "App: " + currentComponent.getPackageName() + " Activity: " + currentComponent.getClassName());
 
-                        broadcast.putExtra(Intents.Monitor.Extra.COMPONENT_NAME, currentComponent);
+                        broadcast.putExtra(getString(R.string.component_name), currentComponent);
 
                         localBroadcastManager.sendBroadcast(broadcast);
                         lastComponent = currentComponent;

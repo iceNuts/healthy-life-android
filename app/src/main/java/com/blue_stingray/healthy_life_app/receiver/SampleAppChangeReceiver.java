@@ -9,7 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import com.blue_stingray.healthy_life_app.misc.Intents;
+
+import com.blue_stingray.healthy_life_app.R;
 
 /**
  * Created by nick on 9/20/14.
@@ -20,7 +21,7 @@ public class SampleAppChangeReceiver extends SelfAttachingReceiver {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public SampleAppChangeReceiver(Context context) {
-        super(context, new IntentFilter(Intents.Monitor.APP_CHANGE));
+        super(context, new IntentFilter(context.getString(R.string.app_change)));
         packageManager = context.getApplicationContext().getPackageManager();
     }
 
@@ -31,7 +32,7 @@ public class SampleAppChangeReceiver extends SelfAttachingReceiver {
             @Override
             public void run() {
                 try {
-                    ComponentName component = intent.getParcelableExtra(Intents.Monitor.Extra.COMPONENT_NAME);
+                    ComponentName component = intent.getParcelableExtra(context.getString(R.string.component_name));
                     CharSequence label = packageManager.getApplicationLabel(packageManager.getApplicationInfo(component.getPackageName(), 0));
                     Toast.makeText(context, label, Toast.LENGTH_SHORT).show();
 

@@ -8,6 +8,7 @@ import android.os.*;
 import android.os.Process;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.ui.activity.BaseActivity;
 
 /**
  * Created by BillZeng on 11/23/14.
@@ -22,6 +23,7 @@ public class BlockerActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
 
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+
 
         launcherIntent = new Intent();
         launcherIntent.setAction(Intent.ACTION_MAIN);

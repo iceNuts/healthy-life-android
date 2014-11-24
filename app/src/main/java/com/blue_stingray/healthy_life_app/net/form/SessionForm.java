@@ -4,9 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 
-import java.math.BigInteger;
-import java.util.Random;
-
 /**
  * Form for logging in
  */

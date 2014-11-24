@@ -2,12 +2,12 @@ package com.blue_stingray.healthy_life_app.net;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import com.blue_stingray.healthy_life_app.misc.Dialogs;
+
+import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import java.util.Stack;
 
 /**
  * Retrofit Callback for handling network events with loading dialogs. Will dismiss the progress dialog and show an
@@ -33,14 +33,14 @@ public abstract class RetrofitDialogCallback<T> implements Callback<T> {
         dialog.hide();
         switch (retrofitError.getKind()) {
             case NETWORK:
-                Dialogs.newNetworkErrorDialog(context).show();
+                DialogHelper.createNetworkErrorDialog(context).show();
                 break;
              case CONVERSION:
-                 Dialogs.newDeserializationErrorDialog(context).show();
+                 DialogHelper.createDeserializationErrorDialog(context).show();
                  break;
              case HTTP:
                  if (retrofitError.getResponse().getStatus() == 500) {
-                     Dialogs.newServerErrorDialog(context).show();
+                     DialogHelper.createServerErrorDialog(context).show();
                  } else {
                      onFailure(retrofitError);
                  }
