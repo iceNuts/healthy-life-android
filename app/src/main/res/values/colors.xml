@@ -3,6 +3,7 @@
     <color name="blue_primary_dark">#006A92</color>
     <color name="orange_primary">#FFAF2E</color>
     <color name="green_primary">#6BC76B</color>
+    <color name="red_primary">#CC5858</color>
     <color name="dark_tint">#15000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_background_light">#EEEEEE</color>

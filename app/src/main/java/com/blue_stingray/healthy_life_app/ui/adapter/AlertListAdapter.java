@@ -20,7 +20,7 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
         convertView = super.getView(position, convertView, parent);
 
         Alert alert = data.get(position);
-        ((TextView) convertView.findViewById(R.id.alert_name)).setText(Html.fromHtml("<font color='#0099CC'>" + alert.subject + "</font> "));
+        ((TextView) convertView.findViewById(R.id.alert_name)).setText(alert.subject);
 
         return convertView;
     }
