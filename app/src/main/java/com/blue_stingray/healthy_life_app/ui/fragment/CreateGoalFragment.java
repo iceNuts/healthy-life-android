@@ -26,6 +26,9 @@ import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
+/**
+ * Provides a form to create a goal.
+ */
 public class CreateGoalFragment extends RoboFragment {
 
     @InjectView(R.id.app_spinner)

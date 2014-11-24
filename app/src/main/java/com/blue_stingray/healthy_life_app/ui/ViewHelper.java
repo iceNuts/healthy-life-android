@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+/**
+ * Provides helper methods for user interface functionality and interaction.
+ */
 public class ViewHelper {
 
     public static void injectFragment(Fragment fragment, FragmentManager manager, int container) {

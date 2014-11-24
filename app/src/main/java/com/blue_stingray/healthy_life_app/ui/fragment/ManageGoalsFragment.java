@@ -25,6 +25,9 @@ import android.util.Log;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
+/**
+ * Provides a list of user install applications.
+ */
 public class ManageGoalsFragment extends RoboFragment {
 
     @InjectView(R.id.apps)

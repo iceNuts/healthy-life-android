@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.blue_stingray.healthy_life_app.R;
 
+/**
+ * Provides a single users profile information.
+ */
 public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
