@@ -5,5 +5,4 @@
 /app/build
 /build
 
-android.iml
-app/app.iml
+*.iml
