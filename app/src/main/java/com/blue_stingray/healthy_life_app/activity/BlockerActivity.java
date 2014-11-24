@@ -4,7 +4,8 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.*;
+import android.os.Process;
 
 import com.blue_stingray.healthy_life_app.R;
 
@@ -19,6 +20,9 @@ public class BlockerActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+
         launcherIntent = new Intent();
         launcherIntent.setAction(Intent.ACTION_MAIN);
         launcherIntent.addCategory(Intent.CATEGORY_HOME);

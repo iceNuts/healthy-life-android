@@ -1,11 +1,14 @@
 package com.blue_stingray.healthy_life_app.service;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.IBinder;
+import android.os.*;
+import android.os.Process;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.View;
@@ -30,6 +33,7 @@ public class ApplicationBlockerService  extends RoboService{
         super.onStartCommand(intent, flags, startId);
 
         if (appChangeReceiver == null) {
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             appChangeReceiver = new ApplicationChangeReceiver();
         }
 
@@ -39,6 +43,26 @@ public class ApplicationBlockerService  extends RoboService{
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(
+                getApplicationContext(), 1, restartServiceIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        // ensure fire off
+
+        AlarmManager alarmService = (AlarmManager) getApplicationContext()
+                .getSystemService(ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 1000,
+                restartServicePendingIntent);
+
+        super.onTaskRemoved(rootIntent);
     }
 
     @Override

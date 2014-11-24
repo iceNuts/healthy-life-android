@@ -1,10 +1,13 @@
 package com.blue_stingray.healthy_life_app.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.IBinder;
+import android.os.*;
+import android.os.Process;
 import android.util.Log;
 import com.blue_stingray.healthy_life_app.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.misc.Intents;
@@ -43,6 +46,7 @@ public class ApplicationLoggingService extends RoboService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if (db == null) {
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             dbHelper = new DatabaseHelper(getApplicationContext());
             db = dbHelper.getWritableDatabase();
             appChangeReceiver = new ApplicationChangeReceiver();
@@ -64,6 +68,26 @@ public class ApplicationLoggingService extends RoboService {
         unregisterReceiver(screenStateReceiver);
 
         // Doing something else to notify
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(
+                getApplicationContext(), 1, restartServiceIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        // ensure fire off
+
+        AlarmManager alarmService = (AlarmManager) getApplicationContext()
+                .getSystemService(ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 1000,
+                restartServicePendingIntent);
+
+        super.onTaskRemoved(rootIntent);
     }
 
     // Android holds a different date/month count

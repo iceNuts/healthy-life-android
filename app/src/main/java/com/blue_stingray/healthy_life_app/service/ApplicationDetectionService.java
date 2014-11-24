@@ -1,12 +1,15 @@
 package com.blue_stingray.healthy_life_app.service;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.IBinder;
+import android.os.*;
+import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +40,7 @@ public class ApplicationDetectionService extends RoboService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if (!ISSTARTED) {
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             startDetection();
             ISSTARTED = true;
         }
@@ -56,6 +60,25 @@ public class ApplicationDetectionService extends RoboService {
         activityPollThread.interrupt();
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(
+                getApplicationContext(), 1, restartServiceIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        // ensure fire off
+
+        AlarmManager alarmService = (AlarmManager) getApplicationContext()
+                .getSystemService(ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 1000,
+                restartServicePendingIntent);
+
+        super.onTaskRemoved(rootIntent);
+    }
 
     /**
      * Start detection of application and activity changes in a new thread
