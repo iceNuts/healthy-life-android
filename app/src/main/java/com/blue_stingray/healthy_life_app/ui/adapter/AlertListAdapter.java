@@ -1,10 +1,10 @@
 package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Alert;
 import java.util.List;

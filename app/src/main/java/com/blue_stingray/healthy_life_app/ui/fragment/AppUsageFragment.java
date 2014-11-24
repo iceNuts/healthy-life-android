@@ -26,7 +26,7 @@ public class AppUsageFragment extends Fragment {
         if(app.hasGoal()) {
             view.findViewById(R.id.create_goal).setVisibility(View.GONE);
         } else {
-            view.findViewById(R.id.app_name).setVisibility(View.GONE);
+            view.findViewById(R.id.user).setVisibility(View.GONE);
         }
         setupChart();
         Button button = (Button) view.findViewById(R.id.create_goal);
