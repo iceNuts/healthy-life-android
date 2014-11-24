@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         style="@style/TitleText"
-        android:id="@+id/current_goal" />
+        android:id="@+id/user" />
 
     <TextView
         android:text="@string/create_admin"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         style="@style/TitleText"
-        android:layout_below="@+id/current_goal"
+        android:layout_below="@+id/user"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -35,7 +35,7 @@
         android:id="@+id/emailField"
         android:hint="@string/email"
         android:layout_marginTop="81dp"
-        android:layout_below="@+id/current_goal"
+        android:layout_below="@+id/user"
         android:layout_centerHorizontal="true" />
 
     <EditText

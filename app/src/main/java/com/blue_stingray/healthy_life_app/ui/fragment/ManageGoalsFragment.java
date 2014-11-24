@@ -38,7 +38,7 @@ public class ManageGoalsFragment extends RoboFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_manage_goals, container,false);
+        View view = inflater.inflate(R.layout.fragment_manage_goals, container, false);
         getActivity().setTitle(R.string.title_manage_goals);
         loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
         new CreateList().start();

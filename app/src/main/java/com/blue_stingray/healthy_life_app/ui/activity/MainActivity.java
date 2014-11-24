@@ -14,7 +14,6 @@ import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
-import com.blue_stingray.healthy_life_app.ui.fragment.RatingsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 
@@ -25,8 +24,7 @@ public class MainActivity extends BaseActivity {
 
     private final String[] drawerItems = new String[] {
             "Profile",
-            "Usage Alerts",
-            "My Rating",
+            "Alerts",
             "Lifeline Requests",
             "Manage Goals",
             "Settings"
@@ -95,15 +93,12 @@ public class MainActivity extends BaseActivity {
                 ViewHelper.injectFragment(new AlertsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 2:
-                ViewHelper.injectFragment(new RatingsFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 3:
                 ViewHelper.injectFragment(new LifelineRequestFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
-            case 4:
+            case 3:
                 ViewHelper.injectFragment(new ManageGoalsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
-            case 5:
+            case 4:
                 ViewHelper.injectFragment(new SettingsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
         }
