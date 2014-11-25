@@ -22,7 +22,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="App"
                 android:id="@+id/textView"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp" />
 
@@ -36,153 +36,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="7"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/rel"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/sunday"
-                    android:background="@drawable/round"
-                    android:text="SUN"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/monday"
-                    android:background="@drawable/round"
-                    android:text="MON"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textStyle="bold"
-                    android:textSize="12dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout2"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/tuesday"
-                    android:background="@drawable/round"
-                    android:text="TUE"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout3"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/wednesday"
-                    android:background="@drawable/round"
-                    android:text="WED"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout4"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/thursday"
-                    android:background="@drawable/round"
-                    android:text="THU"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout5"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/friday"
-                    android:background="@drawable/round"
-                    android:text="FRI"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:id="@+id/relativeLayout6"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:id="@+id/saturday"
-                    android:background="@drawable/round"
-                    android:text="SAT"
-                    android:gravity="center"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="12dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/monday_container">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -194,9 +53,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Time Limit"
-                    android:id="@+id/time_label"
-                    android:textSize="22dp"
+                    android:text="Monday"
+                    android:id="@+id/monday_label"
+                    android:textSize="18dp"
                     android:paddingBottom="4dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
@@ -207,8 +66,8 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="1 hour"
-                    android:id="@+id/time"
-                    android:textSize="22dp"
+                    android:id="@+id/monday"
+                    android:textSize="18dp"
                     android:paddingBottom="4dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
@@ -220,10 +79,304 @@
             <SeekBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/time_seek_bar"
+                android:id="@+id/monday_seek_bar"
                 android:max="23"
                 android:indeterminate="false" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/tuesday_container">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Tuesday"
+                    android:id="@+id/tuesday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/tuesday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tuesday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/wednesday_container" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Wednesday"
+                    android:id="@+id/wednesday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/wednesday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/wednesday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/thursday_container" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Thursday"
+                    android:id="@+id/thursday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/thursday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/thursday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/friday_container" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Friday"
+                    android:id="@+id/friday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/friday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/friday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/saturday_container" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Saturday"
+                    android:id="@+id/saturday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/saturday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/saturday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/sunday_container" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Sunday"
+                    android:id="@+id/sunday_label"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1 hour"
+                    android:id="@+id/sunday"
+                    android:textSize="18dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sunday_seek_bar"
+                android:max="23"
+                android:indeterminate="false" />
         </LinearLayout>
 
         <Button
