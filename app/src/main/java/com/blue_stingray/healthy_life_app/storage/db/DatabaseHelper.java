@@ -34,11 +34,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String GOAL_TABLE = "goal_table";
     public static final String PACKAGE_NAME = "package_name";
+    public static final String LIMIT_TYPE = "limit_type";
     public static final String TIME_LIMIT = "time_limit";
+    public static final String LIMIT_DAY = "limit_day";
     private static final String GOAL_CREATE = tableCreateString(
             GOAL_TABLE,
             PACKAGE_NAME + " text not null",
-            TIME_LIMIT + " integer not null"
+            LIMIT_TYPE + " integer not null",
+            TIME_LIMIT + " integer not null",
+            LIMIT_DAY + " integer not null"
     );
 
     public static final String APPLICATION_USAGE_TABLE = "application_usage";

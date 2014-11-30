@@ -12,6 +12,7 @@ import android.util.Log;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 
 import java.util.Calendar;
@@ -34,6 +35,7 @@ public class ApplicationLoggingService extends RoboService {
     private ScreenStateReceiver screenStateReceiver;
     private SQLiteDatabase db = null;
     private ComponentName lastComponent;
+    @Inject private SharedPreferencesHelper prefs;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;
@@ -178,7 +180,7 @@ public class ApplicationLoggingService extends RoboService {
                                 newUsage.put(START_TIME, zeroTime);
                                 newUsage.put(END_TIME, logTime.get("timestamp"));
                                 newUsage.put(PACKAGE_NAME, application.getPackageName());
-                                newUsage.put(USER_ID, "0");
+                                newUsage.put(USER_ID, prefs.getSession());
                                 db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
 
                             }
@@ -206,7 +208,7 @@ public class ApplicationLoggingService extends RoboService {
                         newStat.put(START_TIME, logTime.get("timestamp"));
                         newStat.put(END_TIME, "-1");
                         newStat.put(PACKAGE_NAME, application.getPackageName());
-                        newStat.put(USER_ID, "0");
+                        newStat.put(USER_ID, prefs.getSession());
                         db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newStat);
                     }
                 }

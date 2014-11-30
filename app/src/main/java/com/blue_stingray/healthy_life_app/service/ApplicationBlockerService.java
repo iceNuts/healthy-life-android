@@ -24,7 +24,7 @@ import roboguice.service.RoboService;
 /**
  * Created by BillZeng on 11/23/14.
  */
-public class ApplicationBlockerService  extends RoboService{
+public class ApplicationBlockerService  extends RoboService {
 
     private ApplicationChangeReceiver appChangeReceiver = null;
 
@@ -80,7 +80,7 @@ public class ApplicationBlockerService  extends RoboService{
         public void onReceive(Context context, Intent intent) {
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
             Log.d("kill", currentComponent.getPackageName());
-            if (currentComponent.getPackageName().equals("com.android.calendar")) {
+            if (currentComponent.getPackageName().equals("com.sec.pcw")) {
                 Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplication().startActivity(dialogIntent);
