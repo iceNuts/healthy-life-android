@@ -14,6 +14,8 @@ public class Application implements Serializable {
     public transient ResolveInfo info;
     public transient PackageManager pm;
 
+    public int id;
+
     /**
      * @param pm PackageManager
      * @param info ResolveInfo

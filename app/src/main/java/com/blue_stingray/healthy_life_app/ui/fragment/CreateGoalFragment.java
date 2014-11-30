@@ -13,16 +13,13 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
-import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
-import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
-import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import java.util.HashMap;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -34,23 +31,50 @@ public class CreateGoalFragment extends RoboFragment {
     @InjectView(R.id.app_spinner)
     private Spinner appSpinner;
 
-    @InjectView(R.id.goal_type_spinner)
-    private Spinner goalTypeSpinner;
-
-    @InjectView(R.id.day_seek_bar)
-    private SeekBar daySeekBar;
-
-    @InjectView(R.id.day)
-    private TextView currentDay;
-
-    @InjectView(R.id.time_seek_bar)
-    private SeekBar timeLimitSeekBar;
-
-    @InjectView(R.id.time)
-    private TextView currentTime;
-
     @InjectView(R.id.create_goal)
     private Button createGoalButton;
+
+    @InjectView(R.id.monday)
+    private TextView monday;
+
+    @InjectView(R.id.tuesday)
+    private TextView tuesday;
+
+    @InjectView(R.id.wednesday)
+    private TextView wednesday;
+
+    @InjectView(R.id.thursday)
+    private TextView thursday;
+
+    @InjectView(R.id.friday)
+    private TextView friday;
+
+    @InjectView(R.id.saturday)
+    private TextView saturday;
+
+    @InjectView(R.id.sunday)
+    private TextView sunday;
+
+    @InjectView(R.id.monday_seek_bar)
+    private SeekBar mondaySeekBar;
+
+    @InjectView(R.id.tuesday_seek_bar)
+    private SeekBar tuesdaySeekBar;
+
+    @InjectView(R.id.wednesday_seek_bar)
+    private SeekBar wednesdaySeekBar;
+
+    @InjectView(R.id.thursday_seek_bar)
+    private SeekBar thursdaySeekBar;
+
+    @InjectView(R.id.friday_seek_bar)
+    private SeekBar fridaySeekBar;
+
+    @InjectView(R.id.saturday_seek_bar)
+    private SeekBar saturdaySeekBar;
+
+    @InjectView(R.id.sunday_seek_bar)
+    private SeekBar sundaySeekBar;
 
     @Inject
     private RestInterface rest;
@@ -75,12 +99,15 @@ public class CreateGoalFragment extends RoboFragment {
         ArrayAdapter<String> appAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, keys);
         appSpinner.setAdapter(appAdapter);
 
-        // goal type spinner
-        goalTypeSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.goal_type, android.R.layout.simple_list_item_1));
-
-        timeLimitSeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
-        daySeekBar.setOnSeekBarChangeListener(new DaySeekBarListener());
         createGoalButton.setOnClickListener(new CreateGoalButtonListener());
+
+        mondaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        tuesdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        wednesdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        thursdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        fridaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        saturdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+        sundaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
     }
 
     private class CreateGoalButtonListener extends FormSubmitClickListener {
@@ -91,18 +118,13 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         protected void submit() {
-            rest.createGoal(new GoalForm(timeLimitSeekBar.getProgress() + 1, 0), new RetrofitDialogCallback<Goal>(getActivity(), progressDialog) {
 
-                @Override
-                public void onSuccess(Goal goal, Response response) {
-                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
-                }
+            // TODO
+            int appId = ((App) getActivity().getApplication()).appCache.get((String) appSpinner.getSelectedItem()).id;
+            HashMap<Integer, Integer> dayMap = getDayHours();
 
-                @Override
-                public void onFailure(RetrofitError retrofitError) {
-                    Toast.makeText(getActivity(), "Fail", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Toast.makeText(getActivity(), "todo", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
     }
 
@@ -110,41 +132,30 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            currentTime.setText( (String.valueOf(progress + 1) + " hour") + (progress > 0 ? "s" : "") );
-        }
 
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {}
+            String hours = (String.valueOf(progress + 1) + " hour") + (progress > 0 ? "s" : "");
 
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {}
-    }
-
-    private class DaySeekBarListener implements SeekBar.OnSeekBarChangeListener {
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            switch(progress) {
-                case 0:
-                    currentDay.setText("Monday");
+            switch(getResources().getResourceName(seekBar.getId())) {
+                case "com.blue_stingray.healthy_life_app:id/monday_seek_bar":
+                    monday.setText(hours);
                     break;
-                case 1:
-                    currentDay.setText("Tuesday");
+                case "com.blue_stingray.healthy_life_app:id/tuesday_seek_bar":
+                    tuesday.setText(hours);
                     break;
-                case 2:
-                    currentDay.setText("Wednesday");
+                case "com.blue_stingray.healthy_life_app:id/wednesday_seek_bar":
+                    wednesday.setText(hours);
                     break;
-                case 3:
-                    currentDay.setText("Thursday");
+                case "com.blue_stingray.healthy_life_app:id/thursday_seek_bar":
+                    thursday.setText(hours);
                     break;
-                case 4:
-                    currentDay.setText("Friday");
+                case "com.blue_stingray.healthy_life_app:id/friday_seek_bar":
+                    friday.setText(hours);
                     break;
-                case 5:
-                    currentDay.setText("Saturday");
+                case "com.blue_stingray.healthy_life_app:id/saturday_seek_bar":
+                    saturday.setText(hours);
                     break;
-                case 6:
-                    currentDay.setText("Sunday");
+                case "com.blue_stingray.healthy_life_app:id/sunday_seek_bar":
+                    sunday.setText(hours);
                     break;
             }
         }
@@ -154,6 +165,18 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
+
+    public HashMap<Integer, Integer> getDayHours() {
+        HashMap<Integer, Integer> dayMap = new HashMap<>();
+        dayMap.put(Calendar.MONDAY, mondaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.TUESDAY, tuesdaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.WEDNESDAY, wednesdaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.THURSDAY, thursdaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.FRIDAY, fridaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress() + 1);
+        return dayMap;
     }
 
 }
