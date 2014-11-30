@@ -21,26 +21,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private final Context context;
 
-    public static final String USER_TABLE = "user";
-    public static final String NAME = "name";
-    public static final String USER_ID = "user_id";
-    public static final String EMAIL = "email";
-    private static final String USER_CREATE = tableCreateString(
-            USER_TABLE,
-            USER_ID + " integer not null",
-            NAME + " text not null",
-            EMAIL + " text not null"
-    );
-
     public static final String GOAL_TABLE = "goal_table";
     public static final String PACKAGE_NAME = "package_name";
-    public static final String LIMIT_TYPE = "limit_type";
     public static final String TIME_LIMIT = "time_limit";
     public static final String LIMIT_DAY = "limit_day";
     private static final String GOAL_CREATE = tableCreateString(
             GOAL_TABLE,
             PACKAGE_NAME + " text not null",
-            LIMIT_TYPE + " integer not null",
             TIME_LIMIT + " integer not null",
             LIMIT_DAY + " integer not null"
     );
@@ -52,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String USAGE_DAY_OF_WEEK = "usage_day_of_week";
     public static final String START_TIME = "start_time";
     public static final String END_TIME = "end_time";
+    public static final String USER_SESSION = "user_session";
     private static final String APPLICATION_USAGE_CREATE = tableCreateString(
             APPLICATION_USAGE_TABLE,
             USAGE_YEAR + " integer not null",
@@ -61,13 +49,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             START_TIME + " integer not null",
             END_TIME + " integer not null",
             PACKAGE_NAME + " text not null",
-            USER_ID + " integer not null",
-            foreignKey(USER_ID, USER_TABLE),
-            foreignKey(PACKAGE_NAME, GOAL_TABLE)
+            USER_SESSION + " text not null"
     ) + indexCreateString(END_TIME, APPLICATION_USAGE_TABLE);
 
     private static final String DB_NAME = "app.db";
-    private static final int SCHEMA_VERSION = 1;
+    private static final int SCHEMA_VERSION = 2;
 
 
     @Inject
@@ -79,7 +65,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         for (String tableCreateString : new String[] {
-                USER_CREATE, 
                 APPLICATION_USAGE_CREATE,
                 GOAL_CREATE
         }) {
@@ -90,7 +75,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         for (String tableName : new String[] {
-                USER_TABLE,
                 APPLICATION_USAGE_TABLE,
                 GOAL_TABLE
         }) {

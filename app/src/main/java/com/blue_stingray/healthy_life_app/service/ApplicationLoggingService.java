@@ -10,6 +10,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
@@ -36,6 +37,7 @@ public class ApplicationLoggingService extends RoboService {
     private SQLiteDatabase db = null;
     private ComponentName lastComponent;
     @Inject private SharedPreferencesHelper prefs;
+    private DataHelper dataHelper;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;
@@ -47,6 +49,7 @@ public class ApplicationLoggingService extends RoboService {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             dbHelper = new DatabaseHelper(getApplicationContext());
             db = dbHelper.getWritableDatabase();
+            dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
             screenStateReceiver = new ScreenStateReceiver();
             registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
@@ -180,7 +183,7 @@ public class ApplicationLoggingService extends RoboService {
                                 newUsage.put(START_TIME, zeroTime);
                                 newUsage.put(END_TIME, logTime.get("timestamp"));
                                 newUsage.put(PACKAGE_NAME, application.getPackageName());
-                                newUsage.put(USER_ID, prefs.getSession());
+                                newUsage.put(USER_SESSION, prefs.getSession());
                                 db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
 
                             }
@@ -208,7 +211,7 @@ public class ApplicationLoggingService extends RoboService {
                         newStat.put(START_TIME, logTime.get("timestamp"));
                         newStat.put(END_TIME, "-1");
                         newStat.put(PACKAGE_NAME, application.getPackageName());
-                        newStat.put(USER_ID, prefs.getSession());
+                        newStat.put(USER_SESSION, prefs.getSession());
                         db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newStat);
                     }
                 }
@@ -252,13 +255,12 @@ public class ApplicationLoggingService extends RoboService {
             if (currentComponent != null) {
                 Map<String, String> currentTime = currentTime();
                 // App Changed
-                Log.d("Logging", currentComponent.getPackageName());
                 if (lastComponent != currentComponent) {
                     // Log the CURRENT APP START TIME
-                    logAppUsage(currentComponent, currentTime, STARTFLAG);
+                    if (dataHelper.isGoal(currentComponent.getPackageName()))
+                        logAppUsage(currentComponent, currentTime, STARTFLAG);
                     // Log the LAST APP END TIME
                     if (lastComponent != null) {
-                        Log.d("Logging", lastComponent.getPackageName());
                         logAppUsage(lastComponent, currentTime, ENDFLAG);
                     }
                 }

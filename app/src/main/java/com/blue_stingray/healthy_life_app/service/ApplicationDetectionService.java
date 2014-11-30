@@ -2,12 +2,9 @@ package com.blue_stingray.healthy_life_app.service;
 
 import android.app.ActivityManager;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.*;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,6 +12,7 @@ import android.util.Log;
 
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 
 import roboguice.service.RoboService;
 
@@ -29,6 +27,7 @@ public class ApplicationDetectionService extends RoboService {
     private LocalBroadcastManager localBroadcastManager;
     @Inject
     private ActivityManager activityManager;
+    private DataHelper dataHelper;
 
     private static final int POLL_DELAY_MS = 500;
     private final String LOG_TAG = getClass().getSimpleName();
@@ -40,6 +39,7 @@ public class ApplicationDetectionService extends RoboService {
         super.onStartCommand(intent, flags, startId);
         if (!ISSTARTED) {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+            dataHelper = DataHelper.getInstance(getApplicationContext());
             startDetection();
             ISSTARTED = true;
         }

@@ -50,6 +50,10 @@
             android:name=".activity.BlockerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
+        <activity
+            android:name=".activity.AlertActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent" />
 
         <receiver android:name="com.blue_stingray.healthy_life_app.receiver.BootCompleteReceiver" >
             <intent-filter>

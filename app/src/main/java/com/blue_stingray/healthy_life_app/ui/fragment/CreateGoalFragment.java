@@ -12,16 +12,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+import android.util.Log;
 
 /**
  * Provides a form to create a goal.
@@ -81,6 +85,8 @@ public class CreateGoalFragment extends RoboFragment {
 
     private FormValidationManager validationManager;
 
+    private DataHelper dataHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_create_goal, container,false);
@@ -92,6 +98,7 @@ public class CreateGoalFragment extends RoboFragment {
         getActivity().setTitle(R.string.title_create_goal);
 
         validationManager = new FormValidationManager();
+        dataHelper = DataHelper.getInstance(getActivity().getApplicationContext());
 
         // app spinner
         ArrayList<String> keys = new ArrayList<>(((App) getActivity().getApplication()).appCache.snapshot().keySet());
@@ -119,11 +126,14 @@ public class CreateGoalFragment extends RoboFragment {
         @Override
         protected void submit() {
 
-            // TODO
-            int appId = ((App) getActivity().getApplication()).appCache.get((String) appSpinner.getSelectedItem()).id;
+            Application application = ((App) getActivity().getApplication()).appCache.get((String) appSpinner.getSelectedItem());
             HashMap<Integer, Integer> dayMap = getDayHours();
+            String appPackageName = application.info.activityInfo.packageName;
 
-            Toast.makeText(getActivity(), "todo", Toast.LENGTH_SHORT).show();
+            //TODO rest api
+
+            dataHelper.createNewGoal(appPackageName, dayMap);
+
             progressDialog.dismiss();
         }
     }

@@ -14,8 +14,11 @@ import android.view.WindowManager;
 import android.view.View;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.activity.AlertActivity;
 import com.blue_stingray.healthy_life_app.activity.BlockerActivity;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.google.inject.Inject;
 
 import java.util.Map;
 
@@ -27,6 +30,7 @@ import roboguice.service.RoboService;
 public class ApplicationBlockerService  extends RoboService {
 
     private ApplicationChangeReceiver appChangeReceiver = null;
+    private DataHelper dataHelper;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -34,6 +38,7 @@ public class ApplicationBlockerService  extends RoboService {
 
         if (appChangeReceiver == null) {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+            dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
         }
 
@@ -79,11 +84,19 @@ public class ApplicationBlockerService  extends RoboService {
         @Override
         public void onReceive(Context context, Intent intent) {
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
-            Log.d("kill", currentComponent.getPackageName());
-            if (currentComponent.getPackageName().equals("com.sec.pcw")) {
+            if (dataHelper.isGoalSatisfied(currentComponent.getPackageName())) {
                 Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplication().startActivity(dialogIntent);
+            } else if (dataHelper.isGoal(currentComponent.getPackageName())) {
+                Integer remainingTime = dataHelper.packageRemainingTime(currentComponent.getPackageName());
+                Intent alertIntent = new Intent(getBaseContext(), AlertActivity.class);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                alertIntent.putExtra("remaining", remainingTime);
+                alertIntent.putExtra("name", currentComponent.getPackageName());
+                getApplication().startActivity(alertIntent);
             }
         }
     }
