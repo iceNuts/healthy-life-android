@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.support.v4.app.Fragment;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.ui.ViewHelper;
+
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
@@ -21,29 +23,20 @@ public class AppUsageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_app_usage, container,false);
         getActivity().setTitle(R.string.title_app_usage);
+
         app = (Application) getArguments().getSerializable("appinfo");
-        final String appPackageName = app.info.activityInfo.packageName;
         getActivity().setTitle(app.getName());
         if(app.hasGoal()) {
             view.findViewById(R.id.create_goal).setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.user).setVisibility(View.GONE);
         }
+
         setupChart();
+
         Button button = (Button) view.findViewById(R.id.create_goal);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("packagename", appPackageName);
-                Fragment fragment = new CreateGoalFragment();
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
+        button.setOnClickListener(new CreateGoalButtonListener());
+
         return view;
     }
 
@@ -55,6 +48,20 @@ public class AppUsageFragment extends Fragment {
         mPieChart.addPieSlice(new PieModel("Facebook", 35, getResources().getColor(R.color.green_primary)));
 
         mPieChart.startAnimation();
+    }
+
+    private class CreateGoalButtonListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putString("appName", app.getName());
+
+            Fragment fragment = new CreateGoalFragment();
+            fragment.setArguments(bundle);
+
+            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+        }
     }
 
 }

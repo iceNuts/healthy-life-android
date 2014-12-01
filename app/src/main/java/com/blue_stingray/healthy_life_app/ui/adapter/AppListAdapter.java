@@ -30,6 +30,9 @@ public class AppListAdapter extends BaseListAdapter<Application> {
         Application app = data.get(position);
         ((TextView) convertView.findViewById(R.id.app_name)).setText(app.getName());
         ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
+        if(app.hasGoal()) {
+            ((TextView) convertView.findViewById(R.id.current_goal)).setText("Goal is set");
+        }
 
         return convertView;
     }

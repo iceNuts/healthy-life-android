@@ -1,10 +1,14 @@
 package com.blue_stingray.healthy_life_app.model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,7 @@ public class Application implements Serializable {
 
     public transient ResolveInfo info;
     public transient PackageManager pm;
+    public DataHelper dataHelper;
 
     public int id;
 
@@ -20,9 +25,10 @@ public class Application implements Serializable {
      * @param pm PackageManager
      * @param info ResolveInfo
      */
-    public Application(PackageManager pm, ResolveInfo info) {
+    public Application(Context context, PackageManager pm, ResolveInfo info) {
         this.info = info;
         this.pm = pm;
+        this.dataHelper = DataHelper.getInstance(context);
     }
 
     /**
@@ -47,7 +53,11 @@ public class Application implements Serializable {
      * @return boolean
      */
     public boolean hasGoal() {
-        return false;
+        return dataHelper.isGoal(getPackageName());
+    }
+
+    public String getPackageName() {
+        return info.activityInfo.packageName;
     }
 
     /**
@@ -63,7 +73,7 @@ public class Application implements Serializable {
         List<ResolveInfo> resolveApps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
 
         for(ResolveInfo resolveInfo : resolveApps) {
-            apps.add(new Application(pm, resolveInfo));
+            apps.add(new Application(activity, pm, resolveInfo));
         }
 
         return apps;

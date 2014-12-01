@@ -47,11 +47,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
         <activity
-            android:name=".activity.BlockerActivity"
+            android:name=".ui.activity.BlockerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
         <activity
-            android:name=".activity.AlertActivity"
+            android:name=".ui.activity.AlertActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
 

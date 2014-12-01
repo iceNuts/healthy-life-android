@@ -1,6 +1,5 @@
 package com.blue_stingray.healthy_life_app.service;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -9,18 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.*;
 import android.os.Process;
-import android.util.Log;
-import android.view.WindowManager;
-import android.view.View;
 
 import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.activity.AlertActivity;
-import com.blue_stingray.healthy_life_app.activity.BlockerActivity;
+import com.blue_stingray.healthy_life_app.ui.activity.AlertActivity;
+import com.blue_stingray.healthy_life_app.ui.activity.BlockerActivity;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
-import com.google.inject.Inject;
-
-import java.util.Map;
 
 import roboguice.service.RoboService;
 

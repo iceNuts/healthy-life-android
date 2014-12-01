@@ -1,4 +1,4 @@
-package com.blue_stingray.healthy_life_app.activity;
+package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -8,7 +8,6 @@ import android.os.*;
 import android.os.Process;
 
 import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.ui.activity.BaseActivity;
 
 /**
  * Created by BillZeng on 11/23/14.

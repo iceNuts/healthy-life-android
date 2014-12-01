@@ -16,6 +16,22 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp">
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="App"
+                android:id="@+id/textView"
+                android:textSize="18dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/app_spinner" />
         </LinearLayout>
 
         <LinearLayout

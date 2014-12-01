@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -21,11 +20,9 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
-import android.util.Log;
 
 /**
  * Provides a form to create a goal.
@@ -34,6 +31,9 @@ public class CreateGoalFragment extends RoboFragment {
 
     @InjectView(R.id.create_goal)
     private Button createGoalButton;
+
+    @InjectView(R.id.app_spinner)
+    private Spinner appSpinner;
 
     @InjectView(R.id.monday)
     private TextView monday;
@@ -100,7 +100,16 @@ public class CreateGoalFragment extends RoboFragment {
         // app spinner
         ArrayList<String> keys = new ArrayList<>(((App) getActivity().getApplication()).appCache.snapshot().keySet());
         Collections.sort(keys);
-        ArrayAdapter<String> appAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, keys);
+        appSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, keys));
+
+        // set default spinner app
+        Bundle args = getArguments();
+        if(args != null) {
+            String appName = args.getString("appName");
+            if(appName != null) {
+                appSpinner.setSelection(keys.indexOf(args.getString("appName")));
+            }
+        }
 
         createGoalButton.setOnClickListener(new CreateGoalButtonListener());
 
@@ -122,12 +131,10 @@ public class CreateGoalFragment extends RoboFragment {
         @Override
         protected void submit() {
 
-            String appPackageName = getArguments().getString("packagename");
+            Application app = ((App) getActivity().getApplication()).appCache.get(appSpinner.getSelectedItem().toString());
             HashMap<Integer, Integer> dayMap = getDayHours();
 
-            //TODO rest api
-
-            dataHelper.createNewGoal(appPackageName, dayMap);
+            dataHelper.createNewGoal(app, dayMap);
 
             progressDialog.dismiss();
 

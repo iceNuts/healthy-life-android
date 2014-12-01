@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.blue_stingray.healthy_life_app.model.Application;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class DataHelper {
         return instance;
     }
 
-    public void createNewGoal(final String packageName, final HashMap<Integer, Integer> dayMap) {
+    public void createNewGoal(final Application app, final HashMap<Integer, Integer> dayMap) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,7 +54,7 @@ public class DataHelper {
                 while(it.hasNext()) {
                     Map.Entry pairs = (Map.Entry)it.next();
                     ContentValues newStat = new ContentValues();
-                    newStat.put(PACKAGE_NAME, packageName);
+                    newStat.put(PACKAGE_NAME, app.getPackageName());
                     newStat.put(LIMIT_DAY, pairs.getKey().toString());
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
                     db.insert(GOAL_TABLE, null, newStat);
