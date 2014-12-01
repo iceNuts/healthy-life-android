@@ -92,7 +92,6 @@ public class ApplicationBlockerService  extends RoboService {
             } else if (dataHelper.isGoal(currentComponent.getPackageName())) {
                 Integer remainingTime = dataHelper.packageRemainingTime(currentComponent.getPackageName());
                 Intent alertIntent = new Intent(getBaseContext(), AlertActivity.class);
-                alertIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 alertIntent.putExtra("remaining", remainingTime);
                 alertIntent.putExtra("name", currentComponent.getPackageName());

@@ -22,6 +22,7 @@ public class AppUsageFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_app_usage, container,false);
         getActivity().setTitle(R.string.title_app_usage);
         app = (Application) getArguments().getSerializable("appinfo");
+        final String appPackageName = app.info.activityInfo.packageName;
         getActivity().setTitle(app.getName());
         if(app.hasGoal()) {
             view.findViewById(R.id.create_goal).setVisibility(View.GONE);
@@ -33,7 +34,10 @@ public class AppUsageFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("packagename", appPackageName);
                 Fragment fragment = new CreateGoalFragment();
+                fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_container, fragment);
                 transaction.addToBackStack(null);

@@ -32,9 +32,6 @@ import android.util.Log;
  */
 public class CreateGoalFragment extends RoboFragment {
 
-    @InjectView(R.id.app_spinner)
-    private Spinner appSpinner;
-
     @InjectView(R.id.create_goal)
     private Button createGoalButton;
 
@@ -104,7 +101,6 @@ public class CreateGoalFragment extends RoboFragment {
         ArrayList<String> keys = new ArrayList<>(((App) getActivity().getApplication()).appCache.snapshot().keySet());
         Collections.sort(keys);
         ArrayAdapter<String> appAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, keys);
-        appSpinner.setAdapter(appAdapter);
 
         createGoalButton.setOnClickListener(new CreateGoalButtonListener());
 
@@ -126,15 +122,16 @@ public class CreateGoalFragment extends RoboFragment {
         @Override
         protected void submit() {
 
-            Application application = ((App) getActivity().getApplication()).appCache.get((String) appSpinner.getSelectedItem());
+            String appPackageName = getArguments().getString("packagename");
             HashMap<Integer, Integer> dayMap = getDayHours();
-            String appPackageName = application.info.activityInfo.packageName;
 
             //TODO rest api
 
             dataHelper.createNewGoal(appPackageName, dayMap);
 
             progressDialog.dismiss();
+
+            getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
