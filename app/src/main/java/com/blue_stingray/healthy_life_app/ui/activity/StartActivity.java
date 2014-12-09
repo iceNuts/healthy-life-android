@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.blue_stingray.healthy_life_app.service.ServiceStarter;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 
 

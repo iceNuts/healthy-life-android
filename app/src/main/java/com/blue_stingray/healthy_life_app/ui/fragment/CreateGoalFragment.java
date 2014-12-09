@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.model.Goal;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
@@ -21,8 +24,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+import android.util.Log;
 
 /**
  * Provides a form to create a goal.
@@ -130,14 +140,34 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         protected void submit() {
-
             Application app = ((App) getActivity().getApplication()).appCache.get(appSpinner.getSelectedItem().toString());
             HashMap<Integer, Integer> dayMap = getDayHours();
-
             dataHelper.createNewGoal(app, dayMap);
-
+            Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
+            Iterator it = conDayMap.entrySet().iterator();
+            progressDialog.show();
+            while(it.hasNext()) {
+                Map.Entry data = (Map.Entry) it.next();
+                String dayString = DayTranslate((Integer)data.getKey());
+                Integer hours = (Integer)data.getValue();
+                rest.createGoal(
+                    new GoalForm(
+                        app.getPackageName(),
+                        hours,
+                        dayString
+                    ),
+                    new RetrofitDialogCallback<Goal>(
+                            getActivity(),
+                            progressDialog) {
+                        @Override
+                        public void onSuccess(Goal goal, Response response) {Log.d("REST", String.valueOf(response.getStatus()));}
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {Log.d("REST", retrofitError.toString());}
+                    }
+                );
+                it.remove();
+            }
             progressDialog.dismiss();
-
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
@@ -179,6 +209,30 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
+
+    public String DayTranslate(Integer day) {
+        if(day == Calendar.MONDAY) {
+            return "Mon";
+        }
+        else if (day == Calendar.TUESDAY) {
+            return "Tue";
+        }
+        else if (day == Calendar.WEDNESDAY) {
+            return "Wed";
+        }
+        else if (day == Calendar.THURSDAY) {
+            return "Thu";
+        }
+        else if (day == Calendar.FRIDAY) {
+            return "Fri";
+        }
+        else if (day == Calendar.SATURDAY) {
+            return "Sat";
+        }
+        else {
+            return "Sun";
+        }
     }
 
     public HashMap<Integer, Integer> getDayHours() {

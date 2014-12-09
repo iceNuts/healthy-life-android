@@ -10,6 +10,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
@@ -38,6 +39,10 @@ public class ApplicationLoggingService extends RoboService {
     private ComponentName lastComponent;
     @Inject private SharedPreferencesHelper prefs;
     private DataHelper dataHelper;
+    @Inject private RestInterface rest;
+
+    private Thread remoteLoggingThread;
+    private static final int POLL_DELAY_MS = 30*60*1000;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;
@@ -269,4 +274,52 @@ public class ApplicationLoggingService extends RoboService {
         }
 
     }
+
+    // Async update logging stats
+
+    private void startRemoteLogging() {
+        remoteLoggingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!Thread.interrupted()) {
+                    try {
+                        Thread.sleep(POLL_DELAY_MS);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+
+                    // checking the last update time
+
+                    
+
+                    // remote logging latest data
+
+                }
+            }
+        });
+        remoteLoggingThread.start();
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

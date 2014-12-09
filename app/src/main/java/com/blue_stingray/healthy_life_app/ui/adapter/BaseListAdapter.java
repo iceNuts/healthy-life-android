@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 
 import com.blue_stingray.healthy_life_app.R;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseListAdapter<T> extends BaseAdapter {
@@ -17,9 +18,9 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
     protected List<T> data;
     protected int layout;
 
-    public BaseListAdapter(Activity activity, List<T> data, int layout) {
+    public BaseListAdapter(Activity activity, List<T> list, int layout) {
         this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.data = data;
+        data = list;
         this.layout = layout;
     }
 

@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,10 +29,15 @@ public class AppListAdapter extends BaseListAdapter<Application> {
         convertView = super.getView(position, convertView, parent);
 
         Application app = data.get(position);
+
         ((TextView) convertView.findViewById(R.id.app_name)).setText(app.getName());
         ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
+
         if(app.hasGoal()) {
             ((TextView) convertView.findViewById(R.id.current_goal)).setText("Goal is set");
+        }
+        else {
+            ((TextView) convertView.findViewById(R.id.current_goal)).setText("No goal currently set");
         }
 
         return convertView;

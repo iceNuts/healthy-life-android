@@ -76,7 +76,15 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createSession(new SessionForm(LoginActivity.this, emailField.getText(), passwordField.getText(), new BigInteger(128, new Random()).toString(36)), new RetrofitDialogCallback<SessionDevice>(LoginActivity.this, progressDialog) {
+            rest.createSession(
+                    new SessionForm(
+                            LoginActivity.this,
+                            emailField.getText(),
+                            passwordField.getText(),
+                            /*gcm_id*/new BigInteger(128, new Random()).toString(36)),
+                    new RetrofitDialogCallback<SessionDevice>(
+                            LoginActivity.this,
+                            progressDialog) {
                 @Override
                 public void onSuccess(SessionDevice sessionDevice, Response response) {
                     prefs.setSession(sessionDevice.session.token);

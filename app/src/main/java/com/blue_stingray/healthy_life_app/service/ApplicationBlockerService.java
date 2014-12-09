@@ -1,19 +1,25 @@
 package com.blue_stingray.healthy_life_app.service;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.*;
 import android.os.Process;
+import android.support.v4.app.NotificationCompat;
 
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.ui.activity.AlertActivity;
 import com.blue_stingray.healthy_life_app.ui.activity.BlockerActivity;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 
 import roboguice.service.RoboService;
 
@@ -83,12 +89,41 @@ public class ApplicationBlockerService  extends RoboService {
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplication().startActivity(dialogIntent);
             } else if (dataHelper.isGoal(currentComponent.getPackageName())) {
-                Integer remainingTime = dataHelper.packageRemainingTime(currentComponent.getPackageName());
-                Intent alertIntent = new Intent(getBaseContext(), AlertActivity.class);
-                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                alertIntent.putExtra("remaining", remainingTime);
-                alertIntent.putExtra("name", currentComponent.getPackageName());
-                getApplication().startActivity(alertIntent);
+                String packageName = currentComponent.getPackageName();
+                int seconds = dataHelper.packageRemainingTime(currentComponent.getPackageName());
+                final PackageManager pm = getApplicationContext().getPackageManager();
+                ApplicationInfo ai;
+                try {
+                    ai = pm.getApplicationInfo( packageName, 0);
+                } catch (final PackageManager.NameNotFoundException e) {
+                    ai = null;
+                }
+                final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+                int hrs = 0;
+                int minutes = 0;
+                if (seconds >= 60) {
+                    minutes = seconds / 60;
+                    seconds = seconds % 60;
+                }
+                if (minutes >= 60) {
+                    hrs = minutes / 60;
+                    minutes = minutes % 60;
+                }
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle("applicationName")
+                                .setContentText(String.valueOf(hrs) + " hours, " + String.valueOf(minutes) + " minutes and " + String.valueOf(seconds) + " seconds left, tap to request more time.");
+                Intent lifelineIntent = new Intent(getApplicationContext(), MainActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                stackBuilder.addParentStack(MainActivity.class);
+                stackBuilder.addNextIntent(lifelineIntent);
+                PendingIntent lifelinePendingIntent =
+                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(lifelinePendingIntent);
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                int mId = 10001;
+                mNotificationManager.notify(mId, mBuilder.build());
             }
         }
     }
