@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.google.inject.Inject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Dictionary;
@@ -137,6 +139,30 @@ public class DataHelper {
         appUsageCursor.close();
         blockedList.put(packageName, (goalTime-totalTime));
         return blockedList.get(packageName) <= 0;
+    }
+
+    public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
+        ArrayList<StatForm> statForms = new ArrayList<>();
+        Cursor statCursor = db.rawQuery(
+                "SELECT application_usage FROM goal_table WHERE start_time >= ?",
+                new String[]{
+                    timestamp
+                }
+        );
+        statCursor.moveToFirst();
+        while(statCursor.isAfterLast() == false) {
+            String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
+            Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
+            Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
+            statForms.add(new StatForm(
+                packageName,
+                String.valueOf(start_time),
+                String.valueOf(end_time)
+            ));
+            statCursor.moveToNext();
+        }
+        statCursor.close();
+        return statForms;
     }
 
 }

@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,22 +11,28 @@ import android.os.Process;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.service.RoboService;
 
 import static com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper.*;
-
+import com.blue_stingray.healthy_life_app.model.Stat;
 /**
  * Periodically logs application changes
  */
@@ -42,7 +49,7 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private RestInterface rest;
 
     private Thread remoteLoggingThread;
-    private static final int POLL_DELAY_MS = 30*60*1000;
+    private static final int POLL_DELAY_MS = 10*1000;//30*60*1000;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;
@@ -58,6 +65,7 @@ public class ApplicationLoggingService extends RoboService {
             appChangeReceiver = new ApplicationChangeReceiver();
             screenStateReceiver = new ScreenStateReceiver();
             registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
+            //startRemoteLogging();
         }
         return START_STICKY;
     }
@@ -290,9 +298,33 @@ public class ApplicationLoggingService extends RoboService {
 
                     // checking the last update time
 
-                    
-
-                    // remote logging latest data
+                    rest.getStatLastUpdateStamp(
+                        new RetrofitDialogCallback<Stat>(
+                            getApplicationContext(),
+                            null
+                        ) {
+                            @Override
+                            public void onSuccess(Stat stat, Response response) {
+                                String lastTimeStamp = null;
+                                Log.d("Stat", String.valueOf(response.getBody()));
+                                // remote logging latest data
+                                ArrayList<StatForm> stats = dataHelper.getLoggingRecordByTimestamp(lastTimeStamp);
+                                rest.createStats(
+                                    stats,
+                                    new RetrofitDialogCallback<Stat>(
+                                            getApplicationContext(),
+                                            null) {
+                                        @Override
+                                        public void onSuccess(Stat stat, Response response) {/*not much to do*/}
+                                        @Override
+                                        public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
+                                    }
+                                );
+                            }
+                            @Override
+                            public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
+                        }
+                    );
 
                 }
             }

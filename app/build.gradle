@@ -36,7 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            buildConfigField "String", "ENDPOINT_URL", '"http://healthyapp.herokuapp.com/api"'
+            buildConfigField "String", "ENDPOINT_URL", '"http://healthy.wherewedev.com/api"'
         }
     }
     signingConfigs {

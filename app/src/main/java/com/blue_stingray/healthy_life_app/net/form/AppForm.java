@@ -5,13 +5,13 @@ public class AppForm {
     private final String package_name;
     private final String name;
     private final String version;
-    private final int icon_id;
+    private final String icon;
 
-    public AppForm(CharSequence package_name, CharSequence name, CharSequence version, int icon_id) {
-        this.package_name = package_name.toString();
-        this.name = name.toString();
-        this.version = version.toString();
-        this.icon_id = icon_id;
+    public AppForm(String package_name, String name, String version, String icon) {
+        this.package_name = package_name;
+        this.name = name;
+        this.version = version;
+        this.icon = icon;
     }
 
 }

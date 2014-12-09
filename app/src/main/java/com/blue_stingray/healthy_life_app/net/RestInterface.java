@@ -5,15 +5,18 @@ import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
+import com.blue_stingray.healthy_life_app.model.Stat;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
+import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import retrofit.Callback;
 import retrofit.http.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,4 +68,11 @@ public interface RestInterface {
     // Goals
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
+
+    // Stat
+    @GET("/stat/lastUpdate")
+    void getStatLastUpdateStamp(Callback<Stat> cb);
+
+    @POST("/stat")
+    void createStats(@Body ArrayList<StatForm> statsArray, Callback<Stat> cb);
 }

@@ -1,5 +1,10 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +19,15 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.google.inject.Inject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -140,33 +148,65 @@ public class CreateGoalFragment extends RoboFragment {
 
         @Override
         protected void submit() {
-            Application app = ((App) getActivity().getApplication()).appCache.get(appSpinner.getSelectedItem().toString());
+            final Application app = ((App) getActivity().getApplication()).appCache.get(appSpinner.getSelectedItem().toString());
+            PackageManager manager = getActivity().getPackageManager();
+            String appVersion = "1.0.0";
+            byte[] iconData = null;
+            try {
+                PackageInfo info = manager.getPackageInfo(app.getPackageName(), 0);
+                appVersion = info.versionName;
+                Drawable appIcon = manager.getApplicationIcon(app.getPackageName());
+                Bitmap bitmap = ((BitmapDrawable) appIcon).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                iconData = stream.toByteArray();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
             HashMap<Integer, Integer> dayMap = getDayHours();
             dataHelper.createNewGoal(app, dayMap);
             Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
-            Iterator it = conDayMap.entrySet().iterator();
+            final Iterator it = conDayMap.entrySet().iterator();
             progressDialog.show();
-            while(it.hasNext()) {
-                Map.Entry data = (Map.Entry) it.next();
-                String dayString = DayTranslate((Integer)data.getKey());
-                Integer hours = (Integer)data.getValue();
-                rest.createGoal(
-                    new GoalForm(
-                        app.getPackageName(),
-                        hours,
-                        dayString
-                    ),
-                    new RetrofitDialogCallback<Goal>(
-                            getActivity(),
-                            progressDialog) {
-                        @Override
-                        public void onSuccess(Goal goal, Response response) {Log.d("REST", String.valueOf(response.getStatus()));}
-                        @Override
-                        public void onFailure(RetrofitError retrofitError) {Log.d("REST", retrofitError.toString());}
+            rest.createApp(
+                new AppForm(
+                    app.getPackageName(),
+                    app.getName(),
+                    appVersion,
+                    iconData == null? "" : iconData.toString()
+                ),
+                new RetrofitDialogCallback<Application>(
+                    getActivity(),
+                    null
+                ) {
+                    @Override
+                    public void onSuccess(Application application, Response response) {
+                        while(it.hasNext()) {
+                            Map.Entry data = (Map.Entry) it.next();
+                            String dayString = DayTranslate((Integer)data.getKey());
+                            Integer hours = (Integer)data.getValue();
+                            rest.createGoal(
+                                    new GoalForm(
+                                            app.getPackageName(),
+                                            hours,
+                                            dayString
+                                    ),
+                                    new RetrofitDialogCallback<Goal>(
+                                            getActivity(),
+                                            progressDialog) {
+                                        @Override
+                                        public void onSuccess(Goal goal, Response response) {Log.d("REST", String.valueOf(response.getStatus()));}
+                                        @Override
+                                        public void onFailure(RetrofitError retrofitError) {Log.d("REST", retrofitError.toString());}
+                                    }
+                            );
+                            it.remove();
+                        }
                     }
-                );
-                it.remove();
-            }
+                    @Override
+                    public void onFailure(RetrofitError retrofitError) {/*nothing much to do*/}
+                }
+            );
             progressDialog.dismiss();
             getActivity().getSupportFragmentManager().popBackStack();
         }
