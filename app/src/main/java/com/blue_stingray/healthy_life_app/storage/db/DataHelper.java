@@ -112,8 +112,9 @@ public class DataHelper {
         String session = prefs.getSession();
 
         Cursor appUsageCursor = db.rawQuery(
-                "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_session=?",
+                "SELECT * FROM application_usage WHERE package_name=? and usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_session=?",
                 new String[]{
+                        packageName,
                         currentYear,
                         currentMonth,
                         currentDay,
@@ -123,7 +124,7 @@ public class DataHelper {
         );
         appUsageCursor.moveToFirst();
         Integer totalTime = 0;
-        Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60*60;
+        Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
         while(appUsageCursor.isAfterLast() == false) {
             Integer start_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("start_time"));
             Integer end_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("end_time"));
@@ -136,6 +137,8 @@ public class DataHelper {
             totalTime += (end_time-start_time);
             appUsageCursor.moveToNext();
         }
+        Log.d("GoalTime", packageName);
+        Log.d("GoalTime", String.valueOf(totalTime));
         appUsageCursor.close();
         blockedList.put(packageName, (goalTime-totalTime));
         return blockedList.get(packageName) <= 0;

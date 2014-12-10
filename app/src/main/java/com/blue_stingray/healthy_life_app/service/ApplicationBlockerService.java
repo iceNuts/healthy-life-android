@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.os.*;
 import android.os.Process;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.ui.activity.AlertActivity;
@@ -112,7 +113,7 @@ public class ApplicationBlockerService  extends RoboService {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(getApplicationContext())
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("applicationName")
+                                .setContentTitle(applicationName)
                                 .setContentText(String.valueOf(hrs) + " hours, " + String.valueOf(minutes) + " minutes and " + String.valueOf(seconds) + " seconds left, tap to request more time.");
                 Intent lifelineIntent = new Intent(getApplicationContext(), MainActivity.class);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
