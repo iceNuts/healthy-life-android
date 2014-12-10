@@ -31,8 +31,11 @@ public abstract class RetrofitDialogCallback<T> implements Callback<T> {
 
     @Override
     public void failure(RetrofitError retrofitError) {
-        if(dialog != null)
-            dialog.hide();
+        if(dialog == null) {
+            onFailure(retrofitError);
+            return;
+        }
+        dialog.hide();
         switch (retrofitError.getKind()) {
             case NETWORK:
                 DialogHelper.createNetworkErrorDialog(context).show();

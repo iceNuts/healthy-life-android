@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.os.Process;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.blue_stingray.healthy_life_app.BuildConfig;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
@@ -21,18 +23,34 @@ import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.service.RoboService;
 
 import static com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper.*;
 import com.blue_stingray.healthy_life_app.model.Stat;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import retrofit.android.AndroidLog;
+
 /**
  * Periodically logs application changes
  */
@@ -42,6 +60,7 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private DatabaseHelper dbHelper;
     private ApplicationChangeReceiver appChangeReceiver;
     private ScreenStateReceiver screenStateReceiver;
+    private RemoteLoggingReceiver remoteLoggingReceiver;
     private SQLiteDatabase db = null;
     private ComponentName lastComponent;
     @Inject private SharedPreferencesHelper prefs;
@@ -49,7 +68,8 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private RestInterface rest;
 
     private Thread remoteLoggingThread;
-    private static final int POLL_DELAY_MS = 10*1000;//30*60*1000;
+    private static final int POLL_DELAY_MS = 60*1000;//30*60*1000;
+    @Inject private LocalBroadcastManager localBroadcastManager;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;
@@ -64,8 +84,9 @@ public class ApplicationLoggingService extends RoboService {
             dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
             screenStateReceiver = new ScreenStateReceiver();
+            remoteLoggingReceiver = new RemoteLoggingReceiver();
             registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
-            //startRemoteLogging();
+            startRemoteLogging();
         }
         return START_STICKY;
     }
@@ -264,6 +285,7 @@ public class ApplicationLoggingService extends RoboService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
             if (currentComponent != null) {
                 Map<String, String> currentTime = currentTime();
@@ -295,41 +317,57 @@ public class ApplicationLoggingService extends RoboService {
                     } catch (InterruptedException e) {
                         break;
                     }
-
                     // checking the last update time
-
-                    rest.getStatLastUpdateStamp(
-                        new RetrofitDialogCallback<Stat>(
-                            getApplicationContext(),
-                            null
-                        ) {
-                            @Override
-                            public void onSuccess(Stat stat, Response response) {
-                                String lastTimeStamp = null;
-                                Log.d("Stat", String.valueOf(response.getBody()));
-                                // remote logging latest data
-                                ArrayList<StatForm> stats = dataHelper.getLoggingRecordByTimestamp(lastTimeStamp);
-                                rest.createStats(
-                                    stats,
-                                    new RetrofitDialogCallback<Stat>(
-                                            getApplicationContext(),
-                                            null) {
-                                        @Override
-                                        public void onSuccess(Stat stat, Response response) {/*not much to do*/}
-                                        @Override
-                                        public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
-                                    }
-                                );
-                            }
-                            @Override
-                            public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
-                        }
-                    );
-
+                    String lastTimeStamp = "0";
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet request = new HttpGet();
+                    try {
+                        request.setHeader("Authorization", "HL "+prefs.getSession());
+                        request.setURI(new URI(BuildConfig.ENDPOINT_URL+"/stat/lastUpdate"));
+                        HttpResponse response = httpClient.execute(request);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                response.getEntity().getContent()));
+                        lastTimeStamp = in.readLine();
+                        Intent broadcast = new Intent();
+                        broadcast.setAction(getString(R.string.remote_logging));
+                        broadcast.putExtra("lastTimestamp", lastTimeStamp);
+                        localBroadcastManager.sendBroadcast(broadcast);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    } catch (ClientProtocolException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         remoteLoggingThread.start();
+    }
+
+    private class RemoteLoggingReceiver extends SelfAttachingReceiver {
+
+        public RemoteLoggingReceiver() {
+            super(ApplicationLoggingService.this, new IntentFilter(getString(R.string.remote_logging)));
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String lastTimeStamp = intent.getStringExtra("lastTimestamp");
+            // remote logging latest data
+            ArrayList<StatForm> stats = dataHelper.getLoggingRecordByTimestamp(lastTimeStamp);
+            rest.createStats(
+                    stats,
+                    new RetrofitDialogCallback<Stat>(
+                            getApplicationContext(),
+                            null) {
+                        @Override
+                        public void onSuccess(Stat stat, Response response) {/*not much to do*/}
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
+                    }
+            );
+        }
     }
 
 }

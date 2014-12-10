@@ -78,4 +78,7 @@
     <string name="back_button_label">Back</string>
     <string name="next_button_label">Next</string>
     <string name="skip_button_label">Skip</string>
+
+    <!-- Remote Logging -->
+    <string name="remote_logging">RemoteLogging</string>
 </resources>

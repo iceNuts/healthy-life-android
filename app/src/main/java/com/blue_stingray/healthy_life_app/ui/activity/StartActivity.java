@@ -19,6 +19,7 @@ public class StartActivity extends BaseActivity {
 
         // Start services in case being run for the first time
         starter.startServices();
+//        prefs.setState(SharedPreferencesHelper.State.NONE);
         switch (prefs.getState()) {
             case NONE:
                 startActivity(new Intent(this, LoginActivity.class));

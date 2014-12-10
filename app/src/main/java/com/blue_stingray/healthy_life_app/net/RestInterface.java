@@ -18,6 +18,7 @@ import retrofit.http.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * The RESTful interface
@@ -74,5 +75,5 @@ public interface RestInterface {
     void getStatLastUpdateStamp(Callback<Stat> cb);
 
     @POST("/stat")
-    void createStats(@Body ArrayList<StatForm> statsArray, Callback<Stat> cb);
+    void createStats(@Body List<StatForm> statsArray, Callback<Stat> cb);
 }
