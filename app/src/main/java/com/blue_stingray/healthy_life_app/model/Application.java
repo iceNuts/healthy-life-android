@@ -18,7 +18,7 @@ public class Application implements Serializable {
 
     public transient ResolveInfo info;
     public transient PackageManager pm;
-    public DataHelper dataHelper;
+    public transient DataHelper dataHelper;
 
     public int id;
 
