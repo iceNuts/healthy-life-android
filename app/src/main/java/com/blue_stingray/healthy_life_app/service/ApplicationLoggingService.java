@@ -93,7 +93,7 @@ public class ApplicationLoggingService extends RoboService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support binding");
+        throw new UnsupportedOperationException(((Object)this).getClass().getSimpleName() + " does not support binding");
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ApplicationLoggingService extends RoboService {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        Intent restartServiceIntent = new Intent(getApplicationContext(), ((Object)this).getClass());
         restartServiceIntent.setPackage(getPackageName());
 
         PendingIntent restartServicePendingIntent = PendingIntent.getService(
@@ -356,17 +356,19 @@ public class ApplicationLoggingService extends RoboService {
             String lastTimeStamp = intent.getStringExtra("lastTimestamp");
             // remote logging latest data
             ArrayList<StatForm> stats = dataHelper.getLoggingRecordByTimestamp(lastTimeStamp);
-            rest.createStats(
-                    stats,
-                    new RetrofitDialogCallback<Stat>(
-                            getApplicationContext(),
-                            null) {
-                        @Override
-                        public void onSuccess(Stat stat, Response response) {/*not much to do*/}
-                        @Override
-                        public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
-                    }
-            );
+            if (stats.size() > 0) {
+                rest.createStats(
+                        stats,
+                        new RetrofitDialogCallback<Stat>(
+                                getApplicationContext(),
+                                null) {
+                            @Override
+                            public void onSuccess(Stat stat, Response response) {/*not much to do*/}
+                            @Override
+                            public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
+                        }
+                );
+            }
         }
     }
 

@@ -52,7 +52,7 @@ public class ApplicationBlockerService  extends RoboService {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        Intent restartServiceIntent = new Intent(getApplicationContext(), ((Object)this).getClass());
         restartServiceIntent.setPackage(getPackageName());
 
         PendingIntent restartServicePendingIntent = PendingIntent.getService(
@@ -72,7 +72,7 @@ public class ApplicationBlockerService  extends RoboService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support binding");
+        throw new UnsupportedOperationException(((Object)this).getClass().getSimpleName() + " does not support binding");
     }
 
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
@@ -88,6 +88,7 @@ public class ApplicationBlockerService  extends RoboService {
                 Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                dialogIntent.putExtra("packageName", currentComponent.getPackageName());
                 getApplication().startActivity(dialogIntent);
             } else if (dataHelper.isGoal(currentComponent.getPackageName())) {
                 String packageName = currentComponent.getPackageName();

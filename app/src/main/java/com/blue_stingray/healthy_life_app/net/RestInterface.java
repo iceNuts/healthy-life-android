@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.net;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
+import com.blue_stingray.healthy_life_app.model.Lifeline;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
@@ -10,6 +11,7 @@ import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.IconForm;
+import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
@@ -76,4 +78,8 @@ public interface RestInterface {
 
     @POST("/stat")
     void createStats(@Body List<StatForm> statsArray, Callback<Stat> cb);
+
+    // Lifeline
+    @POST("/lifeline")
+    void createLifeline(@Body LifelineForm lifelineForm, Callback<Lifeline> cb);
 }

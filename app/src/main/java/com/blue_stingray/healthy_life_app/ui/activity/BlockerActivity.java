@@ -2,12 +2,24 @@ package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.*;
 import android.os.Process;
+import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Lifeline;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
+import com.google.inject.Inject;
+
+import java.util.Date;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by BillZeng on 11/23/14.
@@ -17,33 +29,66 @@ public class BlockerActivity extends BaseActivity{
     private ActivityManager activityManager;
     private Intent launcherIntent;
 
+    @Inject private RestInterface rest;
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
 
-
         launcherIntent = new Intent();
         launcherIntent.setAction(Intent.ACTION_MAIN);
         launcherIntent.addCategory(Intent.CATEGORY_HOME);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         activityManager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+        final String packageName = getIntent().getStringExtra("packageName");
+        Log.d("String", packageName);
         builder.setMessage(R.string.app_usage_limit_reached).setTitle(R.string.app_name);
         builder.setPositiveButton(R.string.app_alert_close, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 BlockerActivity.this.startActivity(launcherIntent);
-                activityManager.killBackgroundProcesses("com.android.calendar");
+                activityManager.killBackgroundProcesses(packageName);
                 finish();
             }
         });
+
         builder.setNegativeButton(R.string.app_alert_request, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                BlockerActivity.this.startActivity(launcherIntent);
-                activityManager.killBackgroundProcesses("com.android.calendar");
-                finish();
+                progressDialog = ProgressDialog.show(
+                    getApplicationContext(),
+                    "Healthy App",
+                    "Requesting Lifeline for this app...",
+                    true
+                );
+                activityManager.killBackgroundProcesses(packageName);
+                rest.createLifeline(
+                        new LifelineForm(
+                                packageName,
+                                String.valueOf(new Date().getTime() / 1000)
+                        ),
+                        new RetrofitDialogCallback<Lifeline>(
+                                getApplicationContext(),
+                                null
+                        ) {
+                            @Override
+                            public void onSuccess(Lifeline lifeline, Response response) {
+                                progressDialog.dismiss();
+                                BlockerActivity.this.startActivity(launcherIntent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onFailure(RetrofitError retrofitError) {
+                                progressDialog.dismiss();
+                                BlockerActivity.this.startActivity(launcherIntent);
+                                finish();
+                            }
+                        }
+                );
             }
         });
         builder.create();
