@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/monday_seek_bar"
                 android:max="24"
-                android:indeterminate="true" />
+                android:indeterminate="false" />
 
         </LinearLayout>
 

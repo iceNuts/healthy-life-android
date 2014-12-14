@@ -217,7 +217,7 @@ public class CreateGoalFragment extends RoboFragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-            String hours = (String.valueOf(progress + 1) + " hour") + (progress > 0 ? "s" : "");
+            String hours = (String.valueOf(progress) + " hour") + (progress > 0 ? "s" : "");
 
             switch(getResources().getResourceName(seekBar.getId())) {
                 case "com.blue_stingray.healthy_life_app:id/monday_seek_bar":
@@ -277,13 +277,13 @@ public class CreateGoalFragment extends RoboFragment {
 
     public HashMap<Integer, Integer> getDayHours() {
         HashMap<Integer, Integer> dayMap = new HashMap<>();
-        dayMap.put(Calendar.MONDAY, mondaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.TUESDAY, tuesdaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.WEDNESDAY, wednesdaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.THURSDAY, thursdaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.FRIDAY, fridaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress() + 1);
-        dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress() + 1);
+        dayMap.put(Calendar.MONDAY, mondaySeekBar.getProgress());
+        dayMap.put(Calendar.TUESDAY, tuesdaySeekBar.getProgress());
+        dayMap.put(Calendar.WEDNESDAY, wednesdaySeekBar.getProgress());
+        dayMap.put(Calendar.THURSDAY, thursdaySeekBar.getProgress());
+        dayMap.put(Calendar.FRIDAY, fridaySeekBar.getProgress());
+        dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress());
+        dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress());
         return dayMap;
     }
 
