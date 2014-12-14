@@ -18,9 +18,11 @@
     <string name="title_create_goal">Create Goal</string>
     <string name="title_lifeline_request">Lifeline Requests</string>
     <string name="title_manage_goals">Manage Goals</string>
+    <string name="title_manage_users">Manage Users</string>
     <string name="title_user_profile">My Profile</string>
     <string name="title_user_rating">My Rating</string>
     <string name="title_user_settings">Settings</string>
+    <string name="title_user_overview">Overview</string>
 
     <!-- HTTP -->
     <string name="server_error_title">Server Error</string>
@@ -58,7 +60,7 @@
     <string name="registration_success_description">You have successfully registered. Please check your email to verify your account before logging in.</string>
     <string name="email_in_use">Email address is already in use.</string>
 
-    <!-- Settings Fragment -->
+    <!-- Settings -->
     <string name="action_settings">Settings</string>
     <string name="admin_removal_label">Remove Device Administrator</string>
     <string name="lock_prefs_key">locked</string>
@@ -67,18 +69,25 @@
     <string name="app_alert_close">Close</string>
     <string name="app_alert_request">Request</string>
 
-    <!-- Create Goal Fragment -->
+    <!-- Create Goal -->
     <string name="creating_goal">Creating goal...</string>
     <string-array name="goal_type">
         <item>Daily</item>
         <item>Weekly</item>
     </string-array>
 
-    <!-- Preference Support fragment -->
+    <!-- Preferences -->
     <string name="back_button_label">Back</string>
     <string name="next_button_label">Next</string>
     <string name="skip_button_label">Skip</string>
 
     <!-- Remote Logging -->
     <string name="remote_logging">RemoteLogging</string>
+
+    <!-- Manage Users -->
+    <string-array name="user_selection">
+        <item>Trackable Apps</item>
+        <item>Alerts</item>
+        <item>Usage Statistics</item>
+    </string-array>
 </resources>
