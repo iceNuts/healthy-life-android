@@ -15,6 +15,7 @@ import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.UserListAdapter;
 import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
+import com.blue_stingray.healthy_life_app.ui.widget.LinearList;
 
 import java.util.ArrayList;
 import roboguice.fragment.RoboFragment;
@@ -25,7 +26,7 @@ public class ManageUsersFragment extends RoboFragment {
     private final ArrayList<User> users = new ArrayList<User>();
 
     @InjectView(R.id.users)
-    private ListView userList;
+    private LinearList userList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,41 +47,56 @@ public class ManageUsersFragment extends RoboFragment {
         users.add(new User("Dustin Sholtes"));
         users.add(new User("Brian Rehg"));
         users.add(new User("Rhys Murray"));
+        users.add(new User("Walter White"));
+        users.add(new User("Dexter Morgan"));
+        users.add(new User("Sherlock Holmes"));
+        users.add(new User("Eric Cartman"));
+        users.add(new User("Barney Stinson"));
+        users.add(new User("Dean Winchester"));
+        users.add(new User("John Locke"));
 
         final UserListAdapter adapter = new UserListAdapter(getActivity(), users);
-        userList.setAdapter(adapter);
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        userList.setAdapter(adapter, new UserListClickListener());
+    }
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User user = users.get(position);
-                final String[] options = getResources().getStringArray(R.array.user_selection);
+    private class UserListClickListener implements View.OnClickListener {
 
-                DialogHelper.createSingleSelectionDialog(getActivity(), user.name, R.array.user_selection, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            User user = users.get((Integer) v.getTag());
+            final String[] options = getResources().getStringArray(R.array.user_selection);
+            DialogHelper.createSingleSelectionDialog(getActivity(), user.name, R.array.user_selection, new UserSelectionDialogClickListener(options)).show();
+        }
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String item = options[which];
+    }
 
-                        switch(item) {
-                            case "Trackable Apps":
-                                ViewHelper.injectFragment(new ManageGoalsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
-                                break;
-                            case "Alerts":
-                                ViewHelper.injectFragment(new AlertsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
-                                break;
-                            case "Usage Statistics":
-                                ViewHelper.injectFragment(new UserOverviewFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
-                                break;
-                        }
+    private class UserSelectionDialogClickListener implements DialogInterface.OnClickListener {
 
-                        dialog.cancel();
-                    }
+        private String[] options;
 
-                }).show();
+        public UserSelectionDialogClickListener(String[] options) {
+            this.options = options;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            String item = options[which];
+
+            switch (item) {
+                case "Trackable Apps":
+                    ViewHelper.injectFragment(new ManageGoalsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+                    break;
+                case "Alerts":
+                    ViewHelper.injectFragment(new AlertsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+                    break;
+                case "Usage Statistics":
+                    ViewHelper.injectFragment(new UserOverviewFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+                    break;
             }
 
-        });
+            dialog.cancel();
+        }
+
     }
 
 }

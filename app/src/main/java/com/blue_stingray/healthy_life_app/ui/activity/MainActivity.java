@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.ui.adapter.DrawerAdapter;
 import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageUsersFragment;
@@ -33,8 +34,9 @@ public class MainActivity extends BaseActivity {
             new DrawerItem("fa-bullhorn", "Profile"),
             new DrawerItem("fa-globe", "Alerts"),
             new DrawerItem("fa-flag", "Lifeline Requests"),
-            new DrawerItem("fa-trophy", "Manage Goals"),
-            new DrawerItem("fa-user", "Manage Users"),
+            new DrawerItem("fa-bar-chart", "Manage Goals"),
+            new DrawerItem("fa-users", "Manage Users"),
+            new DrawerItem("fa-trophy", "Leaderboard"),
             new DrawerItem("fa-gear", "Settings")
     };
     private DrawerLayout drawerLayout;
@@ -112,6 +114,9 @@ public class MainActivity extends BaseActivity {
                 ViewHelper.injectFragment(new ManageUsersFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 5:
+                ViewHelper.injectFragment(new LeaderboardFragment(), getSupportFragmentManager(), R.id.frame_container);
+                break;
+            case 6:
                 ViewHelper.injectFragment(new SettingsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
         }
