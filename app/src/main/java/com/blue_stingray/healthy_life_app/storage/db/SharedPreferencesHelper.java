@@ -15,6 +15,7 @@ public class SharedPreferencesHelper {
 
     private final static String SESSION_KEY = "session";
     private final static String STATE_KEY = "state";
+    private final static String GCM_REGID = "GCM_REGID";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -67,6 +68,12 @@ public class SharedPreferencesHelper {
     public String getSession() {
         return prefs.getString(SESSION_KEY, null);
     }
+
+    public void setGCMRegId(String regId) {
+        prefs.edit().putString(GCM_REGID, regId).apply();
+    }
+
+    public String getGCMRegId() { return prefs.getString(GCM_REGID, null);}
 
     public void setSession(String session) {
         if (session == null) {

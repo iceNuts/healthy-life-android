@@ -58,12 +58,6 @@ public class BlockerActivity extends BaseActivity{
         builder.setNegativeButton(R.string.app_alert_request, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                progressDialog = ProgressDialog.show(
-                    getApplicationContext(),
-                    "Healthy App",
-                    "Requesting Lifeline for this app...",
-                    true
-                );
                 activityManager.killBackgroundProcesses(packageName);
                 rest.createLifeline(
                         new LifelineForm(
@@ -76,14 +70,12 @@ public class BlockerActivity extends BaseActivity{
                         ) {
                             @Override
                             public void onSuccess(Lifeline lifeline, Response response) {
-                                progressDialog.dismiss();
                                 BlockerActivity.this.startActivity(launcherIntent);
                                 finish();
                             }
 
                             @Override
                             public void onFailure(RetrofitError retrofitError) {
-                                progressDialog.dismiss();
                                 BlockerActivity.this.startActivity(launcherIntent);
                                 finish();
                             }

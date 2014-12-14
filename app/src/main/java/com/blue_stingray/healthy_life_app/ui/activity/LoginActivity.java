@@ -81,7 +81,7 @@ public class LoginActivity extends BaseActivity {
                             LoginActivity.this,
                             emailField.getText(),
                             passwordField.getText(),
-                            /*gcm_id*/new BigInteger(128, new Random()).toString(36)),
+                            prefs.getGCMRegId()),
                     new RetrofitDialogCallback<SessionDevice>(
                             LoginActivity.this,
                             progressDialog) {

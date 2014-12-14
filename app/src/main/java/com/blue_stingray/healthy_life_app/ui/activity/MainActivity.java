@@ -16,6 +16,7 @@ import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 /**
  * Main activity for starts
@@ -56,6 +57,7 @@ public class MainActivity extends BaseActivity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+
     }
 
     @Override

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -24,6 +24,7 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -32,11 +33,13 @@ android {
     buildTypes {
         release {
             buildConfigField "String", "ENDPOINT_URL", '"https://replaceme/api"'
-            runProguard true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
             buildConfigField "String", "ENDPOINT_URL", '"http://healthy.wherewedev.com/api"'
+            buildConfigField "String", "GCM_APP_KEY", '"AIzaSyDPZYu3Hp94xG3N3qI9HGT_oj1_gUz0I08"'
+            buildConfigField "String", "CCM_APP_ID", '"hale-safeguard-791"'
         }
     }
     signingConfigs {
@@ -46,6 +49,9 @@ android {
             keyAlias "debug"
             keyPassword "debugpass"
         }
+    }
+    aaptOptions {
+        ignoreAssetsPattern '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home'
     }
 }
 
