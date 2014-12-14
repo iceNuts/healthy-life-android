@@ -2,8 +2,10 @@ package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.blue_stingray.healthy_life_app.R;
@@ -34,7 +36,7 @@ public class RegistrationActivity extends BaseActivity {
     @InjectView(R.id.emailField)
     private EditText emailField;
 
-    @InjectView(R.id.registerButton)
+    @InjectView(R.id.register)
     private Button registerButton;
 
     @Inject
@@ -88,6 +90,10 @@ public class RegistrationActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    public void showLogin(View v) {
+        startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
     }
 
 }

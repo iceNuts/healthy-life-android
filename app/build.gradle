@@ -60,11 +60,3 @@ dependencies {
     compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
     compile 'com.joanzapata.android:android-iconify:1.0.8'
 }
-
-allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-AguiceAnnotationDatabasePackageName=roboguiceannotationdb"
-        }
-    }
-}

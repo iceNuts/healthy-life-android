@@ -35,11 +35,8 @@ public class LoginActivity extends BaseActivity {
     @InjectView(R.id.emailField)
     private EditText emailField;
 
-    @InjectView(R.id.registerButton)
+    @InjectView(R.id.login)
     private Button loginButton;
-
-    @InjectView(R.id.create_admin)
-    private Button registerButton;
 
     @Inject
     private RestInterface rest;
@@ -53,12 +50,6 @@ public class LoginActivity extends BaseActivity {
 
         //Workaround for monospace passwords and need to support ICS
         passwordField.setTypeface(Typeface.DEFAULT);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
-            }
-        });
 
         validationManager = new FormValidationManager();
         validationManager.addField(emailField, ValidationRule.newEmailValidationRule(this));
@@ -99,6 +90,10 @@ public class LoginActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    public void showRegister(View v) {
+        startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
     }
 
 }

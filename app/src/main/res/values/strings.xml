@@ -40,17 +40,17 @@
     <string name="post_login_admin_prompt">Please tap the button below to enable Healthy App as a device administrator. This is required to prevent uninstalling the application.</string>
 
     <!-- Login / Registration -->
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="create_admin">Create Administrator Account</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="create_account">No account?</string>
     <string name="forgot_password">Forget Password?</string>
     <string name="logging_in">Logging in…</string>
     <string name="missing_email">Missing Email Address</string>
     <string name="missing_password">Missing Password</string>
     <string name="invalid_email">Invalid Email Address</string>
-    <string name="register">Register</string>
-    <string name="confirm_password">Confirm Password</string>
+    <string name="register">create</string>
+    <string name="confirm_password">confirm password</string>
     <string name="short_password">Password must be 6 characters</string>
     <string name="non_matching_password">Passwords do not match</string>
     <string name="creating_user">Creating User…</string>

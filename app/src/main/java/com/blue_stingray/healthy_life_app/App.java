@@ -17,6 +17,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         appCache = new Cache<>();
+        RoboGuice.setUseAnnotationDatabases(false);
         RoboGuice.getOrCreateBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE, RoboGuice.newDefaultRoboModule(this), new GuiceModule());
     }
 
