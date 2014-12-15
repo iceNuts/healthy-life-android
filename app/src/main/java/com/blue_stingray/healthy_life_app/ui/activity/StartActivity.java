@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.net.GcmHelper;
 import com.blue_stingray.healthy_life_app.service.ServiceStarter;

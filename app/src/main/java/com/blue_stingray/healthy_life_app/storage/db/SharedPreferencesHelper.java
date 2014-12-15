@@ -73,7 +73,7 @@ public class SharedPreferencesHelper {
         prefs.edit().putString(GCM_REGID, regId).apply();
     }
 
-    public String getGCMRegId() { return prefs.getString(GCM_REGID, null);}
+    public String getGCMRegId() { return prefs.getString(GCM_REGID, "");}
 
     public void setSession(String session) {
         if (session == null) {

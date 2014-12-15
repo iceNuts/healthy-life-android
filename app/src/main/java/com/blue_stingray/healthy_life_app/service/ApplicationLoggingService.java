@@ -354,6 +354,9 @@ public class ApplicationLoggingService extends RoboService {
         @Override
         public void onReceive(Context context, Intent intent) {
             String lastTimeStamp = intent.getStringExtra("lastTimestamp");
+            if (lastTimeStamp == null) {
+                lastTimeStamp = "0";
+            }
             // remote logging latest data
             ArrayList<StatForm> stats = dataHelper.getLoggingRecordByTimestamp(lastTimeStamp);
             if (stats.size() > 0) {

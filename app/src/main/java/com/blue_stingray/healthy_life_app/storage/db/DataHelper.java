@@ -147,7 +147,7 @@ public class DataHelper {
     public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
         ArrayList<StatForm> statForms = new ArrayList<>();
         Cursor statCursor = db.rawQuery(
-                "SELECT * FROM application_usage WHERE start_time >= ?",
+                "SELECT * FROM application_usage WHERE start_time >= ? and end_time <> -1",
                 new String[]{
                     timestamp
                 }

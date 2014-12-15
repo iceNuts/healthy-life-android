@@ -43,11 +43,12 @@ public class GcmHelper {
             protected Object doInBackground(Object[] params) {
                 String msg = "";
                 try {
-                    instance.regid = gcm.register(BuildConfig.GCM_APP_KEY);
-                    instance.prefs.setGCMRegId(instance.regid);
+                    instance.regid = gcm.register(BuildConfig.GCM_APP_ID);
                     Log.d("GCM", instance.regid);
+                    instance.prefs.setGCMRegId(instance.regid);
                 } catch (IOException ex) {
                     msg = "Error : " + ex.getMessage();
+                    Log.d("GCM", msg);
                 }
                 return msg;
             }
