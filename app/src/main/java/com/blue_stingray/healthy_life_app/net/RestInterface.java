@@ -82,4 +82,7 @@ public interface RestInterface {
     // Lifeline
     @POST("/lifeline")
     void createLifeline(@Body LifelineForm lifelineForm, Callback<Lifeline> cb);
+
+    @GET("/lifeline")
+    void getLifeline(Callback<Lifeline> cb);
 }
