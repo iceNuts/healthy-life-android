@@ -10,28 +10,36 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.ui.adapter.DrawerAdapter;
 import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.ManageUsersFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.blue_stingray.healthy_life_app.ui.fragment.SplashFragment;
+import com.blue_stingray.healthy_life_app.ui.widget.DrawerItem;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Main activity for starts
  */
 public class MainActivity extends BaseActivity {
 
-    private final String[] drawerItems = new String[] {
-            "Profile",
-            "Alerts",
-            "Lifeline Requests",
-            "Manage Goals",
-            "Settings"
+    private final DrawerItem[] drawerItems = new DrawerItem[] {
+            new DrawerItem("fa-bullhorn", "Profile"),
+            new DrawerItem("fa-globe", "Alerts"),
+            new DrawerItem("fa-flag", "Lifeline Requests"),
+            new DrawerItem("fa-bar-chart", "Manage Goals"),
+            new DrawerItem("fa-users", "Manage Users"),
+            new DrawerItem("fa-trophy", "Leaderboard"),
+            new DrawerItem("fa-gear", "Settings")
     };
     private DrawerLayout drawerLayout;
-    private ListView drawerListView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -39,9 +47,10 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, drawerItems);
+        DrawerAdapter adapter = new DrawerAdapter(this, Arrays.asList(drawerItems), R.layout.drawer_list_item);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerListView = (ListView) findViewById(R.id.list_slidermenu);
+        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
         drawerListView.setAdapter(adapter);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -58,6 +67,7 @@ public class MainActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
+        ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
     }
 
     @Override
@@ -101,6 +111,12 @@ public class MainActivity extends BaseActivity {
                 ViewHelper.injectFragment(new ManageGoalsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             case 4:
+                ViewHelper.injectFragment(new ManageUsersFragment(), getSupportFragmentManager(), R.id.frame_container);
+                break;
+            case 5:
+                ViewHelper.injectFragment(new LeaderboardFragment(), getSupportFragmentManager(), R.id.frame_container);
+                break;
+            case 6:
                 ViewHelper.injectFragment(new SettingsFragment(), getSupportFragmentManager(), R.id.frame_container);
                 break;
         }

@@ -3,6 +3,8 @@ package com.blue_stingray.healthy_life_app.ui.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.widget.AdapterView;
+
 import com.blue_stingray.healthy_life_app.R;
 
 /**
@@ -56,4 +58,12 @@ public class DialogHelper {
         });
         return builder.create();
     }
+
+    public static AlertDialog createSingleSelectionDialog(Context context, String title, int options, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setItems(options, listener);
+        return builder.create();
+    }
+
 }

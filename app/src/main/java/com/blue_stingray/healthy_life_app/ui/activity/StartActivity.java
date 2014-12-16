@@ -23,7 +23,7 @@ public class StartActivity extends BaseActivity {
         gcmHelper.getRegistrationId();
         // Start services in case being run for the first time
         starter.startServices();
-//        prefs.setState(SharedPreferencesHelper.State.NONE);
+
         switch (prefs.getState()) {
             case NONE:
                 startActivity(new Intent(this, LoginActivity.class));
@@ -35,6 +35,7 @@ public class StartActivity extends BaseActivity {
                 startActivity(new Intent(this, MainActivity.class));
                 break;
         }
+
         finish();
     }
 

@@ -64,7 +64,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/monday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/monday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
 
         </LinearLayout>
@@ -114,7 +114,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/tuesday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -129,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tuesday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -163,7 +163,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/wednesday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/wednesday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -212,7 +212,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/thursday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -227,7 +227,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/thursday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -261,7 +261,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/friday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -276,7 +276,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/friday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -310,7 +310,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/saturday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -325,7 +325,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/saturday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -359,7 +359,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1 hour"
+                    android:text="0 hours"
                     android:id="@+id/sunday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -374,7 +374,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/sunday_seek_bar"
-                android:max="23"
+                android:max="24"
                 android:indeterminate="false" />
         </LinearLayout>
 

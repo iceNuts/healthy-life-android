@@ -1,7 +1,6 @@
 package com.blue_stingray.healthy_life_app;
 
 import android.app.Application;
-
 import com.blue_stingray.healthy_life_app.vendor.guice.GuiceModule;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
 
@@ -18,6 +17,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         appCache = new Cache<>();
+        RoboGuice.setUseAnnotationDatabases(false);
         RoboGuice.getOrCreateBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE, RoboGuice.newDefaultRoboModule(this), new GuiceModule());
     }
 

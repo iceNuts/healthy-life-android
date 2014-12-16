@@ -1,4 +1,5 @@
 <resources>
+
     <color name="blue_primary">#0099CC</color>
     <color name="blue_primary_dark">#006A92</color>
     <color name="orange_primary">#FFAF2E</color>
@@ -10,4 +11,8 @@
     <color name="grey_text_light">#ffa5a5a5</color>
     <color name="grey_text_dark">#ff282828</color>
     <color name="transparent">#00000000</color>
+
+    <color name="white80">#c8ffffff</color>
+    <color name="white20">#32ffffff</color>
+
 </resources>

@@ -55,9 +55,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: '*.jar')
     compile 'com.android.support:appcompat-v7:21.0.0'
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile 'org.roboguice:roboguice:3.+'
     compile 'com.squareup.retrofit:retrofit:1.7.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
@@ -65,15 +64,6 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-base:6.5+'
     compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
-    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.joanzapata.android:android-iconify:1.0.8'
-    provided 'org.roboguice:roboblender:3.0'
-}
-
-allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-AguiceAnnotationDatabasePackageName=roboguiceannotationdb"
-        }
-    }
+    compile 'com.nineoldandroids:library:2.4.0'
 }
