@@ -32,6 +32,7 @@ public class GcmHelper {
 
     public void getRegistrationId() {
         String registrationId = prefs.getGCMRegId();
+        Log.d("GCM", registrationId);
         if (registrationId.isEmpty()) {
             registerInBackground();
         }

@@ -30,6 +30,7 @@ import roboguice.service.RoboService;
 public class ApplicationBlockerService  extends RoboService {
 
     private ApplicationChangeReceiver appChangeReceiver = null;
+    private ApplicationDynamicReceiver applicationDynamicReceiver = null;
     private DataHelper dataHelper;
 
     @Override
@@ -40,6 +41,7 @@ public class ApplicationBlockerService  extends RoboService {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
+            applicationDynamicReceiver = new ApplicationDynamicReceiver();
         }
 
         return START_STICKY;
@@ -84,13 +86,7 @@ public class ApplicationBlockerService  extends RoboService {
         @Override
         public void onReceive(Context context, Intent intent) {
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
-            if (dataHelper.isGoalSatisfied(currentComponent.getPackageName())) {
-                Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                dialogIntent.putExtra("packageName", currentComponent.getPackageName());
-                getApplication().startActivity(dialogIntent);
-            } else if (dataHelper.isGoal(currentComponent.getPackageName())) {
+            if (dataHelper.isGoal(currentComponent.getPackageName())) {
                 String packageName = currentComponent.getPackageName();
                 int seconds = dataHelper.packageRemainingTime(currentComponent.getPackageName());
                 final PackageManager pm = getApplicationContext().getPackageManager();
@@ -126,6 +122,26 @@ public class ApplicationBlockerService  extends RoboService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 int mId = 10001;
                 mNotificationManager.notify(mId, mBuilder.build());
+            }
+        }
+    }
+
+    private class ApplicationDynamicReceiver extends SelfAttachingReceiver {
+
+
+        public ApplicationDynamicReceiver() {
+            super(ApplicationBlockerService.this, new IntentFilter("surfaceApp"));
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
+            if (dataHelper.isGoalSatisfied(currentComponent.getPackageName())) {
+                Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                dialogIntent.putExtra("packageName", currentComponent.getPackageName());
+                getApplication().startActivity(dialogIntent);
             }
         }
     }

@@ -23,7 +23,6 @@ public class StartActivity extends BaseActivity {
         gcmHelper.getRegistrationId();
         // Start services in case being run for the first time
         starter.startServices();
-
         switch (prefs.getState()) {
             case NONE:
                 startActivity(new Intent(this, LoginActivity.class));

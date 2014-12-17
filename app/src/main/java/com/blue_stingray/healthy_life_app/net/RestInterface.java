@@ -12,6 +12,7 @@ import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
+import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
@@ -84,5 +85,9 @@ public interface RestInterface {
     void createLifeline(@Body LifelineForm lifelineForm, Callback<Lifeline> cb);
 
     @GET("/lifeline")
-    void getLifeline(Callback<Lifeline> cb);
+    void getLifeline(Callback<List<Lifeline>> cb);
+
+    @PUT("/lifeline/{id}")
+    void updateLifeline(@Path("id") int id, @Body LifelineUpdateForm lifelineUpdateForm, Callback<Lifeline> cb);
+
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.google.inject.Inject;
@@ -13,6 +14,7 @@ import com.google.inject.Inject;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +36,7 @@ public class DataHelper {
     private HashMap<String, Integer> goalCache;
     private SharedPreferencesHelper prefs;
     private HashMap<String, Integer> blockedList;
+    private HashMap<String, Integer> extendList;
 
     public static synchronized DataHelper getInstance(Context context) {
         if (instance == null) {
@@ -42,6 +45,7 @@ public class DataHelper {
             instance.db = instance.dbHelper.getWritableDatabase();
             instance.goalCache = instance.loadGoalCache();
             instance.blockedList = new HashMap<>();
+            instance.extendList = new HashMap<>();
             instance.prefs = new SharedPreferencesHelper(context);
         }
         return instance;
@@ -101,8 +105,9 @@ public class DataHelper {
         if (!isGoal(packageName)) {
             return false;
         }
-        if (blockedList.containsKey(packageName) && blockedList.get(packageName) <= 0) {
-            return true;
+        if (blockedList.containsKey(packageName) && blockedList.get(packageName) <= 0 ) {
+            if (!extendList.containsKey(packageName) || extendList.get(packageName)+blockedList.get(packageName) <= 0)
+                return true;
         }
         Calendar cal = Calendar.getInstance();
         String currentYear = String.valueOf(cal.get(Calendar.YEAR));
@@ -138,10 +143,17 @@ public class DataHelper {
             appUsageCursor.moveToNext();
         }
         Log.d("GoalTime", packageName);
+        Log.d("GoalTime", String.valueOf(goalTime));
         Log.d("GoalTime", String.valueOf(totalTime));
         appUsageCursor.close();
         blockedList.put(packageName, (goalTime-totalTime));
-        return blockedList.get(packageName) <= 0;
+        if (blockedList.get(packageName) <= 0) {
+            if (extendList.containsKey(packageName)) {
+                return extendList.get(packageName)+blockedList.get(packageName) <= 0;
+            }
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
@@ -166,6 +178,44 @@ public class DataHelper {
         }
         statCursor.close();
         return statForms;
+    }
+
+    public void extendLifeline(String packageName) {
+        Calendar cal = Calendar.getInstance();
+        String currentDayOfWeek = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
+        String key = packageName+currentDayOfWeek;
+        if (blockedList.containsKey(packageName)) {
+            blockedList.remove(packageName);
+        }
+        if (goalCache.containsKey(key)) {
+            extendList.put(
+                    packageName,
+                extendList.containsKey(packageName)?
+                    extendList.get(packageName)+goalCache.get(key)*60
+                :   goalCache.get(key)*60
+            );
+        }
+        Log.d("GoalTime", String.valueOf(extendList.get(packageName)));
+    }
+
+    public ArrayList<Alert> getAlertList() {
+        ArrayList alerts = new ArrayList<>();
+        Cursor alertCursor = db.rawQuery(
+                "SELECT * FROM alert_record",
+                new String[]{
+                }
+        );
+        alertCursor.moveToFirst();
+        while(alertCursor.isAfterLast() == false) {
+            String app_name = alertCursor.getString(alertCursor.getColumnIndex(APPLICATION_NAME));
+            String user_name = alertCursor.getString(alertCursor.getColumnIndex(USER_NAME));
+            String subject = alertCursor.getString(alertCursor.getColumnIndex(ALERT_SUBJECT));
+            alerts.add(new Alert(subject));
+            alertCursor.moveToNext();
+        }
+        alertCursor.close();
+        Collections.reverse(alerts);
+        return alerts;
     }
 
 }

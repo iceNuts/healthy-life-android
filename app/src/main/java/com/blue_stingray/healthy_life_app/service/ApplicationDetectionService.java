@@ -29,7 +29,7 @@ public class ApplicationDetectionService extends RoboService {
     private ActivityManager activityManager;
     private DataHelper dataHelper;
 
-    private static final int POLL_DELAY_MS = 500;
+    private static final int POLL_DELAY_MS = 1000;
     private final String LOG_TAG = getClass().getSimpleName();
     private Thread activityPollThread;
     private boolean ISSTARTED = false;
@@ -100,6 +100,14 @@ public class ApplicationDetectionService extends RoboService {
                     }
                     ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);
                     ComponentName currentComponent = currentTask.baseIntent.getComponent();
+
+                    // always sending a component state
+                    if (currentComponent != null) {
+                        Intent surfaceBroadcast = new Intent();
+                        surfaceBroadcast.setAction("surfaceApp");
+                        surfaceBroadcast.putExtra(getString(R.string.component_name), currentComponent);
+                        localBroadcastManager.sendBroadcast(surfaceBroadcast);
+                    }
 
                     if(currentComponent != null && !(currentComponent.equals(lastComponent))) {
 

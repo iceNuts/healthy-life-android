@@ -13,16 +13,26 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.AlertListAdapter;
 import com.blue_stingray.healthy_life_app.ui.adapter.LifelineRequestListAdapter;
+import com.google.inject.Inject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LifelineRequestFragment extends Fragment {
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import roboguice.fragment.RoboFragment;
+import java.util.List;
+
+public class LifelineRequestFragment extends RoboFragment {
 
     private ListView lifelineRequestList;
+    @Inject private RestInterface rest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,23 +45,31 @@ public class LifelineRequestFragment extends Fragment {
 
     public void createList() {
         // dummy data
-        Lifeline[] dummyData = new Lifeline[]{
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline(),
-                new Lifeline()
-        };
 
-        ArrayList<Lifeline> lifelines = new ArrayList<>(Arrays.asList(dummyData));
-        final LifelineRequestListAdapter adapter = new LifelineRequestListAdapter(getActivity(), lifelines);
+        rest.getLifeline(
+            new RetrofitDialogCallback<List<Lifeline>>(
+                getActivity(),
+                null
+            ) {
+                @Override
+                public void onSuccess(List<Lifeline> lifelines, Response response) {
+                    final ArrayList<Lifeline> lifelineSeq = new ArrayList<Lifeline>(lifelines);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final LifelineRequestListAdapter adapter = new LifelineRequestListAdapter(getActivity(), lifelineSeq, rest);
+                            if(lifelineRequestList != null) {
+                                lifelineRequestList.setAdapter(adapter);
+                            }
+                        }
+                    } );
+                }
 
-        if(lifelineRequestList != null) {
-            lifelineRequestList.setAdapter(adapter);
-        }
+                @Override
+                public void onFailure(RetrofitError retrofitError) {
+                    Log.d("Lifeline", retrofitError.toString());
+                }
+            }
+        );
     }
 }
