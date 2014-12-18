@@ -12,6 +12,7 @@ import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.google.inject.Inject;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -98,17 +99,20 @@ public class DataHelper {
     }
 
     public Integer packageRemainingTime(String packageName) {
-        return blockedList.containsKey(packageName)? blockedList.get(packageName) : 0;
+        if (blockedList.containsKey(packageName)) {
+            if (extendList.containsKey(packageName)) {
+                return extendList.get(packageName)+blockedList.get(packageName);
+            }
+            else{
+                return blockedList.get(packageName);
+            }
+        }
+        else {
+            return 0;
+        }
     }
 
-    public boolean isGoalSatisfied(String packageName) {
-        if (!isGoal(packageName)) {
-            return false;
-        }
-        if (blockedList.containsKey(packageName) && blockedList.get(packageName) <= 0 ) {
-            if (!extendList.containsKey(packageName) || extendList.get(packageName)+blockedList.get(packageName) <= 0)
-                return true;
-        }
+    private Integer getDBRecordedTotalTime(String packageName) {
         Calendar cal = Calendar.getInstance();
         String currentYear = String.valueOf(cal.get(Calendar.YEAR));
         String currentMonth = String.valueOf(cal.get(Calendar.MONTH));
@@ -129,7 +133,6 @@ public class DataHelper {
         );
         appUsageCursor.moveToFirst();
         Integer totalTime = 0;
-        Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
         while(appUsageCursor.isAfterLast() == false) {
             Integer start_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("start_time"));
             Integer end_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("end_time"));
@@ -142,18 +145,49 @@ public class DataHelper {
             totalTime += (end_time-start_time);
             appUsageCursor.moveToNext();
         }
-        Log.d("GoalTime", packageName);
-        Log.d("GoalTime", String.valueOf(goalTime));
-        Log.d("GoalTime", String.valueOf(totalTime));
         appUsageCursor.close();
-        blockedList.put(packageName, (goalTime-totalTime));
-        if (blockedList.get(packageName) <= 0) {
-            if (extendList.containsKey(packageName)) {
-                return extendList.get(packageName)+blockedList.get(packageName) <= 0;
+        return totalTime;
+    }
+
+    private static BigDecimal round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd;
+    }
+
+    public BigDecimal getRemainigTimeRatio(String packageName, Integer currentSec) {
+        Calendar cal = Calendar.getInstance();
+        String currentDayOfWeek = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
+
+        Integer totalTime = getDBRecordedTotalTime(packageName);
+        Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
+        totalTime += currentSec;
+
+        Log.d("Dynamic-GoalTime", String.valueOf(goalTime));
+        Log.d("Dynamic-GoalTime", String.valueOf(totalTime));
+
+        if (extendList.containsKey(packageName)) {
+            Log.d("Dynamic-GoalTime", String.valueOf(extendList.get(packageName)));
+            blockedList.put(packageName, (extendList.get(packageName)+goalTime-totalTime));
+            if (extendList.get(packageName)+goalTime-totalTime <= 0) {
+                blockedList.put(packageName, 0);
+                return round(0, 2);
             }
-            return true;
+            else {
+                float ratio = (extendList.get(packageName)+goalTime-totalTime) / (float)(extendList.get(packageName)+goalTime);
+                Log.d("Dynamic-GoalTime", String.valueOf(ratio));
+                return round(ratio, 2);
+            }
         }
-        return false;
+        blockedList.put(packageName, goalTime-totalTime);
+        if (goalTime-totalTime <= 0) {
+            blockedList.put(packageName, 0);
+            return round(0, 2);
+        }
+        else {
+            float ratio = (goalTime-totalTime)/(float)goalTime;
+            return round(ratio, 2);
+        }
     }
 
     public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
@@ -169,6 +203,11 @@ public class DataHelper {
             String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
             Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
             Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
+            // Ignore corner case
+            if (end_time - start_time < 3) {
+                statCursor.moveToNext();
+                continue;
+            }
             statForms.add(new StatForm(
                 packageName,
                 String.valueOf(start_time),
@@ -216,6 +255,17 @@ public class DataHelper {
         alertCursor.close();
         Collections.reverse(alerts);
         return alerts;
+    }
+
+    public void createAlert(String appName, String userName, String subject) {
+        instance.db.beginTransaction();
+        ContentValues newStat = new ContentValues();
+        newStat.put(APPLICATION_NAME, appName);
+        newStat.put(USER_NAME, userName);
+        newStat.put(ALERT_SUBJECT, subject);
+        db.insert(ALERT_RECORD_TABLE, null, newStat);
+        instance.db.setTransactionSuccessful();
+        instance.db.endTransaction();
     }
 
 }

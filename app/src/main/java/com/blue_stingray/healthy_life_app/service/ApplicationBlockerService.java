@@ -22,6 +22,8 @@ import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 
+import java.math.BigDecimal;
+
 import roboguice.service.RoboService;
 
 /**
@@ -128,21 +130,55 @@ public class ApplicationBlockerService  extends RoboService {
 
     private class ApplicationDynamicReceiver extends SelfAttachingReceiver {
 
+        private Integer currentSec;
+        private ComponentName lastComponent;
 
         public ApplicationDynamicReceiver() {
             super(ApplicationBlockerService.this, new IntentFilter("surfaceApp"));
+            currentSec = 0;
+            lastComponent = null;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
-            if (dataHelper.isGoalSatisfied(currentComponent.getPackageName())) {
-                Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                dialogIntent.putExtra("packageName", currentComponent.getPackageName());
-                getApplication().startActivity(dialogIntent);
+            if (lastComponent == null || !lastComponent.getPackageName().equals(currentComponent.getPackageName())) {
+                lastComponent = currentComponent;
+                currentSec = 0;
             }
+            if (dataHelper.isGoal(currentComponent.getPackageName())) {
+                BigDecimal ratio = dataHelper.getRemainigTimeRatio(currentComponent.getPackageName(), currentSec);
+                Log.d("Dynamic-GoalTime", String.valueOf(ratio));
+                if (ratio.floatValue() == 0) {
+                    Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    dialogIntent.putExtra("packageName", currentComponent.getPackageName());
+                    getApplication().startActivity(dialogIntent);
+                }
+                // 75% time used warning
+                else if (ratio.floatValue() == 0.25) {
+                    NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle("Healthy App")
+                                .setContentText("You have 25% time remaining.");
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    int mId = 10003;
+                    mNotificationManager.notify(mId, mBuilder.build());
+                    final PackageManager pm = getApplicationContext().getPackageManager();
+                    ApplicationInfo ai;
+                    try {
+                        ai = pm.getApplicationInfo( currentComponent.getPackageName(), 0);
+                    } catch (final PackageManager.NameNotFoundException e) {
+                        ai = null;
+                    }
+                    final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+                    dataHelper.createAlert(applicationName, "PlaceHolder", "You have only 25% time remaining.");
+                }
+            }
+            // same as thread polling sec
+            currentSec++;
         }
     }
 }
