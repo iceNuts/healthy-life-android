@@ -29,6 +29,13 @@ import static com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper.*;
 /**
  * Created by BillZeng on 11/24/14.
  */
+
+/* Handle Database
+*   blocklist stores app being blocked and its remainig time
+*   extendlist stores app being extend and its total extended time
+*   GoalCache stores goal time for each app, will be updated in time
+*/
+
 public class DataHelper {
 
     private DatabaseHelper dbHelper;
@@ -52,6 +59,8 @@ public class DataHelper {
         return instance;
     }
 
+    // Please refer goal table in databasehalper
+
     public void createNewGoal(final Application app, final HashMap<Integer, Integer> dayMap) {
         new Thread(new Runnable() {
             @Override
@@ -74,6 +83,8 @@ public class DataHelper {
         }).start();
     }
 
+    // GoalCache key is packageName+dayOfWeek, other cache is only packageName as key
+
     private HashMap<String, Integer> loadGoalCache() {
         HashMap<String, Integer> cache = new HashMap<>();
         Cursor goalCursor = db.rawQuery(
@@ -93,6 +104,8 @@ public class DataHelper {
         return cache;
     }
 
+    // Quick Access
+
     public boolean isGoal(String packageName) {
         String currentDayOfWeek = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         return instance.goalCache.containsKey(packageName+currentDayOfWeek);
@@ -101,6 +114,7 @@ public class DataHelper {
     public Integer packageRemainingTime(String packageName) {
         if (blockedList.containsKey(packageName)) {
             if (extendList.containsKey(packageName)) {
+                // Check how much left for an app by extension+previous remaining time(could be < 0)
                 return extendList.get(packageName)+blockedList.get(packageName);
             }
             else{
@@ -111,6 +125,8 @@ public class DataHelper {
             return 0;
         }
     }
+
+    // Get a package total used recorded time, all time is counted by sec
 
     private Integer getDBRecordedTotalTime(String packageName) {
         Calendar cal = Calendar.getInstance();
@@ -149,17 +165,24 @@ public class DataHelper {
         return totalTime;
     }
 
+    // Helper function
+
     private static BigDecimal round(float d, int decimalPlace) {
         BigDecimal bd = new BigDecimal(Float.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
     }
 
+    // Used in blocking service to calculate the time ratio
+
     public BigDecimal getRemainigTimeRatio(String packageName, Integer currentSec) {
         Calendar cal = Calendar.getInstance();
         String currentDayOfWeek = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
 
         Integer totalTime = getDBRecordedTotalTime(packageName);
+
+        // As we only stores number 1,2,3.. so here convert it to minutes.
+
         Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
         totalTime += currentSec;
 
@@ -171,24 +194,26 @@ public class DataHelper {
             blockedList.put(packageName, (extendList.get(packageName)+goalTime-totalTime));
             if (extendList.get(packageName)+goalTime-totalTime <= 0) {
                 blockedList.put(packageName, 0);
-                return round(0, 2);
+                return round(0, 3);
             }
             else {
                 float ratio = (extendList.get(packageName)+goalTime-totalTime) / (float)(extendList.get(packageName)+goalTime);
                 Log.d("Dynamic-GoalTime", String.valueOf(ratio));
-                return round(ratio, 2);
+                return round(ratio, 3);
             }
         }
         blockedList.put(packageName, goalTime-totalTime);
         if (goalTime-totalTime <= 0) {
             blockedList.put(packageName, 0);
-            return round(0, 2);
+            return round(0, 3);
         }
         else {
             float ratio = (goalTime-totalTime)/(float)goalTime;
-            return round(ratio, 2);
+            return round(ratio, 3);
         }
     }
+
+    // Used in remote logging to server, get the valid records after a timestamp
 
     public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
         ArrayList<StatForm> statForms = new ArrayList<>();
@@ -203,7 +228,7 @@ public class DataHelper {
             String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
             Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
             Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
-            // Ignore corner case
+            // Ignore corner case, this could be caused by opening an app but blocked instantly
             if (end_time - start_time < 3) {
                 statCursor.moveToNext();
                 continue;
@@ -219,6 +244,11 @@ public class DataHelper {
         return statForms;
     }
 
+    /* extending the lifeline
+     *  lifeline extension is only valid when the service is not restarted
+     *  whenever the app is restarted, user has to request lifeline again
+     */
+
     public void extendLifeline(String packageName) {
         Calendar cal = Calendar.getInstance();
         String currentDayOfWeek = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
@@ -226,6 +256,9 @@ public class DataHelper {
         if (blockedList.containsKey(packageName)) {
             blockedList.remove(packageName);
         }
+
+        // As we only stores number 1,2,3.. so here convert it to minutes.
+
         if (goalCache.containsKey(key)) {
             extendList.put(
                     packageName,
@@ -236,6 +269,8 @@ public class DataHelper {
         }
         Log.d("GoalTime", String.valueOf(extendList.get(packageName)));
     }
+
+    // Alert is not well formatted checkout the alert model
 
     public ArrayList<Alert> getAlertList() {
         ArrayList alerts = new ArrayList<>();

@@ -59,6 +59,8 @@ public class ApplicationDetectionService extends RoboService {
         activityPollThread.interrupt();
     }
 
+    // fix stopping service but not restart error; no need for Android 5.0
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
@@ -101,7 +103,7 @@ public class ApplicationDetectionService extends RoboService {
                     ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);
                     ComponentName currentComponent = currentTask.baseIntent.getComponent();
 
-                    // always sending a component state
+                    // always sending a surface component state
                     if (currentComponent != null) {
                         Intent surfaceBroadcast = new Intent();
                         surfaceBroadcast.setAction("surfaceApp");

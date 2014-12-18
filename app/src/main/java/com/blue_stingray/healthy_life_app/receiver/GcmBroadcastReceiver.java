@@ -11,6 +11,9 @@ import com.blue_stingray.healthy_life_app.service.GcmIntentService;
 /**
  * Created by BillZeng on 12/14/14.
  */
+
+// Receive GCM Broadcast
+
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
     @Override

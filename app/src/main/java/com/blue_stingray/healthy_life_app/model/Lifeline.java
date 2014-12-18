@@ -1,5 +1,7 @@
 package com.blue_stingray.healthy_life_app.model;
 
+// Model defined in Doc
+
 public class Lifeline {
     public String id;
     public String user_name;

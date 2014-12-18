@@ -105,6 +105,8 @@ public class ApplicationLoggingService extends RoboService {
         // Doing something else to notify
     }
 
+    // fix stopping service but not restart error; no need for Android 5.0
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Intent restartServiceIntent = new Intent(getApplicationContext(), ((Object)this).getClass());
@@ -167,6 +169,8 @@ public class ApplicationLoggingService extends RoboService {
                         }
 
                         // ERROR DELETE ALL
+                        // Store every records by start_time -1 when the app is still open, replace -1 by end_time
+                        // But some accidents may occur result in a few -1 ending records
 
                         else if (appUsageCount > 1) {
                             db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=?", new String[]{
@@ -261,6 +265,7 @@ public class ApplicationLoggingService extends RoboService {
         }).start();
     }
 
+    // this may be useful to monitor the screen is off and don't count the usage time
 
     private class ScreenStateReceiver extends BroadcastReceiver {
 
@@ -276,6 +281,9 @@ public class ApplicationLoggingService extends RoboService {
 
         }
     }
+
+    // log usage whenever surface app change
+    // this could guarantee each goal app usage is recorded correctly
 
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
 
@@ -322,6 +330,7 @@ public class ApplicationLoggingService extends RoboService {
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpGet request = new HttpGet();
                     try {
+                        // set up session header, don't use rest api call whose callback is run on main thread, will not be called properly
                         request.setHeader("Authorization", "HL "+prefs.getSession());
                         request.setURI(new URI(BuildConfig.ENDPOINT_URL+"/stat/lastUpdate"));
                         HttpResponse response = httpClient.execute(request);
@@ -331,6 +340,7 @@ public class ApplicationLoggingService extends RoboService {
                         Intent broadcast = new Intent();
                         broadcast.setAction(getString(R.string.remote_logging));
                         broadcast.putExtra("lastTimestamp", lastTimeStamp);
+                        // need last update timestamp
                         localBroadcastManager.sendBroadcast(broadcast);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
@@ -344,6 +354,8 @@ public class ApplicationLoggingService extends RoboService {
         });
         remoteLoggingThread.start();
     }
+
+    // Push the logging to server
 
     private class RemoteLoggingReceiver extends SelfAttachingReceiver {
 

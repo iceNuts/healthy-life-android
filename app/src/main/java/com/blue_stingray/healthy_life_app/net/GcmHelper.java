@@ -13,6 +13,9 @@ import java.io.IOException;
 /**
  * Created by BillZeng on 12/14/14.
  */
+
+// Singleton
+
 public class GcmHelper {
 
     private GoogleCloudMessaging gcm;

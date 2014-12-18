@@ -29,6 +29,9 @@ import roboguice.service.RoboService;
 /**
  * Created by BillZeng on 11/23/14.
  */
+
+// Blocking the App and constantly receiving the usage time
+
 public class ApplicationBlockerService  extends RoboService {
 
     private ApplicationChangeReceiver appChangeReceiver = null;
@@ -53,6 +56,8 @@ public class ApplicationBlockerService  extends RoboService {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    // fix stopping service but not restart error; no need for Android 5.0
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
@@ -79,6 +84,8 @@ public class ApplicationBlockerService  extends RoboService {
         throw new UnsupportedOperationException(((Object)this).getClass().getSimpleName() + " does not support binding");
     }
 
+    // Triggered when the surface app change
+
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
 
         public ApplicationChangeReceiver() {
@@ -89,6 +96,9 @@ public class ApplicationBlockerService  extends RoboService {
         public void onReceive(Context context, Intent intent) {
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
             if (dataHelper.isGoal(currentComponent.getPackageName())) {
+
+                // Calculate the time
+
                 String packageName = currentComponent.getPackageName();
                 int seconds = dataHelper.packageRemainingTime(currentComponent.getPackageName());
                 final PackageManager pm = getApplicationContext().getPackageManager();
@@ -109,6 +119,9 @@ public class ApplicationBlockerService  extends RoboService {
                     hrs = minutes / 60;
                     minutes = minutes % 60;
                 }
+
+                // fire a notification
+
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(getApplicationContext())
                                 .setSmallIcon(R.drawable.ic_launcher)
@@ -127,6 +140,8 @@ public class ApplicationBlockerService  extends RoboService {
             }
         }
     }
+
+    // Constantly check if the surface app is over time
 
     private class ApplicationDynamicReceiver extends SelfAttachingReceiver {
 
@@ -149,6 +164,9 @@ public class ApplicationBlockerService  extends RoboService {
             if (dataHelper.isGoal(currentComponent.getPackageName())) {
                 BigDecimal ratio = dataHelper.getRemainigTimeRatio(currentComponent.getPackageName(), currentSec);
                 Log.d("Dynamic-GoalTime", String.valueOf(ratio));
+
+                // Kick out blocking
+
                 if (ratio.floatValue() == 0) {
                     Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
                     dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -156,7 +174,7 @@ public class ApplicationBlockerService  extends RoboService {
                     dialogIntent.putExtra("packageName", currentComponent.getPackageName());
                     getApplication().startActivity(dialogIntent);
                 }
-                // 75% time used warning
+                // 75% time used warning fire notification
                 else if (ratio.floatValue() == 0.25) {
                     NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(getApplicationContext())
