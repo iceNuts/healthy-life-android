@@ -47,17 +47,17 @@
             android:id="@+id/current_goal" />
     </LinearLayout>
 
-    <IconTextView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:id="@+id/imageView"
-        android:text="{fa-gear}"
-        android:textSize="34dp"
-        android:textColor="@color/grey_text_dark"
-        android:layout_alignTop="@+id/linearLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+    <!--<IconTextView-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:gravity="center"-->
+        <!--android:id="@+id/imageView"-->
+        <!--android:text="{fa-gear}"-->
+        <!--android:textSize="34dp"-->
+        <!--android:textColor="@color/grey_text_dark"-->
+        <!--android:layout_alignTop="@+id/linearLayout"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
 
 </RelativeLayout>

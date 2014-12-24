@@ -4,6 +4,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,6 +35,7 @@ public class ManageUsersFragment extends RoboFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_users, container, false);
         getActivity().setTitle(R.string.title_manage_users);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -39,6 +43,23 @@ public class ManageUsersFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createList();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.manage_users_fragment_actions, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_create_user:
+                ViewHelper.injectFragment(new CreateUserFragment(), getFragmentManager(), R.id.frame_container);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void createList() {

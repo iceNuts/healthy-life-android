@@ -3,10 +3,28 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="User Overview"
-        android:id="@+id/textView10" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Locked Apps"
+            android:id="@+id/textView19"
+            android:textColor="@color/blue_primary"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <com.blue_stingray.healthy_life_app.ui.widget.LinearList
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locked" />
+
+    </LinearLayout>
 </LinearLayout>

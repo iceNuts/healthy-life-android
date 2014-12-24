@@ -44,8 +44,6 @@ public class LifelineRequestFragment extends RoboFragment {
     }
 
     public void createList() {
-        // dummy data
-
         rest.getLifeline(
             new RetrofitDialogCallback<List<Lifeline>>(
                 getActivity(),

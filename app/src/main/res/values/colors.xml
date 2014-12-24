@@ -14,5 +14,6 @@
 
     <color name="white80">#c8ffffff</color>
     <color name="white20">#32ffffff</color>
+    <color name="grey_icon">#666</color>
 
 </resources>

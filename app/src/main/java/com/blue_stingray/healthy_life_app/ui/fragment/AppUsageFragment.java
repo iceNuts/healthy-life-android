@@ -30,6 +30,7 @@ public class AppUsageFragment extends Fragment {
             view.findViewById(R.id.create_goal).setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.user).setVisibility(View.GONE);
+            view.findViewById(R.id.usage).setVisibility(View.GONE);
         }
 
         setupChart();
