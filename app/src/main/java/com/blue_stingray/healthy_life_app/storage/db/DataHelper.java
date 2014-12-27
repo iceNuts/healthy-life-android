@@ -122,10 +122,16 @@ public class DataHelper {
         if (blockedList.containsKey(packageName)) {
             if (extendList.containsKey(packageName)) {
                 // Check how much left for an app by extension+previous remaining time(could be < 0)
-                return extendList.get(packageName)+blockedList.get(packageName);
+                if (extendList.get(packageName)+blockedList.get(packageName) < 0)
+                    return 0;
+                else
+                    return extendList.get(packageName)+blockedList.get(packageName);
             }
             else{
-                return blockedList.get(packageName);
+                if (blockedList.get(packageName) < 0)
+                    return 0;
+                else
+                    return blockedList.get(packageName);
             }
         }
         else {
@@ -198,9 +204,8 @@ public class DataHelper {
 
         if (extendList.containsKey(packageName)) {
             Log.d("Dynamic-GoalTime", String.valueOf(extendList.get(packageName)));
-            blockedList.put(packageName, (extendList.get(packageName)+goalTime-totalTime));
+            blockedList.put(packageName, goalTime-totalTime);
             if (extendList.get(packageName)+goalTime-totalTime <= 0) {
-                blockedList.put(packageName, 0);
                 return round(0, 3);
             }
             else {
@@ -211,7 +216,6 @@ public class DataHelper {
         }
         blockedList.put(packageName, goalTime-totalTime);
         if (goalTime-totalTime <= 0) {
-            blockedList.put(packageName, 0);
             return round(0, 3);
         }
         else {
