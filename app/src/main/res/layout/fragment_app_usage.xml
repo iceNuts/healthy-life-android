@@ -11,7 +11,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_background_light">
+        android:background="@color/grey_background_light"
+        android:padding="0dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -176,37 +177,44 @@
                     android:paddingBottom="4dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12/8/2014 - 20 m"
-                    android:id="@+id/textView20"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/primary_text_default_material_light" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/usage_list">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12/6/2014 - 50 m"
-                    android:id="@+id/textView21"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/primary_text_default_material_light" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12/8/2014 - 20 m"
+                        android:id="@+id/textView20"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/primary_text_default_material_light" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12/5/2014 - 3 h"
-                    android:id="@+id/textView22"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/primary_text_default_material_light" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12/6/2014 - 50 m"
+                        android:id="@+id/textView21"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/primary_text_default_material_light" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12/2/2014 - 1 m"
-                    android:id="@+id/textView23"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/primary_text_default_material_light" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12/5/2014 - 3 h"
+                        android:id="@+id/textView22"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/primary_text_default_material_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12/2/2014 - 1 m"
+                        android:id="@+id/textView23"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/primary_text_default_material_light" />
+                </LinearLayout>
 
             </LinearLayout>
 

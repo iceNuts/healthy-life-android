@@ -58,7 +58,6 @@ public interface RestInterface {
     @DELETE("/user/{id}")
     void destroyUser(@Path("id") int id, Callback cb);
 
-
     // Sessions
     @POST("/session")
     void createSession(@Body SessionForm sessionForm, Callback<SessionDevice> cb);
@@ -87,6 +86,9 @@ public interface RestInterface {
     // Stat
     @GET("/stat/lastUpdate")
     void getStatLastUpdateStamp(Callback<Stat> cb);
+
+    @GET("/stat/bydate")
+    void getStatsByDate(@Query("application_id") String application_id, @Query("start") String start, @Query("stop") String stop, Callback<Stat[]> cb);
 
     @POST("/stat")
     void createStats(@Body List<StatForm> statsArray, Callback<Stat> cb);
