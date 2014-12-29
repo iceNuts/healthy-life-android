@@ -20,7 +20,15 @@ public class Application implements Serializable {
     public transient PackageManager pm;
     public transient DataHelper dataHelper;
 
-    public int id;
+    private String id;
+    private String deviceId;
+    private String packageName;
+    private String name;
+    private String version;
+    private String color;
+    private String createdAt;
+    private String updatedAt;
+    private String deletedAt;
 
     /**
      * @param pm PackageManager
@@ -49,12 +57,15 @@ public class Application implements Serializable {
     }
 
     /**
-     * TODO
      * Check if this application has any goals yet
      * @return boolean
      */
     public boolean hasGoal() {
         return dataHelper.isGoal(getPackageName());
+    }
+
+    public Goal getGoal() {
+        return dataHelper.getGoal(getPackageName());
     }
 
     public String getPackageName() {

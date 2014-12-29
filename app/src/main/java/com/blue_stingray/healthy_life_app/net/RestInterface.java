@@ -70,11 +70,17 @@ public interface RestInterface {
     @POST("/app")
     void createApp(@Body AppForm appForm, Callback<Application> cb);
 
+    @GET("/app/{id}")
+    void getApp(@Path("id") String id, Callback<Application> cb);
+
     // Icons
     @POST("/icon")
     void createIcon(@Body IconForm iconForm, Callback<Icon> cb);
 
     // Goals
+    @GET("/goal")
+    void getGoals(Callback<Goal[]> cb);
+
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
 

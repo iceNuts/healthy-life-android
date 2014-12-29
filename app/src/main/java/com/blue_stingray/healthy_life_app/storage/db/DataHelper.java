@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.google.inject.Inject;
 
@@ -116,6 +117,36 @@ public class DataHelper {
     public boolean isGoal(String packageName) {
         String currentDayOfWeek = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         return instance.goalCache.containsKey(packageName+currentDayOfWeek);
+    }
+
+    public Integer getGoalTime(String packageName) {
+        return getGoalTime(packageName, Calendar.DAY_OF_WEEK);
+    }
+
+    public Integer getGoalTime(String packageName, int day) {
+        String currentDayOfWeek = String.valueOf(Calendar.getInstance().get(day));
+        return instance.goalCache.get(packageName+currentDayOfWeek);
+    }
+
+    public Goal getGoal(String packageName) {
+        Goal goal = new Goal();
+        Cursor goalCursor = db.rawQuery(
+                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"",
+                new String[]{
+                }
+        );
+
+        if(goalCursor.getCount() > 0) {
+            goalCursor.moveToFirst();
+            goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
+            goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
+            goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
+            goalCursor.close();
+
+            return goal;
+        }
+
+        return null;
     }
 
     public Integer packageRemainingTime(String packageName) {
