@@ -164,7 +164,7 @@ public class CreateGoalFragment extends RoboFragment {
                 e.printStackTrace();
             }
             HashMap<Integer, Integer> dayMap = getDayHours();
-            dataHelper.createNewGoal(app, dayMap);
+            dataHelper.createNewGoal(app.getPackageName(), dayMap);
             Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
             final Iterator it = conDayMap.entrySet().iterator();
             progressDialog.show();

@@ -16,6 +16,7 @@ public class SharedPreferencesHelper {
     private final static String SESSION_KEY = "session";
     private final static String STATE_KEY = "state";
     private final static String GCM_REGID = "GCM_REGID";
+    private final static String USER_LEVEL = "IS_ADMIN";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -93,6 +94,14 @@ public class SharedPreferencesHelper {
                 .edit()
                 .putInt(STATE_KEY, state.val)
                 .apply();
+    }
+
+    public void setUserLevel(int userLevel) {
+        prefs.edit().putInt(USER_LEVEL, userLevel);
+    }
+
+    public int getUserLevel() {
+        return prefs.getInt(USER_LEVEL, 0);
     }
 
     public State getState() {

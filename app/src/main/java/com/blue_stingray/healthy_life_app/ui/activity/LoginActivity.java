@@ -81,6 +81,7 @@ public class LoginActivity extends BaseActivity {
                 public void onSuccess(SessionDevice sessionDevice, Response response) {
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
+                    prefs.setUserLevel(sessionDevice.is_admin);
                     startActivity(new Intent(LoginActivity.this, StartActivity.class));
                     finish();
                 }
