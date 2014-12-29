@@ -16,6 +16,8 @@ import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
+import com.squareup.okhttp.Call;
+
 import retrofit.Callback;
 import retrofit.http.*;
 
@@ -31,6 +33,9 @@ public interface RestInterface {
     // Users
     @GET("/user")
     void getUser(Callback<User> cb);
+
+    @GET("/user/me")
+    void getMyUser(Callback<User> cb);
 
     @GET("/user/{id}")
     void getUser(@Path("id") int id, Callback<User> cb);

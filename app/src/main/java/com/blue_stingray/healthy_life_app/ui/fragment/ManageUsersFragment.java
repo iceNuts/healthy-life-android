@@ -86,7 +86,7 @@ public class ManageUsersFragment extends RoboFragment {
         public void onClick(View v) {
             User user = users.get((Integer) v.getTag());
             final String[] options = getResources().getStringArray(R.array.user_selection);
-            DialogHelper.createSingleSelectionDialog(getActivity(), user.name, R.array.user_selection, new UserSelectionDialogClickListener(options)).show();
+            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(options)).show();
         }
 
     }

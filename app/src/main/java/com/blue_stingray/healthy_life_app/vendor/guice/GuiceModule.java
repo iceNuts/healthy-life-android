@@ -1,6 +1,9 @@
 package com.blue_stingray.healthy_life_app.vendor.guice;
 
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.blue_stingray.healthy_life_app.App;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RestInterfaceProvider;
 import com.blue_stingray.healthy_life_app.receiver.LocalBroadcastManagerProvider;

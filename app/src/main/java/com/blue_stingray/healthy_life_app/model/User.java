@@ -2,7 +2,16 @@ package com.blue_stingray.healthy_life_app.model;
 
 public class User {
 
-    public String name;
+    private String id;
+    private String mentorId;
+    private String name;
+    private String email;
+    private String createdAt;
+    private String updatedAt;
+    private String deletedAt;
+    private Boolean isAdmin;
+    private String age;
+    private String score;
 
     public User(String name) {
         this.name = name;
@@ -14,6 +23,15 @@ public class User {
 
     public int getActiveGoals() {
         return 9;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getScore() {
+        Double score = Double.parseDouble(this.score);
+        return Math.max(0, score.intValue());
     }
 
 }

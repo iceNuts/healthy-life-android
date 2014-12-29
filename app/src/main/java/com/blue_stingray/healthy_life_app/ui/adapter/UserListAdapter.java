@@ -30,7 +30,7 @@ public class UserListAdapter extends BaseListAdapter<User> {
         TextView goalsActive = ((TextView) convertView.findViewById(R.id.goals_active));
 
         if(name != null) {
-            name.setText(user.name);
+            name.setText(user.getName());
         }
 
         if(trackableApps != null) {

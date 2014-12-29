@@ -7,7 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
@@ -18,11 +22,14 @@ import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.google.inject.Inject;
+
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.inject.InjectView;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -48,6 +55,14 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null) {
+            if(extras.get("toast") != null) {
+                Toast.makeText(this, extras.get("toast").toString(), Toast.LENGTH_LONG).show();
+            }
+        }
 
         //Workaround for monospace passwords and need to support ICS
         passwordField.setTypeface(Typeface.DEFAULT);
@@ -82,8 +97,22 @@ public class LoginActivity extends BaseActivity {
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     prefs.setUserLevel(sessionDevice.is_admin);
-                    startActivity(new Intent(LoginActivity.this, StartActivity.class));
-                    finish();
+
+                    // get the auth user
+                    rest.getMyUser(new Callback<User>() {
+                        @Override
+                        public void success(User user, Response response) {
+                            ((App) getApplication()).setAuthUser(user);
+                            startActivity(new Intent(LoginActivity.this, StartActivity.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.i("healthy", "Login /user/me error");
+                            Log.i("healthy", error.getCause().toString());
+                        }
+                    });
                 }
 
                 @Override
