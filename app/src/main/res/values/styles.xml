@@ -7,6 +7,15 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="HealthyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:titleTextStyle">@style/HealthyTheme.HealthyActionBar.TitleTextStyle</item>
         <item name="android:background">@color/blue_primary</item>

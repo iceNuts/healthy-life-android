@@ -169,8 +169,7 @@ public class ApplicationBlockerService  extends RoboService {
 
                 if (ratio.floatValue() == 0) {
                     Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
-                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     dialogIntent.putExtra("packageName", currentComponent.getPackageName());
                     getApplication().startActivity(dialogIntent);
                 }
