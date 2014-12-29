@@ -9,7 +9,7 @@ public class User {
     private String createdAt;
     private String updatedAt;
     private String deletedAt;
-    private Boolean isAdmin;
+    private String isAdmin;
     private String age;
     private String score;
 
@@ -32,6 +32,10 @@ public class User {
     public int getScore() {
         Double score = Double.parseDouble(this.score);
         return Math.max(0, score.intValue());
+    }
+
+    public boolean isAdmin() {
+        return isAdmin == null || isAdmin.equals("0");
     }
 
 }

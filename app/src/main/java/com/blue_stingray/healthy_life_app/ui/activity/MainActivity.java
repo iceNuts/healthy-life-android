@@ -9,7 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.adapter.DrawerAdapter;
 import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
@@ -28,6 +31,8 @@ import java.util.ArrayList;
  */
 public class MainActivity extends BaseActivity {
 
+    private User authUser;
+
     private ArrayList drawerItems = new ArrayList<DrawerItem>() {{
         add(new DrawerItem("fa-bullhorn", "Profile"));
         add(new DrawerItem("fa-globe", "Alerts"));
@@ -35,8 +40,8 @@ public class MainActivity extends BaseActivity {
         add(new DrawerItem("fa-bar-chart", "Manage Goals"));
         add(new DrawerItem("fa-users", "Manage Users"));
         add(new DrawerItem("fa-trophy", "Leaderboard"));
-        add(new DrawerItem("fa-gear", "Settings"));
     }};
+
     private ArrayList activities = new ArrayList<Class>() {{
         add(ProfileFragment.class);
         add(AlertsFragment.class);
@@ -44,9 +49,10 @@ public class MainActivity extends BaseActivity {
         add(ManageGoalsFragment.class);
         add(ManageUsersFragment.class);
         add(LeaderboardFragment.class);
-        add(SettingsFragment.class);
     }};
+
     private DrawerLayout drawerLayout;
+
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -54,7 +60,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(false) {
+        authUser = ((App) getApplication()).getAuthUser(this);
+        if(authUser == null) {
+            ViewHelper.unauthorized(this);
+            finish();
+            return;
+        }
+
+        if(authUser.isAdmin()) {
             activities.remove(4);
             drawerItems.remove(4);
         }
