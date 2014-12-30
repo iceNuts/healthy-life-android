@@ -13,7 +13,7 @@
     <string name="title_activity_post_login">Account Setup</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_registration">RegistrationActivity</string>
-    <string name="title_usage_alerts">Usage Alerts</string>
+    <string name="title_usage_alerts">Alerts</string>
     <string name="title_app_usage">App Usage</string>
     <string name="title_create_goal">Create Goal</string>
     <string name="title_lifeline_request">Lifeline Requests</string>

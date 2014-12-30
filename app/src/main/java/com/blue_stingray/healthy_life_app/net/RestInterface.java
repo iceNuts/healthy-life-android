@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.net;
 
+import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
@@ -102,5 +103,9 @@ public interface RestInterface {
 
     @PUT("/lifeline/{id}")
     void updateLifeline(@Path("id") int id, @Body LifelineUpdateForm lifelineUpdateForm, Callback<Lifeline> cb);
+
+    // Alerts
+    @GET("/alert")
+    void getAlerts(Callback<List<Alert>> cb);
 
 }
