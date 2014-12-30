@@ -2,9 +2,8 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_background_light">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -18,7 +17,7 @@
             android:gravity="center|center_vertical"
             android:padding="20dp">
 
-            <IconTextView
+            <android.widget.IconTextView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:text="{fa-trophy}"
@@ -49,17 +48,9 @@
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:background="@color/white"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:weightSum="2">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -111,7 +102,7 @@
                         android:textSize="20dp"
                         android:paddingBottom="4dp" />
 
-                    <IconTextView
+                    <android.widget.IconTextView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:text="{fa-gear}"
@@ -142,20 +133,10 @@
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:weightSum="2"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:id="@+id/linearLayout"
-            android:layout_marginTop="12dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:id="@+id/linearLayout">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -173,6 +154,18 @@
                 android:id="@+id/textView5"
                 android:paddingBottom="4dp"
                 android:textColor="@color/grey_text_light" />
+
+            <org.eazegraph.lib.charts.ValueLineChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rating_history"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:egUseCubic="true"
+                app:egUseOverlapFill="true"
+                app:egCurveSmoothness="0.4"
+                app:egIndicatorLineColor="#FE6DA8"
+                app:egLegendHeight="40dp"
+                app:egShowStandardValue="true"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

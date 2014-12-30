@@ -14,6 +14,9 @@ import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 
+import org.eazegraph.lib.charts.ValueLineChart;
+import org.eazegraph.lib.models.ValueLinePoint;
+import org.eazegraph.lib.models.ValueLineSeries;
 import org.w3c.dom.Text;
 
 import roboguice.fragment.RoboFragment;
@@ -26,6 +29,9 @@ public class ProfileFragment extends RoboFragment {
 
     @InjectView(R.id.current_score)
     private TextView currentScore;
+
+    @InjectView(R.id.rating_history)
+    private ValueLineChart ratingHistory;
 
     private User authUser;
 
@@ -47,6 +53,30 @@ public class ProfileFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(authUser.getName());
         currentScore.setText(String.valueOf(authUser.getScore()));
+        setupLineChart();
+    }
+
+    private void setupLineChart() {
+        ValueLineSeries series = new ValueLineSeries();
+        series.setColor(0xFF56B7F1);
+
+        series.addPoint(new ValueLinePoint("", 0f));
+        series.addPoint(new ValueLinePoint("J", 2.4f));
+        series.addPoint(new ValueLinePoint("F", 3.4f));
+        series.addPoint(new ValueLinePoint("M", .4f));
+        series.addPoint(new ValueLinePoint("A", 1.2f));
+        series.addPoint(new ValueLinePoint("M", 2.6f));
+        series.addPoint(new ValueLinePoint("J", 1.0f));
+        series.addPoint(new ValueLinePoint("J", 3.5f));
+        series.addPoint(new ValueLinePoint("A", 2.4f));
+        series.addPoint(new ValueLinePoint("S", 2.4f));
+        series.addPoint(new ValueLinePoint("O", 3.4f));
+        series.addPoint(new ValueLinePoint("N", .4f));
+        series.addPoint(new ValueLinePoint("D", 1.3f));
+        series.addPoint(new ValueLinePoint("", 0f));
+
+        ratingHistory.addSeries(series);
+        ratingHistory.startAnimation();
     }
 
 }
