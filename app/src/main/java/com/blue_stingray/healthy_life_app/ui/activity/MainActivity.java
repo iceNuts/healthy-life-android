@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        if(authUser.isAdmin()) {
+        if(false) {
             activities.remove(4);
             drawerItems.remove(4);
         }

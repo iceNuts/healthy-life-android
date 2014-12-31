@@ -35,7 +35,8 @@
                 android:textColor="@android:color/white"
                 android:layout_alignTop="@+id/app_icon"
                 android:layout_alignLeft="@+id/app_icon"
-                android:layout_alignStart="@+id/app_icon" />
+                android:layout_alignStart="@+id/app_icon"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

@@ -33,7 +33,7 @@ public interface RestInterface {
 
     // Users
     @GET("/user")
-    void getUser(Callback<User> cb);
+    void getMyUsers(Callback<List<User>> cb);
 
     @GET("/user/me")
     void getMyUser(Callback<User> cb);

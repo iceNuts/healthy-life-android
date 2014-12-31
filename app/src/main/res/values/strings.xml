@@ -92,5 +92,6 @@
         <item>Trackable Apps</item>
         <item>Alerts</item>
         <item>Usage Statistics</item>
+        <item>Remove</item>
     </string-array>
 </resources>
