@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/alert_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:divider="@null"/>
+    <LinearLayout
+        android:id="@+id/blank_message"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_background_light"
+        android:gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="No alerts yet :("
+                android:id="@+id/textView13"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/grey_icon" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/alert_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:divider="@null"/>
+    </LinearLayout>
+
 </LinearLayout>

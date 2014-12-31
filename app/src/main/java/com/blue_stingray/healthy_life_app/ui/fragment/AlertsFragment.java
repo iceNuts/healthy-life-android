@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Alert;
@@ -36,6 +37,9 @@ public class AlertsFragment extends RoboFragment {
     @InjectView(R.id.alert_list)
     private ListView alertList;
 
+    @InjectView(R.id.blank_message)
+    private LinearLayout blankMessage;
+
     private DataHelper dataHelper;
 
     @Override
@@ -58,10 +62,11 @@ public class AlertsFragment extends RoboFragment {
         rest.getAlerts(new Callback<List<Alert>>() {
             @Override
             public void success(List<Alert> alerts, Response response) {
-                loading.cancel();
-
+                blankMessage.setVisibility(View.GONE);
                 AlertListAdapter adapter = new AlertListAdapter(getActivity(), alerts);
                 alertList.setAdapter(adapter);
+
+                loading.cancel();
             }
 
             @Override

@@ -29,6 +29,9 @@ public class LifelineRequestFragment extends RoboFragment {
     @InjectView(R.id.lifeline_request_list)
     private ListView lifelineRequestList;
 
+    @InjectView(R.id.blank_message)
+    private LinearLayout blankMessage;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_lifeline_requests, container, false);
@@ -49,14 +52,18 @@ public class LifelineRequestFragment extends RoboFragment {
             ) {
                 @Override
                 public void onSuccess(final List<Lifeline> lifelines, Response response) {
-                    final ArrayList<Lifeline> lifelineSeq = new ArrayList<Lifeline>(lifelines);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final LifelineRequestListAdapter adapter = new LifelineRequestListAdapter(getActivity(), lifelineSeq, rest);
-                            lifelineRequestList.setAdapter(adapter);
-                        }
-                    });
+                    final ArrayList<Lifeline> lifelineSeq = new ArrayList<>(lifelines);
+
+                    if(lifelines.size() > 0) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                blankMessage.setVisibility(View.GONE);
+                                final LifelineRequestListAdapter adapter = new LifelineRequestListAdapter(getActivity(), lifelineSeq, rest);
+                                lifelineRequestList.setAdapter(adapter);
+                            }
+                        });
+                    }
                 }
 
                 @Override
