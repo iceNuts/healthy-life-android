@@ -5,8 +5,12 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        style="@style/Card"
-        android:orientation="horizontal">
+        android:id="@+id/container"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
         <ImageView
             android:layout_width="50dp"
@@ -47,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No goal currently set."
-                android:id="@+id/current_goal"
+                android:id="@+id/message"
                 android:textColor="#666" />
         </LinearLayout>
 

@@ -68,10 +68,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/card</item>
         <item name="android:layout_marginTop">8dp</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingTop">20dp</item>
-        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingLeft">@dimen/card_padding_width</item>
+        <item name="android:paddingRight">@dimen/card_padding_width</item>
+        <item name="android:paddingTop">@dimen/card_padding_height</item>
+        <item name="android:paddingBottom">@dimen/card_padding_height</item>
     </style>
 
 </resources>

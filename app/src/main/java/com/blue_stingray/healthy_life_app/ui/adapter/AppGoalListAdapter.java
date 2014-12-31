@@ -1,7 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,10 +11,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class AppListAdapter extends BaseListAdapter<Application> {
+public class AppGoalListAdapter extends BaseListAdapter<Application> {
 
-    public AppListAdapter(Activity activity, List<Application> apps) {
-        super(activity, apps, R.layout.app_list_row);
+    public AppGoalListAdapter(Activity activity, List<Application> apps) {
+        this(activity, apps, R.layout.app_list_row_simple_card);
+    }
+
+    public AppGoalListAdapter(Activity activity, List<Application> apps, int resource) {
+        super(activity, apps, resource);
         Collections.sort(data, new Comparator<Application>() {
             @Override
             public int compare(Application lhs, Application rhs) {
@@ -34,10 +37,9 @@ public class AppListAdapter extends BaseListAdapter<Application> {
         ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
 
         if(app.hasGoal()) {
-            ((TextView) convertView.findViewById(R.id.current_goal)).setText("Goal is set");
-        }
-        else {
-            ((TextView) convertView.findViewById(R.id.current_goal)).setText("No goal currently set");
+            ((TextView) convertView.findViewById(R.id.message)).setText("Goal is set");
+        } else {
+            ((TextView) convertView.findViewById(R.id.message)).setText("No goal currently set");
         }
 
         return convertView;

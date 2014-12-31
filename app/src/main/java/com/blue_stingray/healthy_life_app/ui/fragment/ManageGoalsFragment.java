@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
-import com.blue_stingray.healthy_life_app.ui.adapter.AppListAdapter;
+import com.blue_stingray.healthy_life_app.ui.adapter.AppGoalListAdapter;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
@@ -67,7 +67,7 @@ public class ManageGoalsFragment extends RoboFragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final AppListAdapter adapter = new AppListAdapter(getActivity(), apps);
+                final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
                 appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
