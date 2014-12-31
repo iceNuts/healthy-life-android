@@ -54,7 +54,6 @@ public class AlertsFragment extends RoboFragment {
 
     public void createList() {
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "Alerts", "Loading...");
-        alertList.setDivider(null);
 
         rest.getAlerts(new Callback<List<Alert>>() {
             @Override

@@ -20,7 +20,9 @@ import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
 
+import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
 import org.w3c.dom.Text;
 
@@ -61,6 +63,9 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.usage_list)
     private LinearLayout usageList;
 
+    @InjectView(R.id.barchart_container)
+    private LinearLayout barchartContainer;
+
     private View view;
     private Application app;
     private Goal goal;
@@ -88,7 +93,7 @@ public class AppUsageFragment extends RoboFragment {
 
         // toggle data based on if goal exists
         if(app.hasGoal()) {
-            setupChart();
+            setupCharts();
 
             createGoal.setVisibility(View.GONE);
             currentGoal.setText(String.valueOf(goal.getTimeLimit()));
@@ -125,6 +130,7 @@ public class AppUsageFragment extends RoboFragment {
             editGoal.setVisibility(View.GONE);
             userLayout.setVisibility(View.GONE);
             usageLayout.setVisibility(View.GONE);
+            barchartContainer.setVisibility(View.GONE);
         }
 
         // set create goal button listener
@@ -136,14 +142,19 @@ public class AppUsageFragment extends RoboFragment {
         editButton.setOnClickListener(new EditGoalButtonListener());
     }
 
-    public void setupChart() {
-        PieChart mPieChart = (PieChart) view.findViewById(R.id.piechart);
+    public void setupCharts() {
 
-        mPieChart.addPieSlice(new PieModel(app.getName(), 50, getResources().getColor(R.color.blue_primary)));
-        mPieChart.addPieSlice(new PieModel("Twitter", 25, getResources().getColor(R.color.orange_primary)));
-        mPieChart.addPieSlice(new PieModel("Facebook", 35, getResources().getColor(R.color.green_primary)));
-
-        mPieChart.startAnimation();
+        // setup bar chart
+        BarChart mBarChart = (BarChart) view.findViewById(R.id.barchart);
+        mBarChart.addBar(new BarModel(2.3f, 0xFF123456));
+        mBarChart.addBar(new BarModel(2.f,  0xFF343456));
+        mBarChart.addBar(new BarModel(3.3f, 0xFF563456));
+        mBarChart.addBar(new BarModel(1.1f, 0xFF873F56));
+        mBarChart.addBar(new BarModel(2.7f, 0xFF56B7F1));
+        mBarChart.addBar(new BarModel(2.f,  0xFF343456));
+        mBarChart.addBar(new BarModel(0.4f, 0xFF1FF4AC));
+        mBarChart.addBar(new BarModel(4.f,  0xFF1BA4E6));
+        mBarChart.startAnimation();
     }
 
     private class CreateGoalButtonListener implements View.OnClickListener {

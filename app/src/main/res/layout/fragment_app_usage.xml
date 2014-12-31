@@ -11,154 +11,143 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_background_light"
-        android:padding="0dp">
+        android:background="@color/grey_background_light">
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center|center_vertical"
-            android:padding="20dp"
             android:id="@+id/linearLayout">
 
-            <org.eazegraph.lib.charts.PieChart
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/piechart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:padding="8dp"
-                app:egLegendTextSize="18sp"
-                app:egUsePieRotation="true"
-                app:egValueTextSize="36sp"
-                app:egAnimationTime="500"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="56%"
+                android:id="@+id/textView6"
+                android:textSize="40dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="of total app usage"
+                android:id="@+id/textView7"
+                android:textSize="20dp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Create Goal"
+            android:id="@+id/create_goal"
+            android:background="@color/blue_primary"
+            android:textColor="@color/white"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:textSize="16dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Goal"
+            android:id="@+id/edit_goal"
+            android:background="@color/blue_primary"
+            android:textColor="@color/white"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            style="@style/Card"
+            android:orientation="vertical"
             android:weightSum="2"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:id="@+id/linearLayout2"
-            android:layout_marginTop="12dp" >
+            android:id="@+id/user">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Goal Set"
+                android:id="@+id/textView4"
+                android:textSize="20dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/user">
+                android:id="@+id/textView14">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Goal Set"
-                    android:id="@+id/textView4"
-                    android:textSize="20dp"
+                    android:text="Current Goal - "
+                    android:id="@+id/textView"
                     android:paddingBottom="4dp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/primary_text_default_material_light" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/textView14">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Current Goal - "
-                        android:id="@+id/textView"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/current_goal"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/grey_text_light" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time Used - "
-                        android:id="@+id/textView2"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/time_used"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/grey_text_light" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lifelines Used - "
-                        android:id="@+id/textView3"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/lifelines_used"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/grey_text_light" />
-                </LinearLayout>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/current_goal"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/grey_text_light" />
             </LinearLayout>
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create Goal"
-                android:id="@+id/create_goal"
-                android:background="@color/blue_primary"
-                android:textColor="@color/white"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Edit Goal"
-                android:id="@+id/edit_goal"
-                android:background="@color/blue_primary"
-                android:textColor="@color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time Used - "
+                    android:id="@+id/textView2"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/primary_text_default_material_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/time_used"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lifelines Used - "
+                    android:id="@+id/textView3"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/primary_text_default_material_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lifelines_used"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/grey_text_light" />
+            </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:weightSum="2"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
             android:id="@+id/usage"
-            android:layout_marginTop="12dp"
             android:layout_gravity="center_horizontal">
 
             <LinearLayout
@@ -217,6 +206,25 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Card"
+            android:orientation="vertical"
+            android:weightSum="2"
+            android:id="@+id/barchart_container"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="fill_parent">
+
+            <org.eazegraph.lib.charts.BarChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/barchart"
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
+                app:egFixedBarWidth="true"
+                app:egBarWidth="36dp"
+                app:egLegendHeight="40dp"/>
 
         </LinearLayout>
     </LinearLayout>
