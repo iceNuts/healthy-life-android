@@ -13,7 +13,6 @@ public class Alert {
     private String created_at;
     private String updated_at;
     private User user;
-    private Object targetObj;
     public String subject;
     private String action;
     private String target;
@@ -81,10 +80,6 @@ public class Alert {
 
     public User getUser() {
         return user;
-    }
-
-    public Object getTargetObj() {
-        return targetObj;
     }
 
     public String build() {

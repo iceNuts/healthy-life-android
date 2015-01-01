@@ -8,6 +8,7 @@ import com.blue_stingray.healthy_life_app.model.Lifeline;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
+import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
@@ -93,6 +94,9 @@ public interface RestInterface {
 
     @POST("/stat")
     void createStats(@Body List<StatForm> statsArray, Callback<Stat> cb);
+
+    @GET("/stat/report")
+    void getMyReport(Callback<UsageReport> cb);
 
     // Lifeline
     @POST("/lifeline")
