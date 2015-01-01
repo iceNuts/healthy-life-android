@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +73,11 @@ public class LoginActivity extends BaseActivity {
         validationManager.addField(passwordField, ValidationRule.newPasswordValidationRule(this));
 
         loginButton.setOnClickListener(new LoginButtonListener());
+
+        SharedPreferences preferences = getSharedPreferences("main", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("firstRun", true);
+        editor.commit();
     }
 
 

@@ -60,6 +60,9 @@ public interface RestInterface {
     @DELETE("/user/{id}")
     void destroyUser(@Path("id") int id, Callback cb);
 
+    @GET("/leaderboard")
+    void getLeaderboard(Callback<List<User>> cb);
+
     // Sessions
     @POST("/session")
     void createSession(@Body SessionForm sessionForm, Callback<SessionDevice> cb);

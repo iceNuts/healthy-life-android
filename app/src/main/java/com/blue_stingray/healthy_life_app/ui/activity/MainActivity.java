@@ -54,6 +54,8 @@ public class MainActivity extends BaseActivity {
 
     private DrawerLayout drawerLayout;
 
+    private SharedPreferences preferences;
+
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -61,6 +63,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        preferences = getSharedPreferences("main", 0);
         authUser = ((App) getApplication()).getAuthUser(this);
         if(authUser == null) {
             ViewHelper.unauthorized(this);
@@ -140,11 +143,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showSplashFragment() {
-        SharedPreferences settings = getSharedPreferences("main", 0); // Get preferences file (0 = no option flags set)
-        boolean firstRun = settings.getBoolean("firstRun", true); // Is it first run? If not specified, use "true"
+        boolean firstRun = preferences.getBoolean("firstRun", true);
         if (firstRun) {
             ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
-            SharedPreferences.Editor editor = settings.edit();
+            SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("firstRun", false);
             editor.commit();
         }
