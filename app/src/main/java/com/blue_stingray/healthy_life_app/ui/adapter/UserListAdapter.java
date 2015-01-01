@@ -28,6 +28,7 @@ public class UserListAdapter extends BaseListAdapter<User> {
         TextView name = ((TextView) convertView.findViewById(R.id.user_name));
         TextView trackableApps = ((TextView) convertView.findViewById(R.id.trackable_apps));
         TextView goalsActive = ((TextView) convertView.findViewById(R.id.goals_active));
+        TextView score = ((TextView) convertView.findViewById(R.id.score));
 
         if(name != null) {
             name.setText(user.getName());
@@ -39,6 +40,10 @@ public class UserListAdapter extends BaseListAdapter<User> {
 
         if(goalsActive != null) {
             goalsActive.setText(String.valueOf(user.getActiveGoals()));
+        }
+
+        if(score != null) {
+            score.setText(String.valueOf(user.getScore()));
         }
 
         return convertView;
