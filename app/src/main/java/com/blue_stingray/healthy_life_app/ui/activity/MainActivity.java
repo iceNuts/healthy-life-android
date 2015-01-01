@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -67,28 +68,8 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        if(authUser.isAdmin()) {
-            activities.remove(4);
-            drawerItems.remove(4);
-        }
-
-        DrawerAdapter adapter = new DrawerAdapter(this, drawerItems, R.layout.drawer_list_item);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
-        drawerListView.setAdapter(adapter);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                0,  /* "open drawer" description */
-                0  /* "close drawer" description */
-        );
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-        ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
+        setupDrawer();
+        showSplashFragment();
     }
 
     @Override
@@ -133,6 +114,40 @@ public class MainActivity extends BaseActivity {
         }
 
         drawerLayout.closeDrawers();
+    }
+
+    private void setupDrawer() {
+        DrawerAdapter adapter = new DrawerAdapter(this, drawerItems, R.layout.drawer_list_item);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
+        drawerListView.setAdapter(adapter);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                0,  /* "open drawer" description */
+                0  /* "close drawer" description */
+        );
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        if(authUser.isAdmin()) {
+            activities.remove(4);
+            drawerItems.remove(4);
+        }
+    }
+
+    private void showSplashFragment() {
+        SharedPreferences settings = getSharedPreferences("main", 0); // Get preferences file (0 = no option flags set)
+        boolean firstRun = settings.getBoolean("firstRun", true); // Is it first run? If not specified, use "true"
+        if (firstRun) {
+            ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("firstRun", false);
+            editor.commit();
+        }
     }
 
 }
