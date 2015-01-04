@@ -66,6 +66,7 @@
     <string name="action_settings">Settings</string>
     <string name="admin_removal_label">Remove Device Administrator</string>
     <string name="lock_prefs_key">locked</string>
+    <string name="logout_prefs_key">logout</string>
     <string name="enable_device_admin">Enable Device Administrator</string>
     <string name="app_usage_limit_reached">Sorry, this App is no longer available to use today, please request more time from Administrator</string>
     <string name="app_alert_close">Close</string>

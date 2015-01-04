@@ -41,6 +41,7 @@ public class MainActivity extends BaseActivity {
         add(new DrawerItem("fa-bar-chart", "Manage Goals"));
         add(new DrawerItem("fa-users", "Manage Users"));
         add(new DrawerItem("fa-trophy", "Leaderboard"));
+        add(new DrawerItem("fa-gear", "Settings"));
     }};
 
     private ArrayList activities = new ArrayList<Class>() {{
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity {
         add(ManageGoalsFragment.class);
         add(ManageUsersFragment.class);
         add(LeaderboardFragment.class);
+        add(SettingsFragment.class);
     }};
 
     private DrawerLayout drawerLayout;
@@ -136,9 +138,19 @@ public class MainActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        if(authUser.isAdmin()) {
+        if(!authUser.isAdmin()) {
+
+            // remove lifeline requests
+            activities.remove(2);
+            activities.remove(2);
+
+            // remove manage users
             activities.remove(4);
             drawerItems.remove(4);
+
+            // remove settings page
+            activities.remove(6);
+            drawerItems.remove(6);
         }
     }
 
