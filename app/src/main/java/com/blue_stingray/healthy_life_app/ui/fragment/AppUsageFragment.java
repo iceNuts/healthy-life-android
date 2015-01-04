@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
@@ -21,10 +22,7 @@ import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
 
 import org.eazegraph.lib.charts.BarChart;
-import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.BarModel;
-import org.eazegraph.lib.models.PieModel;
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
@@ -93,7 +91,6 @@ public class AppUsageFragment extends RoboFragment {
 
         // toggle data based on if goal exists
         if(app.hasGoal()) {
-            setupCharts();
 
             createGoal.setVisibility(View.GONE);
             currentGoal.setText(String.valueOf(goal.getTimeLimit()));
@@ -126,6 +123,29 @@ public class AppUsageFragment extends RoboFragment {
                     progress.cancel();
                 }
             });
+
+            rest.getApp(app.getPackageName(), new Callback<Application>() {
+                @Override
+                public void success(Application application, Response response) {
+                    rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
+                        @Override
+                        public void success(AppUsage usage, Response response) {
+                            setupChart(usage.getData());
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
         } else {
             editGoal.setVisibility(View.GONE);
             userLayout.setVisibility(View.GONE);
@@ -142,18 +162,15 @@ public class AppUsageFragment extends RoboFragment {
         editButton.setOnClickListener(new EditGoalButtonListener());
     }
 
-    public void setupCharts() {
+    public void setupChart(Integer[] data) {
 
         // setup bar chart
         BarChart mBarChart = (BarChart) view.findViewById(R.id.barchart);
-        mBarChart.addBar(new BarModel(2.3f, 0xFF123456));
-        mBarChart.addBar(new BarModel(2.f,  0xFF343456));
-        mBarChart.addBar(new BarModel(3.3f, 0xFF563456));
-        mBarChart.addBar(new BarModel(1.1f, 0xFF873F56));
-        mBarChart.addBar(new BarModel(2.7f, 0xFF56B7F1));
-        mBarChart.addBar(new BarModel(2.f,  0xFF343456));
-        mBarChart.addBar(new BarModel(0.4f, 0xFF1FF4AC));
-        mBarChart.addBar(new BarModel(4.f,  0xFF1BA4E6));
+
+        for (int i = 0; i < data.length; i+=2) {
+            mBarChart.addBar(new BarModel(String.valueOf(i), data[i], 0xFF123456));
+        }
+
         mBarChart.startAnimation();
     }
 

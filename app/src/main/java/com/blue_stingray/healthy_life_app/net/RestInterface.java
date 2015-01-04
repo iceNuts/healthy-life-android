@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.net;
 
 import com.blue_stingray.healthy_life_app.model.Alert;
+import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
@@ -76,6 +77,9 @@ public interface RestInterface {
 
     @GET("/app/{id}")
     void getApp(@Path("id") String id, Callback<Application> cb);
+
+    @GET("/app/{id}/usage")
+    void getAppUsage(@Path("id") String id, Callback<AppUsage> cb);
 
     // Icons
     @POST("/icon")

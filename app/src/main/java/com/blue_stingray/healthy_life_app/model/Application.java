@@ -40,6 +40,10 @@ public class Application implements Serializable {
         this.dataHelper = DataHelper.getInstance(context);
     }
 
+    public String getId() {
+        return id;
+    }
+
     /**
      * Get the applications label
      * @return String name

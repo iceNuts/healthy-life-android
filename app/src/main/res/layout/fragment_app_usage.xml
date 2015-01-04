@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="56%"
+                android:text="N/A%"
                 android:id="@+id/textView6"
                 android:textSize="40dp"
                 android:textStyle="bold" />
@@ -160,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Usage Statistics"
+                    android:text="Usage Statistics Today"
                     android:id="@+id/textView10"
                     android:textSize="20dp"
                     android:paddingBottom="4dp"
@@ -172,37 +172,6 @@
                     android:layout_height="fill_parent"
                     android:id="@+id/usage_list">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12/8/2014 - 20 m"
-                        android:id="@+id/textView20"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12/6/2014 - 50 m"
-                        android:id="@+id/textView21"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12/5/2014 - 3 h"
-                        android:id="@+id/textView22"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12/2/2014 - 1 m"
-                        android:id="@+id/textView23"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/primary_text_default_material_light" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -222,8 +191,6 @@
                 android:id="@+id/barchart"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
-                app:egFixedBarWidth="true"
-                app:egBarWidth="36dp"
                 app:egLegendHeight="40dp"/>
 
         </LinearLayout>
