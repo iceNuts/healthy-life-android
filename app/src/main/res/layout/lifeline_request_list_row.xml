@@ -6,13 +6,11 @@
     android:id="@+id/rel">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        style="@style/Card"
         android:id="@+id/linearLayout2"
         android:orientation="horizontal"
-        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:weightSum="6">
 
         <LinearLayout
@@ -49,7 +47,7 @@
                 android:layout_height="fill_parent"
                 android:gravity="center_vertical">
 
-                <IconTextView
+                <android.widget.IconTextView
                     android:layout_width="wrap_content"
                     android:text="{fa-mobile-phone}"
                     android:textSize="24dp"
@@ -72,7 +70,7 @@
                 android:layout_height="fill_parent"
                 android:gravity="center_vertical">
 
-                <IconTextView
+                <android.widget.IconTextView
                     android:layout_width="wrap_content"
                     android:text="{fa-clock-o}"
                     android:textSize="16dp"
@@ -90,7 +88,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <IconTextView
+        <android.widget.IconTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="{fa-close}"
@@ -101,7 +99,7 @@
             android:layout_gravity="center"
             android:gravity="center" />
 
-        <IconTextView
+        <android.widget.IconTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="{fa-check}"
