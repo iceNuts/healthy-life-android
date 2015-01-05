@@ -27,7 +27,7 @@
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:id="@+id/imageView4"
-                android:src="@drawable/healthy_white"
+                android:src="@drawable/healthy"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="20dp" />
 
