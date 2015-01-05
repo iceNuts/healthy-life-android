@@ -115,6 +115,9 @@ public interface RestInterface {
     @PUT("/lifeline/{id}")
     void updateLifeline(@Path("id") int id, @Body LifelineUpdateForm lifelineUpdateForm, Callback<Lifeline> cb);
 
+    @DELETE("/lifeline/{id}")
+    void destroyLifeline(@Path("id") int id, Callback<Object> cb);
+
     // Alerts
     @GET("/alert")
     void getAlerts(Callback<List<Alert>> cb);
