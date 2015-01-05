@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.fragment.SplashFragment;
 import com.blue_stingray.healthy_life_app.ui.widget.DrawerItem;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main activity for starts
@@ -35,23 +37,13 @@ public class MainActivity extends BaseActivity {
     private User authUser;
 
     private ArrayList drawerItems = new ArrayList<DrawerItem>() {{
-        add(new DrawerItem("fa-bullhorn", "Profile"));
-        add(new DrawerItem("fa-globe", "Alerts"));
-        add(new DrawerItem("fa-flag", "Lifeline Requests"));
-        add(new DrawerItem("fa-bar-chart", "Manage Goals"));
-        add(new DrawerItem("fa-users", "Manage Users"));
-        add(new DrawerItem("fa-trophy", "Leaderboard"));
-        add(new DrawerItem("fa-gear", "Settings"));
-    }};
-
-    private ArrayList activities = new ArrayList<Class>() {{
-        add(ProfileFragment.class);
-        add(AlertsFragment.class);
-        add(LifelineRequestFragment.class);
-        add(ManageGoalsFragment.class);
-        add(ManageUsersFragment.class);
-        add(LeaderboardFragment.class);
-        add(SettingsFragment.class);
+        add(new DrawerItem(ProfileFragment.class, "fa-bullhorn", "Profile"));
+        add(new DrawerItem(AlertsFragment.class, "fa-globe", "Alerts"));
+        add(new DrawerItem(LifelineRequestFragment.class, "fa-flag", "Lifeline Requests", true));
+        add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
+        add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
+        add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
+        add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
     }};
 
     private DrawerLayout drawerLayout;
@@ -112,7 +104,7 @@ public class MainActivity extends BaseActivity {
     private void selectItem(int position) throws IllegalAccessException, InstantiationException {
         for(int i = 0; i < drawerItems.size(); i++) {
             if(position == i) {
-                Class fragmentClass = (Class) activities.get(i);
+                Class fragmentClass = ((DrawerItem) drawerItems.get(i)).className;
                 ViewHelper.injectFragment((Fragment) fragmentClass.newInstance(), getSupportFragmentManager(), R.id.frame_container);
                 break;
             }
@@ -138,19 +130,20 @@ public class MainActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
+        Log.i("healthy", "is admin : " + authUser.isAdmin());
         if(!authUser.isAdmin()) {
 
-            // remove lifeline requests
-            activities.remove(2);
-            activities.remove(2);
+            List<DrawerItem> toRemove = new ArrayList<>();
 
-            // remove manage users
-            activities.remove(4);
-            drawerItems.remove(4);
+            for(Object item : drawerItems) {
+                DrawerItem drawerItem = (DrawerItem) item;
 
-            // remove settings page
-            activities.remove(6);
-            drawerItems.remove(6);
+                if(drawerItem.isAdmin) {
+                    toRemove.add(drawerItem);
+                }
+            }
+
+            drawerItems.removeAll(toRemove);
         }
     }
 

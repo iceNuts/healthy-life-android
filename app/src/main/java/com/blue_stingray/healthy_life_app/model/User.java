@@ -1,15 +1,17 @@
 package com.blue_stingray.healthy_life_app.model;
 
+import android.util.Log;
+
 public class User {
 
     private String id;
-    private String mentorId;
+    private String mentor_id;
     private String name;
     private String email;
-    private String createdAt;
-    private String updatedAt;
-    private String deletedAt;
-    private String isAdmin;
+    private String created_at;
+    private String updated_at;
+    private String deleted_at;
+    private String is_admin;
     private String age;
     private String score;
 
@@ -35,7 +37,8 @@ public class User {
     }
 
     public boolean isAdmin() {
-        return isAdmin == null || isAdmin.equals("0");
+        Log.i("healthy", "is admin : " + is_admin);
+        return !(is_admin == null || is_admin.equals("0"));
     }
 
 }
