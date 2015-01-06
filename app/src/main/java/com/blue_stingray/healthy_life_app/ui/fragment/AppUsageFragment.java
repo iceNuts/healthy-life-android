@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +17,17 @@ import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
 
 import org.eazegraph.lib.charts.BarChart;
+import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.BarModel;
+import org.eazegraph.lib.models.ValueLinePoint;
+import org.eazegraph.lib.models.ValueLineSeries;
 
 import java.util.Date;
 
@@ -64,6 +69,9 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.barchart_container)
     private LinearLayout barchartContainer;
 
+    @InjectView(R.id.percent_usage)
+    private TextView percentUsage;
+
     private View view;
     private Application app;
     private Goal goal;
@@ -93,33 +101,38 @@ public class AppUsageFragment extends RoboFragment {
         if(app.hasGoal()) {
 
             createGoal.setVisibility(View.GONE);
-            currentGoal.setText(String.valueOf(goal.getTimeLimit()));
-            timeUsed.setText(String.valueOf(goal.getLimitDay()));
-            lifelinesUsed.setText("0");
 
             final String start = String.valueOf(Time.getStartOfDay(new Date()).getTime());
             String end = String.valueOf(Time.getEndOfDay(new Date()).getTime());
 
             final ProgressDialog progress = ProgressDialog.show(getActivity(), "", "Loading...", true);
 
-            rest.getStatsByDate(app.getPackageName(), start, end, new Callback<Stat[]>() {
+            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end), new Callback<Stat[]>() {
                 @Override
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
 
-                    //
+                    currentGoal.setText(String.valueOf(goal.getTimeLimit()));
+                    timeUsed.setText(String.valueOf(goal.getLimitDay()));
+                    lifelinesUsed.setText("N/A");
+
+                    if(stats.length > 0) {
+                        for(Stat stat : stats) {
+                            TextView view = new TextView(getActivity());
+                            view.setText(String.valueOf(stat.getId()));
+                            usageList.addView(view);
+                        }
+                    } else {
+                        TextView empty = new TextView(getActivity());
+                        empty.setText("No usage statistics.");
+                        usageList.addView(empty);
+                    }
 
                     progress.cancel();
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    usageList.removeAllViews();
-
-                    TextView empty = new TextView(getActivity());
-                    empty.setText("No usage statistics.");
-                    usageList.addView(empty);
-
                     progress.cancel();
                 }
             });
@@ -131,12 +144,11 @@ public class AppUsageFragment extends RoboFragment {
                         @Override
                         public void success(AppUsage usage, Response response) {
                             setupChart(usage.getData());
+                            percentUsage.setText(usage.getPercentageUseFormatted());
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
-
-                        }
+                        public void failure(RetrofitError error) {}
                     });
                 }
 
@@ -165,13 +177,15 @@ public class AppUsageFragment extends RoboFragment {
     public void setupChart(Integer[] data) {
 
         // setup bar chart
-        BarChart mBarChart = (BarChart) view.findViewById(R.id.barchart);
+        ValueLineChart lineChart = (ValueLineChart) view.findViewById(R.id.usage_chart);
+        ValueLineSeries points = new ValueLineSeries();
 
         for (int i = 0; i < data.length; i+=2) {
-            mBarChart.addBar(new BarModel(String.valueOf(i), data[i], 0xFF123456));
+            points.addPoint(new ValueLinePoint(String.valueOf(i), data[i]));
         }
 
-        mBarChart.startAnimation();
+        lineChart.addSeries(points);
+        lineChart.startAnimation();
     }
 
     private class CreateGoalButtonListener implements View.OnClickListener {

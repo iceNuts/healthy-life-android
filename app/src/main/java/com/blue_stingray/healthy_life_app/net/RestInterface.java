@@ -6,7 +6,6 @@ import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
-import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
@@ -19,14 +18,9 @@ import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
-import com.squareup.okhttp.Call;
-
 import retrofit.Callback;
 import retrofit.http.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 /**
  * The RESTful interface
@@ -96,8 +90,8 @@ public interface RestInterface {
     @GET("/stat/lastUpdate")
     void getStatLastUpdateStamp(Callback<Stat> cb);
 
-    @GET("/stat/bydate")
-    void getStatsByDate(@Query("application_id") String application_id, @Query("start") String start, @Query("stop") String stop, Callback<Stat[]> cb);
+    @POST("/stat/bydate")
+    void getStatsByDate(@Body StatForm statForm, Callback<Stat[]> cb);
 
     @POST("/stat")
     void createStats(@Body List<StatForm> statsArray, Callback<Stat> cb);

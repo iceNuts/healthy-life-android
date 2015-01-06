@@ -35,11 +35,11 @@ public class UserListAdapter extends BaseListAdapter<User> {
         }
 
         if(trackableApps != null) {
-            trackableApps.setText(String.valueOf(user.getTrackableApps()));
+            trackableApps.setText(String.valueOf("N/A"));
         }
 
         if(goalsActive != null) {
-            goalsActive.setText(String.valueOf(user.getActiveGoals()));
+            goalsActive.setText(String.valueOf("N/A"));
         }
 
         if(score != null) {

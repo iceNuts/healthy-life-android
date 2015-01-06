@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="You use your apps 23% less than all Healthy App users"
+                android:text="You use your apps N/A less than all Healthy App users"
                 android:id="@+id/percentage"
                 android:textSize="14sp"
                 android:textColor="@color/grey_text_light" />

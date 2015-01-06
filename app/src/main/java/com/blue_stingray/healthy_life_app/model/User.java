@@ -14,21 +14,22 @@ public class User {
     private String is_admin;
     private String age;
     private String score;
+    private float percentile;
 
     public User(String name) {
         this.name = name;
     }
 
-    public int getTrackableApps() {
-        return 10;
-    }
-
-    public int getActiveGoals() {
-        return 9;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public float getPercentile() {
+        return percentile;
+    }
+
+    public String getPercentileFormatted() {
+        return (percentile * 100) + "%";
     }
 
     public int getScore() {
