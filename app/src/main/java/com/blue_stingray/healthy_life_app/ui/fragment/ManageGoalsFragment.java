@@ -77,12 +77,25 @@ public class ManageGoalsFragment extends RoboFragment {
 
                         Application app = apps.get(position);
 
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("appinfo", app);
+                        if(app.hasGoal()) {
 
-                        Fragment fragment = new AppUsageFragment();
-                        fragment.setArguments(bundle);
-                        ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("appinfo", app);
+
+                            Fragment fragment = new AppUsageFragment();
+                            fragment.setArguments(bundle);
+                            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+                        } else {
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("appName", app.getName());
+
+                            Fragment fragment = new CreateGoalFragment();
+                            fragment.setArguments(bundle);
+
+                            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+                        }
+
                     }
                 });
             }

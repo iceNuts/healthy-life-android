@@ -6,18 +6,18 @@ public class Goal {
     private String application_id;
     private String packageName;
 
-    private transient int timeLimit;
-    private transient int limitDay;
+    private transient float timeLimit;
+    private transient float limitDay;
 
     public String getPackageName() {
         return packageName;
     }
 
-    public int getTimeLimit() {
+    public float getTimeLimit() {
         return timeLimit;
     }
 
-    public int getLimitDay() {
+    public float getLimitDay() {
         return limitDay;
     }
 
@@ -25,11 +25,11 @@ public class Goal {
         this.packageName = packageName;
     }
 
-    public void setTimeLimit(int timeLimit) {
+    public void setTimeLimit(float timeLimit) {
         this.timeLimit = timeLimit;
     }
 
-    public void setLimitDay(int limitDay) {
+    public void setLimitDay(float limitDay) {
         this.limitDay = limitDay;
     }
 }

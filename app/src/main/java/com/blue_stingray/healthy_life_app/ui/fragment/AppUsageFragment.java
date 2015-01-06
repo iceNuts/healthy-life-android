@@ -2,7 +2,6 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import android.support.v4.app.Fragment;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -22,15 +20,10 @@ import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
-
-import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.ValueLineChart;
-import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.ValueLinePoint;
 import org.eazegraph.lib.models.ValueLineSeries;
-
 import java.util.Date;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -47,9 +40,6 @@ public class AppUsageFragment extends RoboFragment {
 
     @InjectView(R.id.time_used)
     private TextView timeUsed;
-
-    @InjectView(R.id.lifelines_used)
-    private TextView lifelinesUsed;
 
     @InjectView(R.id.create_goal)
     private Button createGoal;
@@ -112,9 +102,8 @@ public class AppUsageFragment extends RoboFragment {
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
 
-                    currentGoal.setText(String.valueOf(goal.getTimeLimit()));
-                    timeUsed.setText(String.valueOf(goal.getLimitDay()));
-                    lifelinesUsed.setText("N/A");
+                    currentGoal.setText(String.valueOf(goal.getTimeLimit()) + " hours");
+                    timeUsed.setText(String.valueOf(goal.getLimitDay()) + " hours");
 
                     if(stats.length > 0) {
                         for(Stat stat : stats) {
