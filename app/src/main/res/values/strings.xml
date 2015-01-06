@@ -13,7 +13,7 @@
     <string name="title_activity_post_login">Account Setup</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_registration">RegistrationActivity</string>
-    <string name="title_usage_alerts">Usage Alerts</string>
+    <string name="title_usage_alerts">Alerts</string>
     <string name="title_app_usage">App Usage</string>
     <string name="title_create_goal">Create Goal</string>
     <string name="title_lifeline_request">Lifeline Requests</string>
@@ -24,6 +24,7 @@
     <string name="title_user_settings">Settings</string>
     <string name="title_user_overview">Overview</string>
     <string name="title_leaderboard">Leaderboard</string>
+    <string name="title_edit_goal">Edit Goal</string>
 
     <!-- HTTP -->
     <string name="server_error_title">Server Error</string>
@@ -65,6 +66,7 @@
     <string name="action_settings">Settings</string>
     <string name="admin_removal_label">Remove Device Administrator</string>
     <string name="lock_prefs_key">locked</string>
+    <string name="logout_prefs_key">logout</string>
     <string name="enable_device_admin">Enable Device Administrator</string>
     <string name="app_usage_limit_reached">Sorry, this App is no longer available to use today, please request more time from Administrator</string>
     <string name="app_alert_close">Close</string>
@@ -72,6 +74,7 @@
 
     <!-- Create Goal -->
     <string name="creating_goal">Creating goal...</string>
+    <string name="editing_goal">Editing goal...</string>
     <string-array name="goal_type">
         <item>Daily</item>
         <item>Weekly</item>
@@ -90,5 +93,6 @@
         <item>Trackable Apps</item>
         <item>Alerts</item>
         <item>Usage Statistics</item>
+        <item>Remove</item>
     </string-array>
 </resources>

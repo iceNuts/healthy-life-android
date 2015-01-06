@@ -22,7 +22,7 @@ public abstract class BaseActivity extends RoboFragmentActivity {
     @Inject
     protected DatabaseHelper databaseHelper;
     @Inject
-    protected SharedPreferencesHelper prefs;
+    public SharedPreferencesHelper prefs;
     private DevicePolicyManager devicePolicyManager;
     private ComponentName adminReceiverName;
 

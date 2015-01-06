@@ -24,7 +24,7 @@ public class StartActivity extends BaseActivity {
         // Start services in case being run for the first time
         starter.startServices();
 
-// TEST only
+        // TEST only
 //        prefs.setState(SharedPreferencesHelper.State.NONE);
         switch (prefs.getState()) {
             case NONE:

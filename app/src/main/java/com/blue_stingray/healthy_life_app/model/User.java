@@ -1,19 +1,45 @@
 package com.blue_stingray.healthy_life_app.model;
 
+import android.util.Log;
+
 public class User {
 
-    public String name;
+    private String id;
+    private String mentor_id;
+    private String name;
+    private String email;
+    private String created_at;
+    private String updated_at;
+    private String deleted_at;
+    private String is_admin;
+    private String age;
+    private String score;
+    private float percentile;
 
     public User(String name) {
         this.name = name;
     }
 
-    public int getTrackableApps() {
-        return 10;
+    public String getName() {
+        return name;
     }
 
-    public int getActiveGoals() {
-        return 9;
+    public float getPercentile() {
+        return percentile;
+    }
+
+    public String getPercentileFormatted() {
+        return (percentile * 100) + "%";
+    }
+
+    public int getScore() {
+        Double score = Double.parseDouble(this.score);
+        return Math.max(0, score.intValue());
+    }
+
+    public boolean isAdmin() {
+        Log.i("healthy", "is admin : " + is_admin);
+        return !(is_admin == null || is_admin.equals("0"));
     }
 
 }

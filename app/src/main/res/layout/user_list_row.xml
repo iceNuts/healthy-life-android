@@ -3,100 +3,112 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
     android:id="@+id/rel">
 
-    <ImageView
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:id="@+id/app_icon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/round_blue"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
-
-    <TextView
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="100"
-        android:id="@+id/textView"
-        android:gravity="center_vertical|center_horizontal"
-        android:textColor="@android:color/white"
-        android:layout_alignTop="@+id/app_icon"
-        android:layout_alignLeft="@+id/app_icon"
-        android:layout_alignStart="@+id/app_icon" />
-
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/app_icon"
-        android:layout_toEndOf="@+id/app_icon"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:gravity="top"
-        android:weightSum="1"
-        android:id="@+id/linearLayout"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
+        style="@style/Card"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User"
-            android:id="@+id/user_name"
-            android:layout_toEndOf="@+id/app_icon"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/app_icon"
-            android:layout_toRightOf="@+id/app_icon"
-            android:layout_alignTop="@+id/app_icon"
-            android:textSize="22dp" />
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            <ImageView
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:id="@+id/app_icon"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/round_blue"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
 
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:text="10"
-                android:id="@+id/trackable_apps"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="100"
+                android:id="@+id/textView"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@android:color/white"
+                android:layout_alignTop="@+id/app_icon"
+                android:layout_alignLeft="@+id/app_icon"
+                android:layout_alignStart="@+id/app_icon"
                 android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="258dp"
-                android:layout_height="wrap_content"
-                android:text="trackable apps "
-                android:id="@+id/trackable_apps_label" />
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/linearLayout2">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/app_icon"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="top"
+            android:weightSum="1"
+            android:id="@+id/linearLayout"
+            android:layout_marginRight="5dp">
 
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:text="09"
-                android:id="@+id/goals_active"
-                android:textStyle="bold"
-                android:textAlignment="textEnd" />
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:text="User"
+                android:id="@+id/user_name"
+                android:layout_toEndOf="@+id/app_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/app_icon"
+                android:layout_toRightOf="@+id/app_icon"
+                android:layout_alignTop="@+id/app_icon"
+                android:textSize="22dp"
+                android:gravity="center_vertical" />
 
-            <TextView
-                android:layout_width="258dp"
-                android:layout_height="wrap_content"
-                android:text="goals active"
-                android:id="@+id/goals_active_label" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:text="13"
+                    android:id="@+id/trackable_apps"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="258dp"
+                    android:layout_height="wrap_content"
+                    android:text="trackable apps "
+                    android:id="@+id/trackable_apps_label"
+                    android:textSize="13dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/linearLayout2">
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:text="09"
+                    android:id="@+id/goals_active"
+                    android:textStyle="bold"
+                    android:textAlignment="textEnd"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:layout_width="258dp"
+                    android:layout_height="wrap_content"
+                    android:text="goals active"
+                    android:id="@+id/goals_active_label"
+                    android:textSize="13dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

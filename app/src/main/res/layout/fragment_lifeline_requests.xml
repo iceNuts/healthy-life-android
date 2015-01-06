@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<LinearLayout
+    android:id="@+id/blank_message"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_background_light"
+    android:gravity="center">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="No lifeline requests yet :("
+            android:id="@+id/textView13"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/grey_icon" />
+    </LinearLayout>
+
+</LinearLayout>
+
+<LinearLayout
+    android:id="@+id/message"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,4 +43,6 @@
         android:id="@+id/lifeline_request_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+</LinearLayout>
+
 </LinearLayout>

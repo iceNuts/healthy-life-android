@@ -9,14 +9,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.google.inject.Inject;
 
 import org.w3c.dom.Text;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 public class SplashFragment extends RoboFragment {
+
+    @Inject
+    private RestInterface rest;
 
     private Typeface delius;
 

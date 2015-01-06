@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
+import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -21,9 +22,6 @@ import java.util.Date;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by BillZeng on 11/23/14.
- */
 public class BlockerActivity extends BaseActivity{
 
     private ActivityManager activityManager;
@@ -35,6 +33,15 @@ public class BlockerActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // hide action bar
+        ActionBar actionBar = getActionBar();
+        if(actionBar != null) {
+            actionBar.hide();
+        }
+
+        // set transparent background
+        setContentView(R.layout.activity_blocker);
 
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
 

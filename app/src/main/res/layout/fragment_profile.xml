@@ -2,9 +2,8 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_background_light">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -18,9 +17,13 @@
             android:gravity="center|center_vertical"
             android:padding="20dp">
 
-            <ImageView
+            <android.widget.IconTextView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:text="{fa-trophy}"
+                android:textSize="80sp"
+                android:gravity="center"
+                android:textColor="@color/green_primary"
                 android:id="@+id/imageView" />
 
             <TextView
@@ -30,33 +33,54 @@
                 android:text="Health Rating"
                 android:id="@+id/title"
                 android:textColor="@color/grey_text_dark"
-                android:textSize="26dp" />
+                android:textStyle="bold"
+                android:textSize="24sp" />
 
             <TextView
-                android:layout_width="179dp"
+                android:layout_width="220dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="You use your apps 23% less than all Healthy App users"
+                android:text="You use your apps N/A less than all Healthy App users"
                 android:id="@+id/percentage"
-                android:textSize="12dp"
+                android:textSize="14sp"
                 android:textColor="@color/grey_text_light" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp">
+            android:weightSum="2">
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="180dp"
-                android:id="@+id/imageView2"
-                android:layout_weight="1" />
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical">
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/imageView2"
+                    android:background="@drawable/round_green"/>
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="89"
+                    android:id="@+id/current_score"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textSize="60dp"
+                    android:textColor="@color/white"
+                    android:layout_alignLeft="@+id/imageView2"
+                    android:layout_alignStart="@+id/imageView2"
+                    android:layout_alignTop="@+id/imageView2"
+                    android:layout_alignBottom="@+id/imageView2"
+                    android:layout_alignRight="@+id/imageView2"
+                    android:layout_alignEnd="@+id/imageView2"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -64,14 +88,29 @@
                 android:orientation="vertical"
                 android:layout_weight="1">
 
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Rating Details"
-                    android:id="@+id/textView"
-                    android:textSize="20dp"
-                    android:paddingBottom="4dp" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Rating Details"
+                        android:id="@+id/textView"
+                        android:textSize="20dp"
+                        android:paddingBottom="4dp" />
+
+                    <android.widget.IconTextView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:text="{fa-gear}"
+                        android:textSize="20dp"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/grey_text_light"
+                        android:id="@+id/details_button" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +118,8 @@
                     android:text="All apps"
                     android:id="@+id/textView2"
                     android:paddingBottom="4dp"
-                    android:textColor="@color/grey_text_light" />
+                    android:textColor="@color/grey_text_light"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,20 +128,15 @@
                     android:id="@+id/textView3"
                     android:textColor="@color/grey_text_light"
                     android:textSize="12dp" />
+
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Card"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:weightSum="2"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:id="@+id/linearLayout"
-            android:layout_marginTop="12dp">
+            android:id="@+id/linearLayout">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -119,6 +154,18 @@
                 android:id="@+id/textView5"
                 android:paddingBottom="4dp"
                 android:textColor="@color/grey_text_light" />
+
+            <org.eazegraph.lib.charts.ValueLineChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rating_history"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:egUseCubic="true"
+                app:egUseOverlapFill="true"
+                app:egCurveSmoothness="0.4"
+                app:egIndicatorLineColor="#FE6DA8"
+                app:egLegendHeight="40dp"
+                app:egShowStandardValue="true"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

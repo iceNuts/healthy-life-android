@@ -388,8 +388,8 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Goal"
-            android:id="@+id/create_goal"
+            android:text="Edit Goal"
+            android:id="@+id/edit_goal"
             android:background="@color/blue_primary"
             android:textColor="@color/white" />
 

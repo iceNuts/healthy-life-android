@@ -6,91 +6,93 @@
     android:id="@+id/rel">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
+        style="@style/Card"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:gravity="top"
             android:weightSum="1"
-            android:id="@+id/linearLayout"
-            android:background="@color/white"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
+            android:id="@+id/linearLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alert Name"
-                android:id="@+id/alert_name"
+                android:text="Holden"
+                android:id="@+id/subject"
                 android:layout_toEndOf="@+id/app_icon"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@+id/app_icon"
                 android:layout_toRightOf="@+id/app_icon"
                 android:layout_alignTop="@+id/app_icon"
-                android:textSize="22dp"
-                android:layout_marginBottom="6dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="has a new"
+                android:id="@+id/action"
+                android:layout_toEndOf="@+id/app_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/app_icon"
+                android:layout_toRightOf="@+id/app_icon"
+                android:layout_alignTop="@+id/app_icon"
+                android:textSize="16dp"
+                android:layout_marginLeft="4dp" />
 
-                <IconTextView
-                    android:layout_width="wrap_content"
-                    android:text="{fa-user}"
-                    android:textSize="16dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fa_user" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="usage report"
+                android:id="@+id/target"
+                android:layout_toEndOf="@+id/app_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/app_icon"
+                android:layout_toRightOf="@+id/app_icon"
+                android:layout_alignTop="@+id/app_icon"
+                android:textSize="16dp"
+                android:layout_marginLeft="4dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brian Rehg"
-                    android:id="@+id/user"
-                    android:textColor="@color/grey_text_dark"
-                    android:textSize="14dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center_vertical">
-
-                <IconTextView
-                    android:layout_width="wrap_content"
-                    android:text="{fa-clock-o}"
-                    android:textSize="16dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fa_clock" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15 min on 10/15/22"
-                    android:id="@+id/last_stat"
-                    android:textColor="@color/grey_text_dark"
-                    android:textSize="14dp" />
-            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:id="@+id/alert_color"
-            android:background="@color/blue_primary" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:weightSum="1"
+            android:id="@+id/linearLayout4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <android.widget.IconTextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="{fa-clock-o}"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:id="@+id/timeIcon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10/8/2014 5:55 pm"
+                android:id="@+id/created_at"
+                android:layout_toEndOf="@+id/app_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/app_icon"
+                android:layout_toRightOf="@+id/app_icon"
+                android:layout_alignTop="@+id/app_icon"
+                android:textSize="18dp"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -28,17 +28,22 @@ public class UserListAdapter extends BaseListAdapter<User> {
         TextView name = ((TextView) convertView.findViewById(R.id.user_name));
         TextView trackableApps = ((TextView) convertView.findViewById(R.id.trackable_apps));
         TextView goalsActive = ((TextView) convertView.findViewById(R.id.goals_active));
+        TextView score = ((TextView) convertView.findViewById(R.id.score));
 
         if(name != null) {
-            name.setText(user.name);
+            name.setText(user.getName());
         }
 
         if(trackableApps != null) {
-            trackableApps.setText(String.valueOf(user.getTrackableApps()));
+            trackableApps.setText(String.valueOf("N/A"));
         }
 
         if(goalsActive != null) {
-            goalsActive.setText(String.valueOf(user.getActiveGoals()));
+            goalsActive.setText(String.valueOf("N/A"));
+        }
+
+        if(score != null) {
+            score.setText(String.valueOf(user.getScore()));
         }
 
         return convertView;

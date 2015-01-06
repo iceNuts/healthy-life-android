@@ -2,13 +2,12 @@ package com.blue_stingray.healthy_life_app.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.blue_stingray.healthy_life_app.ui.adapter.BaseListAdapter;
 
-public class LinearList extends LinearLayout{
+public class LinearList extends LinearLayout {
 
     public LinearList(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,7 +33,6 @@ public class LinearList extends LinearLayout{
         final int adapterCount = adapter.getCount();
 
         for (int i = 0; i < adapterCount; i++) {
-            Log.i("healthy", "creating index : " + i);
             View item = adapter.getView(i, null, null);
             item.setTag(i);
 

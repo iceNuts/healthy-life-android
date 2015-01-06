@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -44,24 +45,32 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
         ((TextView) convertView.findViewById(R.id.app_name)).setText(currentLifeline.app_name);
         ((TextView) convertView.findViewById(R.id.last_stat)).setText(currentLifeline.requested_at);
 
-        convertView.findViewById(R.id.deny).setOnClickListener(new DenyClickListener(currentLifeline.id));
-        convertView.findViewById(R.id.approve).setOnClickListener(new AcceptClickListener(currentLifeline.id));
+        View denyButton = convertView.findViewById(R.id.deny);
+        View approveButton = convertView.findViewById(R.id.approve);
+
+        denyButton.setTag(position);
+        approveButton.setTag(position);
+
+        convertView.findViewById(R.id.deny).setOnClickListener(new DenyClickListener(this, currentLifeline.id));
+        convertView.findViewById(R.id.approve).setOnClickListener(new AcceptClickListener(this, currentLifeline.id));
 
         return convertView;
     }
 
     public class DenyClickListener implements View.OnClickListener {
 
-        private String id;
+        private LifelineRequestListAdapter adapter;
+        private int lifelineId;
 
-        public DenyClickListener(String id) {
-            this.id = id;
+        public DenyClickListener(LifelineRequestListAdapter adapter, String id) {
+            this.lifelineId = Integer.valueOf(id);
+            this.adapter = adapter;
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             rest.updateLifeline(
-                new Integer(id),
+                lifelineId,
                 new LifelineUpdateForm(
                     null,
                     getCurrentDatetime()
@@ -71,28 +80,43 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
                     null
                 ) {
                     @Override
-                    public void onSuccess(Lifeline lifeline, Response response) {/*not much to do*/}
+                    public void onSuccess(Lifeline lifeline, Response response) {
+
+                        rest.destroyLifeline(lifelineId, new Callback<Object>() {
+                            @Override
+                            public void success(Object o, Response response) {
+                                lifelines.remove((int) v.getTag());
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {}
+                        });
+
+                    }
                     @Override
-                    public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
+                    public void onFailure(RetrofitError retrofitError) {}
                 }
             );
-            Toast.makeText(activity, "Deny", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Request Denied", Toast.LENGTH_LONG).show();
         }
     }
 
     public class AcceptClickListener implements View.OnClickListener {
 
-        private String id;
+        private LifelineRequestListAdapter adapter;
+        private int lifelineId;
 
-        public AcceptClickListener(String id) {
-            this.id = id;
+        public AcceptClickListener(LifelineRequestListAdapter adapter, String id) {
+            this.lifelineId = Integer.valueOf(id);
+            this.adapter = adapter;
         }
 
 
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             rest.updateLifeline(
-                    new Integer(id),
+                    lifelineId,
                     new LifelineUpdateForm(
                         getCurrentDatetime(),
                         null
@@ -102,12 +126,25 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
                         null
                     ) {
                         @Override
-                        public void onSuccess(Lifeline lifeline, Response response) {/*not much to do*/}
+                        public void onSuccess(Lifeline lifeline, Response response) {
+
+                            rest.destroyLifeline(lifelineId, new Callback<Object>() {
+                                @Override
+                                public void success(Object o, Response response) {
+                                    lifelines.remove((int) v.getTag());
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {}
+                            });
+
+                        }
                         @Override
                         public void onFailure(RetrofitError retrofitError) {/*not much to do*/}
                     }
             );
-            Toast.makeText(activity, "Accept", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Request Accepted", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -1,15 +1,20 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.adapter.DrawerAdapter;
 import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
@@ -19,27 +24,32 @@ import com.blue_stingray.healthy_life_app.ui.fragment.ManageUsersFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.blue_stingray.healthy_life_app.ui.fragment.SplashFragment;
 import com.blue_stingray.healthy_life_app.ui.widget.DrawerItem;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Main activity for starts
  */
 public class MainActivity extends BaseActivity {
 
-    private final DrawerItem[] drawerItems = new DrawerItem[] {
-            new DrawerItem("fa-bullhorn", "Profile"),
-            new DrawerItem("fa-globe", "Alerts"),
-            new DrawerItem("fa-flag", "Lifeline Requests"),
-            new DrawerItem("fa-bar-chart", "Manage Goals"),
-            new DrawerItem("fa-users", "Manage Users"),
-            new DrawerItem("fa-trophy", "Leaderboard"),
-            new DrawerItem("fa-gear", "Settings")
-    };
+    private User authUser;
+
+    private ArrayList drawerItems = new ArrayList<DrawerItem>() {{
+        add(new DrawerItem(ProfileFragment.class, "fa-bullhorn", "Profile"));
+        add(new DrawerItem(AlertsFragment.class, "fa-globe", "Alerts"));
+        add(new DrawerItem(LifelineRequestFragment.class, "fa-flag", "Lifeline Requests", true));
+        add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
+        add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
+        add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
+        add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
+    }};
+
     private DrawerLayout drawerLayout;
+
+    private SharedPreferences preferences;
+
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -47,27 +57,16 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DrawerAdapter adapter = new DrawerAdapter(this, Arrays.asList(drawerItems), R.layout.drawer_list_item);
+        preferences = getSharedPreferences("main", 0);
+        authUser = ((App) getApplication()).getAuthUser(this);
+        if(authUser == null) {
+            ViewHelper.unauthorized(this);
+            finish();
+            return;
+        }
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
-        drawerListView.setAdapter(adapter);
-
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                null,  /* nav drawer icon to replace 'Up' caret */
-                0,  /* "open drawer" description */
-                0  /* "close drawer" description */
-        );
-
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-        ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
+        setupDrawer();
+        showSplashFragment();
     }
 
     @Override
@@ -92,36 +91,70 @@ public class MainActivity extends BaseActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
+            try {
+                selectItem(position);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void selectItem(int position) {
-        switch(position) {
-            case 0:
-                ViewHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
+    private void selectItem(int position) throws IllegalAccessException, InstantiationException {
+        for(int i = 0; i < drawerItems.size(); i++) {
+            if(position == i) {
+                Class fragmentClass = ((DrawerItem) drawerItems.get(i)).className;
+                ViewHelper.injectFragment((Fragment) fragmentClass.newInstance(), getSupportFragmentManager(), R.id.frame_container);
                 break;
-            case 1:
-                ViewHelper.injectFragment(new AlertsFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 2:
-                ViewHelper.injectFragment(new LifelineRequestFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 3:
-                ViewHelper.injectFragment(new ManageGoalsFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 4:
-                ViewHelper.injectFragment(new ManageUsersFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 5:
-                ViewHelper.injectFragment(new LeaderboardFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
-            case 6:
-                ViewHelper.injectFragment(new SettingsFragment(), getSupportFragmentManager(), R.id.frame_container);
-                break;
+            }
         }
 
         drawerLayout.closeDrawers();
+    }
+
+    private void setupDrawer() {
+        DrawerAdapter adapter = new DrawerAdapter(this, drawerItems, R.layout.drawer_list_item);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
+        drawerListView.setAdapter(adapter);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                0,  /* "open drawer" description */
+                0  /* "close drawer" description */
+        );
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        Log.i("healthy", "is admin : " + authUser.isAdmin());
+        if(!authUser.isAdmin()) {
+
+            List<DrawerItem> toRemove = new ArrayList<>();
+
+            for(Object item : drawerItems) {
+                DrawerItem drawerItem = (DrawerItem) item;
+
+                if(drawerItem.isAdmin) {
+                    toRemove.add(drawerItem);
+                }
+            }
+
+            drawerItems.removeAll(toRemove);
+        }
+    }
+
+    private void showSplashFragment() {
+        boolean firstRun = preferences.getBoolean("firstRun", true);
+        if (firstRun) {
+            ViewHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("firstRun", false);
+            editor.commit();
+        }
     }
 
 }
