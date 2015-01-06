@@ -109,7 +109,7 @@
                         android:textSize="20dp"
                         android:layout_marginLeft="8dp"
                         android:textColor="@color/grey_text_light"
-                        android:id="@+id/textView18" />
+                        android:id="@+id/details_button" />
                 </LinearLayout>
 
                 <TextView

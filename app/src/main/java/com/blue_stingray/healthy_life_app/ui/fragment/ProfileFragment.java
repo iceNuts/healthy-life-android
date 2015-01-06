@@ -1,12 +1,14 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.IconTextView;
 import android.widget.TextView;
 
 import com.blue_stingray.healthy_life_app.App;
@@ -46,6 +48,9 @@ public class ProfileFragment extends RoboFragment {
     @InjectView(R.id.rating_history)
     private ValueLineChart ratingHistory;
 
+    @InjectView(R.id.details_button)
+    private IconTextView detailsButton;
+
     private User authUser;
 
     private Integer[] scoresByMonth;
@@ -67,7 +72,9 @@ public class ProfileFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(authUser.getName());
+
         currentScore.setText(String.valueOf(authUser.getScore()));
+        detailsButton.setOnClickListener(new OnDetailsClickListener());
         setupLineChart();
     }
 
@@ -107,6 +114,14 @@ public class ProfileFragment extends RoboFragment {
 
             }
         });
+    }
+
+    private class OnDetailsClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            ViewHelper.injectFragment(new LeaderboardFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+        }
     }
 
 }

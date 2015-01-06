@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity {
     private void showSplashFragment() {
         boolean firstRun = preferences.getBoolean("firstRun", true);
         if (firstRun) {
-            ViewHelper.injectFragment(new SplashFragment(), getSupportFragmentManager(), R.id.frame_container);
+            ViewHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("firstRun", false);
             editor.commit();
