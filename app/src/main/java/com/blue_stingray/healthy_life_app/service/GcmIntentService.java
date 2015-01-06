@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.blue_stingray.healthy_life_app.R;
@@ -104,7 +106,14 @@ public class GcmIntentService extends IntentService {
             newGoalMap.put(DayTranslate(goalDay), Integer.valueOf(goalHour));
 
             dataHelper.createNewGoal(packageName, newGoalMap);
-
+            final PackageManager pm = getApplicationContext().getPackageManager();
+            ApplicationInfo ai;
+            try {
+                ai = pm.getApplicationInfo(packageName, 0);
+                fireNotification("A new goal has been set for "+pm.getApplicationLabel(ai)+" on website.");
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }catch (JSONException e) {
             e.printStackTrace();
         }
