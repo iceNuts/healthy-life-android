@@ -51,6 +51,9 @@ public class ProfileFragment extends RoboFragment {
     @InjectView(R.id.details_button)
     private IconTextView detailsButton;
 
+    @InjectView(R.id.percentile_ranking)
+    private TextView percentileRanking;
+
     private User authUser;
 
     private Integer[] scoresByMonth;
@@ -74,6 +77,7 @@ public class ProfileFragment extends RoboFragment {
         getActivity().setTitle(authUser.getName());
 
         currentScore.setText(String.valueOf(authUser.getScore()));
+        percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         detailsButton.setOnClickListener(new OnDetailsClickListener());
         setupLineChart();
     }

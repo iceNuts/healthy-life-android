@@ -37,6 +37,9 @@ public class LeaderboardFragment extends RoboFragment {
     @InjectView(R.id.current_score)
     private TextView currentScore;
 
+    @InjectView(R.id.percentile_ranking)
+    private TextView percentileRanking;
+
     private final ArrayList<User> users = new ArrayList<User>();
 
     private User authUser;
@@ -59,6 +62,7 @@ public class LeaderboardFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.title_leaderboard);
         currentScore.setText(String.valueOf(authUser.getScore()));
+        percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         createList();
     }
 
