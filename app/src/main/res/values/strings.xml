@@ -25,6 +25,7 @@
     <string name="title_user_overview">Overview</string>
     <string name="title_leaderboard">Leaderboard</string>
     <string name="title_edit_goal">Edit Goal</string>
+    <string name="title_edit_user">Edit User</string>
 
     <!-- HTTP -->
     <string name="server_error_title">Server Error</string>
@@ -63,6 +64,8 @@
     <string name="registration_success_description">You have successfully registered. Please check your email to verify your account before logging in.</string>
     <string name="child_registration_success_title">Registration Successful</string>
     <string name="child_registration_success_description">You successfully registered a user.</string>
+    <string name="child_edit_success_title">Edit Successful</string>
+    <string name="child_edit_success_description">You successfully edited a user.</string>
     <string name="email_in_use">Email address is already in use.</string>
 
     <!-- Settings -->
@@ -78,6 +81,7 @@
     <!-- Create Goal -->
     <string name="creating_goal">Creating goal...</string>
     <string name="editing_goal">Editing goal...</string>
+    <string name="editing_user">Editing user...</string>
     <string-array name="goal_type">
         <item>Daily</item>
         <item>Weekly</item>
@@ -96,6 +100,7 @@
         <item>Trackable Apps</item>
         <item>Alerts</item>
         <item>Usage Statistics</item>
+        <item>Edit</item>
         <item>Remove</item>
     </string-array>
 </resources>

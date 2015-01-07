@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,15 +103,18 @@ public class ManageUsersFragment extends RoboFragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             User user = users.get(position);
             final String[] options = getResources().getStringArray(R.array.user_selection);
-            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(options)).show();
+            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(user, options)).show();
         }
     }
 
     private class UserSelectionDialogClickListener implements DialogInterface.OnClickListener {
 
+        private User user;
+
         private String[] options;
 
-        public UserSelectionDialogClickListener(String[] options) {
+        public UserSelectionDialogClickListener(User user, String[] options) {
+            this.user = user;
             this.options = options;
         }
 
@@ -128,8 +132,17 @@ public class ManageUsersFragment extends RoboFragment {
                 case "Usage Statistics":
                     ViewHelper.injectFragment(new UserOverviewFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
+                case "Edit":
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("user", user);
+
+                    Fragment fragment = new EditUserFragment();
+                    fragment.setArguments(bundle);
+
+                    ViewHelper.injectFragment(fragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
+                    break;
                 case "Remove":
-                    Toast.makeText(getActivity(), "TODO", Toast.LENGTH_SHORT).show();
                     break;
             }
 

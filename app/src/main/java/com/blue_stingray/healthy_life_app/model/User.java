@@ -2,7 +2,9 @@ package com.blue_stingray.healthy_life_app.model;
 
 import android.util.Log;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String id;
     private String mentor_id;
@@ -47,8 +49,19 @@ public class User {
     }
 
     public boolean isAdmin() {
-        Log.i("healthy", "is admin : " + is_admin);
         return !(is_admin == null || is_admin.equals("0"));
+    }
+
+    public int getIsAdmin() {
+        return Integer.valueOf(is_admin);
+    }
+
+    public int getMentorId() {
+        return Integer.valueOf(mentor_id);
+    }
+
+    public String getEmail() {
+        return email;
     }
 
 }

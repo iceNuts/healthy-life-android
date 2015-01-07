@@ -74,7 +74,7 @@ public class RegistrationActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createUser(new UserForm(nameField.getText(), emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
+            rest.createUser(new UserForm(nameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(User user, Response response) {
                     AlertDialog successDialog = DialogHelper.createDismissiveDialog(RegistrationActivity.this, R.string.registration_success_title, R.string.registration_success_description);

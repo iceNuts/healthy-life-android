@@ -35,14 +35,14 @@
                 android:inputType="textEmailAddress"
                 android:id="@+id/emailField"
                 android:hint="@string/email"
-                android:text="billzeng808@gmail.com" />
+                android:text="dustin@bluestingray.com" />
 
             <EditText
                 style="@style/Input"
                 android:inputType="textPassword"
                 android:id="@+id/passwordField"
                 android:hint="@string/password"
-                android:text="12345678" />
+                android:text="password" />
 
             <LinearLayout
                 android:orientation="horizontal"
