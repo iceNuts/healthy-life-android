@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Alert;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RestInterfaceProvider;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
@@ -42,10 +43,17 @@ public class AlertsFragment extends RoboFragment {
 
     private DataHelper dataHelper;
 
+    private User user;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alerts, container, false);
         dataHelper = DataHelper.getInstance(getActivity());
+
+        if(getArguments() != null) {
+            user = (User) getArguments().getSerializable("user");
+        }
+
         return view;
     }
 
@@ -53,7 +61,15 @@ public class AlertsFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.title_usage_alerts);
-        createList();
+
+        if(user != null) {
+            getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
+
+            // TODO handle user specific alerts
+        } else {
+
+            createList();
+        }
     }
 
     public void createList() {

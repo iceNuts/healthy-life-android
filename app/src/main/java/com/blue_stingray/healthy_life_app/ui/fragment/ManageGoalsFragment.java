@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.adapter.AppGoalListAdapter;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -34,15 +35,27 @@ public class ManageGoalsFragment extends RoboFragment {
     private ListView appList;
 
     private ProgressDialog loadingDialog;
+
     private ArrayList<Application> apps;
+
+    private User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_goals, container, false);
         getActivity().setTitle(R.string.title_manage_goals);
-        loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
-        new CreateList().start();
-        setHasOptionsMenu(true);
+
+        if(getArguments() != null) {
+            user = (User) getArguments().getSerializable("user");
+            getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
+
+            // TODO handle user specfic applications
+        } else {
+            loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
+            new CreateList().start();
+            setHasOptionsMenu(true);
+        }
+
         return view;
     }
 

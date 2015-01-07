@@ -124,25 +124,33 @@ public class ManageUsersFragment extends RoboFragment {
         public void onClick(DialogInterface dialog, int which) {
             String item = options[which];
 
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+
             switch (item) {
                 case "Trackable Apps":
-                    ViewHelper.injectFragment(new ManageGoalsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+
+                    Fragment manageGoalsFragment = new ManageGoalsFragment();
+                    manageGoalsFragment.setArguments(bundle);
+
+                    ViewHelper.injectFragment(manageGoalsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
                 case "Alerts":
-                    ViewHelper.injectFragment(new AlertsFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+
+                    Fragment alertsFragment = new AlertsFragment();
+                    alertsFragment.setArguments(bundle);
+
+                    ViewHelper.injectFragment(alertsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
                 case "Usage Statistics":
                     ViewHelper.injectFragment(new UserOverviewFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
                 case "Edit":
 
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("user", user);
+                    Fragment editUserFragment = new EditUserFragment();
+                    editUserFragment.setArguments(bundle);
 
-                    Fragment fragment = new EditUserFragment();
-                    fragment.setArguments(bundle);
-
-                    ViewHelper.injectFragment(fragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
+                    ViewHelper.injectFragment(editUserFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
                 case "Remove":
                     final AlertDialog choiceDialog = DialogHelper.createYesNoDialog(getActivity(), "Are you sure?", "Yes", "No",
