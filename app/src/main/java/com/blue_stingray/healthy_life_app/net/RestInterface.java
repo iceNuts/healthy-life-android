@@ -49,11 +49,8 @@ public interface RestInterface {
     @PUT("/user/{id}")
     void updateUser(@Path("id") int id, @Body UserForm userForm, Callback<User> cb);
 
-    @DELETE("/user")
-    void destroyUser(Callback cb);
-
     @DELETE("/user/{id}")
-    void destroyUser(@Path("id") int id, Callback cb);
+    void destroyUser(@Path("id") int id, Callback<Object> cb);
 
     @GET("/leaderboard")
     void getLeaderboard(Callback<List<User>> cb);

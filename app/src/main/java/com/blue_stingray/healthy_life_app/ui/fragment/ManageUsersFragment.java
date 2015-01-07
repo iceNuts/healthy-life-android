@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -143,6 +145,34 @@ public class ManageUsersFragment extends RoboFragment {
                     ViewHelper.injectFragment(fragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
                     break;
                 case "Remove":
+                    final AlertDialog choiceDialog = DialogHelper.createYesNoDialog(getActivity(), "Are you sure?", "Yes", "No",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(final DialogInterface choiceDialog, int which) {
+                                rest.destroyUser(user.getId(), new Callback<Object>() {
+                                    @Override
+                                    public void success(Object o, Response response) {
+                                        ViewHelper.injectFragment(new ManageUsersFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
+                                        choiceDialog.cancel();
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {}
+                                });
+                            }
+                        },
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface choiceDialog, int which) {
+                                choiceDialog.cancel();
+                            }
+                        });
+
+                    dialog.cancel();
+                    choiceDialog.show();
+
                     break;
             }
 

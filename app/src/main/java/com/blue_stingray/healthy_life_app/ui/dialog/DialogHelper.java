@@ -66,4 +66,12 @@ public class DialogHelper {
         return builder.create();
     }
 
+    public static AlertDialog createYesNoDialog(Context context, String title, String acceptMessage, String denyMessage, DialogInterface.OnClickListener accept, DialogInterface.OnClickListener deny) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setPositiveButton(acceptMessage, accept);
+        builder.setNegativeButton(denyMessage, deny);
+        return builder.create();
+    }
+
 }
