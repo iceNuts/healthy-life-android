@@ -131,4 +131,16 @@ public class ValidationRule {
                         }, ctx.getString(R.string.invalid_email)
                 );
     }
+
+    public static ValidationRule requiredValidationRule(Context ctx, int message) {
+        return new ValidationRule()
+                .addConstraint(
+                        new ValidationRule.ValidationConstraint() {
+                            @Override
+                            public boolean isValid(CharSequence chars) {
+                                return chars.length() != 0;
+                            }
+                        }, ctx.getString(message)
+                );
+    }
 }

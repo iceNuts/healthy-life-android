@@ -36,6 +36,9 @@ public class RegistrationActivity extends BaseActivity {
     @InjectView(R.id.emailField)
     private EditText emailField;
 
+    @InjectView(R.id.nameField)
+    private EditText nameField;
+
     @InjectView(R.id.register)
     private Button registerButton;
 
@@ -54,6 +57,7 @@ public class RegistrationActivity extends BaseActivity {
         confirmPasswordField.setTypeface(Typeface.DEFAULT);
 
         validationManager = new FormValidationManager();
+        validationManager.addField(nameField, ValidationRule.requiredValidationRule(this, R.string.missing_name));
         validationManager.addField(emailField, ValidationRule.newEmailValidationRule(this));
         validationManager.addField(passwordField, ValidationRule.newPasswordValidationRule(this));
         validationManager.addField(confirmPasswordField, ValidationRule.newConfirmPasswordValidationRule(this, passwordField), passwordField);
@@ -70,7 +74,7 @@ public class RegistrationActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            rest.createUser(new UserForm(emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
+            rest.createUser(new UserForm(nameField.getText(), emailField.getText(), passwordField.getText()), new RetrofitDialogCallback<User>(RegistrationActivity.this, progressDialog) {
                 @Override
                 public void onSuccess(User user, Response response) {
                     AlertDialog successDialog = DialogHelper.createDismissiveDialog(RegistrationActivity.this, R.string.registration_success_title, R.string.registration_success_description);

@@ -50,6 +50,7 @@
     <string name="logging_in">Logging in…</string>
     <string name="missing_email">Missing Email Address</string>
     <string name="missing_password">Missing Password</string>
+    <string name="missing_name">Missing Name</string>
     <string name="invalid_email">Invalid Email Address</string>
     <string name="register">create</string>
     <string name="confirm_password">confirm password</string>
@@ -60,6 +61,8 @@
     <string name="incorrect_credentials_description">Your email address or password is incorrect. Please try again.</string>
     <string name="registration_success_title">Registration Successful</string>
     <string name="registration_success_description">You have successfully registered. Please check your email to verify your account before logging in.</string>
+    <string name="child_registration_success_title">Registration Successful</string>
+    <string name="child_registration_success_description">You successfully registered a user.</string>
     <string name="email_in_use">Email address is already in use.</string>
 
     <!-- Settings -->
