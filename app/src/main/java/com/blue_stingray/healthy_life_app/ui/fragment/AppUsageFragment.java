@@ -102,13 +102,13 @@ public class AppUsageFragment extends RoboFragment {
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
 
-                    currentGoal.setText(String.valueOf(goal.getTimeLimit()) + " hours");
-                    timeUsed.setText(String.valueOf(goal.getLimitDay()) + " hours");
+                    currentGoal.setText(String.valueOf(goal.getGoalTime()) + " hours");
+                    timeUsed.setText(String.format("%2.2f", goal.getTimeUsedHours()) + " hours");
 
                     if(stats.length > 0) {
                         for(Stat stat : stats) {
                             TextView view = new TextView(getActivity());
-                            view.setText(String.valueOf(stat.getId()));
+                            view.setText(Time.getPrettyTime(stat.getStart()) + " - " + stat.getElapsed() + " s");
                             usageList.addView(view);
                         }
                     } else {

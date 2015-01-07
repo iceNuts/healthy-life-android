@@ -1,5 +1,7 @@
 package com.blue_stingray.healthy_life_app.model;
 
+import com.blue_stingray.healthy_life_app.util.Time;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,23 +61,11 @@ public class Alert {
     }
 
     public Timestamp getCreatedAt() {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return new Timestamp(formatter.parse(created_at).getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Time.parseSqlDate(created_at);
     }
 
     public Timestamp getUpdatedAt() {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return new Timestamp(formatter.parse(updated_at).getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Time.parseSqlDate(updated_at);
     }
 
     public User getUser() {

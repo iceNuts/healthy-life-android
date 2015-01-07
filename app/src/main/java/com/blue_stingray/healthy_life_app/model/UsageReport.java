@@ -25,7 +25,7 @@ public class UsageReport {
 
         // count score occurrences
         for(Map.Entry<String, String> scoreEntry : score_history.entrySet()) {
-            Timestamp timestamp = Time.parseSqlDate(scoreEntry.getKey());
+            Timestamp timestamp = Time.parseSqlDate(scoreEntry.getKey(), false);
             int month = timestamp.getMonth();
             int score = Integer.parseInt(scoreEntry.getValue());
 

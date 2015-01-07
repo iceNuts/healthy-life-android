@@ -14,7 +14,8 @@ public class User {
     private String is_admin;
     private String age;
     private String score;
-    private float percentile;
+    private int percentage;
+    private int rank;
 
     public User(String name) {
         this.name = name;
@@ -24,12 +25,16 @@ public class User {
         return name;
     }
 
-    public float getPercentile() {
-        return percentile;
+    public int getPercentile() {
+        return percentage;
     }
 
     public String getPercentileFormatted() {
-        return (percentile * 100) + "%";
+        return percentage + "%";
+    }
+
+    public int getRank() {
+        return rank;
     }
 
     public int getScore() {

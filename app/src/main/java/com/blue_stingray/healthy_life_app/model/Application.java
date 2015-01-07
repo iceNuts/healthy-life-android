@@ -19,6 +19,7 @@ public class Application implements Serializable {
     public transient ResolveInfo info;
     public transient PackageManager pm;
     public transient DataHelper dataHelper;
+    public transient Context context;
 
     private String id;
     private String deviceId;
@@ -69,7 +70,7 @@ public class Application implements Serializable {
     }
 
     public Goal getGoal() {
-        return dataHelper.getGoal(getPackageName());
+        return dataHelper.getGoal(context, getPackageName());
     }
 
     public String getPackageName() {

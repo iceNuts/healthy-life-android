@@ -41,8 +41,8 @@
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="You use your apps N/A less than all Healthy App users"
-                android:id="@+id/percentage"
+                android:text="You rank in the top N/A% of healthy life users."
+                android:id="@+id/percentile_ranking"
                 android:textSize="14sp"
                 android:textColor="@color/grey_text_light" />
         </LinearLayout>
