@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.service;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.*;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.os.Process;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -48,6 +50,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 import retrofit.android.AndroidLog;
 
@@ -68,7 +71,10 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private RestInterface rest;
 
     private Thread remoteLoggingThread;
+    private Thread timeCountThread;
+    private TimedRunnable timedRunnable;
     private static final int POLL_DELAY_MS = 60*1000;//30*60*1000;
+    private static final int SEC_POLL_DELAY = 1000;
     @Inject private LocalBroadcastManager localBroadcastManager;
 
     private final int STARTFLAG = 1001;
@@ -87,6 +93,7 @@ public class ApplicationLoggingService extends RoboService {
             remoteLoggingReceiver = new RemoteLoggingReceiver();
             registerReceiver(screenStateReceiver, screenStateReceiver.buildIntentFilter());
             startRemoteLogging();
+            startTimeCount();
         }
         return START_STICKY;
     }
@@ -278,8 +285,83 @@ public class ApplicationLoggingService extends RoboService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("Screen", intent.getAction());
 
+            if (intent.getAction() == "android.intent.action.SCREEN_ON") {
+                timedRunnable.onResume();
+            }
+            else {
+                timedRunnable.onPause();
+            }
         }
+    }
+
+    private class TimedRunnable implements Runnable {
+        private Object mPauseLock;
+        private boolean mPaused;
+
+        public TimedRunnable() {
+            mPauseLock = new Object();
+            mPaused = false;
+        }
+
+        public void run() {
+            int timedCount = 0;
+            while (!Thread.interrupted()) {
+                try {
+                    Thread.sleep(SEC_POLL_DELAY);
+                } catch (InterruptedException e) {
+                    break;
+                }
+                if (timedCount == 90) {
+                    timedCount = 0;
+                    fireNotification("You have used 90s, want a rest?");
+                }
+                timedCount++;
+                synchronized (mPauseLock) {
+                    while (mPaused) {
+                        try {
+                            mPauseLock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void onPause() {
+            Log.d("Screen", "on pause");
+            synchronized (mPauseLock) {
+                mPaused = true;
+            }
+        }
+
+        public void onResume() {
+            Log.d("Screen", "on resume");
+            synchronized (mPauseLock) {
+                mPaused = false;
+                mPauseLock.notifyAll();
+            }
+        }
+    }
+
+    private void startTimeCount() {
+
+        timedRunnable = new TimedRunnable();
+        timeCountThread = new Thread(timedRunnable);
+        timeCountThread.start();
+    }
+
+    private void fireNotification(String subject) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(subject);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int mId = 10002;
+        mNotificationManager.notify(mId, mBuilder.build());
     }
 
     // log usage whenever surface app change
