@@ -28,14 +28,29 @@ public class Time {
         return calendar.getTime();
     }
 
-    public static Timestamp parseSqlDate(String date) {
+    public static Timestamp parseSqlDate(String date, boolean withTime) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String formatString = "yyyy-MM-dd";
+            if(withTime) {
+                formatString += " HH:mm:ss";
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat(formatString);
             return new Timestamp(formatter.parse(date).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    public static Timestamp parseSqlDate(String date) {
+        return parseSqlDate(date, true);
+    }
+
+    public static String getPrettyTime(Timestamp timestamp) {
+        SimpleDateFormat formatter = new SimpleDateFormat("M/d/y hh:mm a");
+        return formatter.format(timestamp);
+    }
+
 
 }

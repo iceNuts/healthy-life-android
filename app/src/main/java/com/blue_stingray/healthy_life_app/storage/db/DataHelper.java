@@ -14,9 +14,11 @@ import com.google.inject.Inject;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +62,7 @@ public class DataHelper {
         return instance;
     }
 
-    // Please refer goal table in databasehalper
+    // Please refer goal table in database helper
 
     public void createNewGoal(final String packageName, final HashMap<Integer, Integer> dayMap) {
         new Thread(new Runnable() {
@@ -74,12 +76,13 @@ public class DataHelper {
                     newStat.put(PACKAGE_NAME, packageName);
                     newStat.put(LIMIT_DAY, pairs.getKey().toString());
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
+
                     // Delete old goal
-                    db.delete(GOAL_TABLE, "package_name=? and limit_day=? and time_limit=?", new String[]{
+                    Log.i("healthy", "Deleted goal : " + db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
                             packageName,
-                            pairs.getKey().toString(),
-                            pairs.getValue().toString()
-                    });
+                            pairs.getKey().toString()
+                    }));
+
                     // Insert new goal
                     db.insert(GOAL_TABLE, null, newStat);
                     it.remove();
@@ -120,18 +123,21 @@ public class DataHelper {
     }
 
     public Integer getGoalTime(String packageName) {
-        return getGoalTime(packageName, Calendar.DAY_OF_WEEK);
+        return getGoalTime(packageName, Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
     }
 
     public Integer getGoalTime(String packageName, int day) {
-        String currentDayOfWeek = String.valueOf(Calendar.getInstance().get(day));
-        return instance.goalCache.get(packageName+currentDayOfWeek);
+        return instance.goalCache.get(packageName + String.valueOf(Calendar.getInstance().get(day)));
     }
 
-    public Goal getGoal(String packageName) {
-        Goal goal = new Goal();
+    public Goal getGoal(Context context, String packageName) {
+        return getGoal(context, packageName, Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+    }
+
+    public Goal getGoal(Context context, String packageName, int day) {
+        Goal goal = new Goal(context);
         Cursor goalCursor = db.rawQuery(
-                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"",
+                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\" AND limit_day=\"" + day + "\"",
                 new String[]{
                 }
         );
@@ -172,7 +178,7 @@ public class DataHelper {
 
     // Get a package total used recorded time, all time is counted by sec
 
-    private Integer getDBRecordedTotalTime(String packageName) {
+    public Integer getDBRecordedTotalTime(String packageName) {
         Calendar cal = Calendar.getInstance();
         String currentYear = String.valueOf(cal.get(Calendar.YEAR));
         String currentMonth = String.valueOf(cal.get(Calendar.MONTH));
