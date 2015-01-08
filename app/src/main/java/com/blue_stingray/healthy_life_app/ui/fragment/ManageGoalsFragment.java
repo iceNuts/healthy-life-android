@@ -14,15 +14,23 @@ import android.widget.ListView;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.ui.adapter.AppGoalListAdapter;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.util.Log;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -30,6 +38,9 @@ import roboguice.inject.InjectView;
  * Provides a list of user install applications.
  */
 public class ManageGoalsFragment extends RoboFragment {
+
+    @Inject
+    private RestInterface rest;
 
     @InjectView(R.id.apps)
     private ListView appList;
@@ -50,6 +61,28 @@ public class ManageGoalsFragment extends RoboFragment {
             getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
 
             // TODO handle user specfic applications
+            rest.getUserDevices(user.getId(), new Callback<List<Device>>() {
+                @Override
+                public void success(List<Device> devices, Response response) {
+
+                    for(Device device : devices) {
+                        rest.getDeviceApps(device.id, new Callback<List<Application>>() {
+                            @Override
+                            public void success(List<Application> applications, Response response) {}
+
+                            @Override
+                            public void failure(RetrofitError error) {}
+                        });
+                    }
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
         } else {
             loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
             new CreateList().start();

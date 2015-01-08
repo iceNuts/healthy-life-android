@@ -22,17 +22,44 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = super.getView(position, convertView, parent);
-
         Alert alert = data.get(position);
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
-        ((TextView) convertView.findViewById(R.id.subject)).setText(alert.getSubject());
-        ((TextView) convertView.findViewById(R.id.action)).setText(alert.getAction());
-        ((TextView) convertView.findViewById(R.id.target)).setText(alert.getTarget());
-        ((TextView) convertView.findViewById(R.id.created_at)).setText(formatter.format(alert.getCreatedAt()));
+        if(alert.getTargetType().equals("Application") || alert.getTargetType().equals("Goal"))
+        {
 
-        return convertView;
+            // render Application alert
+            return getApplicationView(position, convertView, parent);
+        }
+        else if(alert.getTargetType().equals("UsageReport"))
+        {
+
+            // render UsageReport alert
+            return getUsageReportView(position, convertView, parent);
+        }
+        else
+        {
+
+            // render an empty view, since we don't recognize this alert type
+            return getEmptyView(position, convertView, parent);
+        }
+
+//        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+//        ((TextView) convertView.findViewById(R.id.subject)).setText(alert.getSubject());
+//        ((TextView) convertView.findViewById(R.id.action)).setText(alert.getAction());
+//        ((TextView) convertView.findViewById(R.id.target)).setText(alert.getTarget());
+//        ((TextView) convertView.findViewById(R.id.created_at)).setText(formatter.format(alert.getCreatedAt()));
+    }
+
+    private View getApplicationView(int position, View convertView, ViewGroup parent) {
+        return super.getView(position, inflater.inflate(R.layout.alert_list_row, parent, false), parent);
+    }
+
+    private View getUsageReportView(int position, View convertView, ViewGroup parent) {
+        return super.getView(position, inflater.inflate(R.layout.alert_usage_list_row, parent, false), parent);
+    }
+
+    private View getEmptyView(int position, View convertView, ViewGroup parent) {
+        return super.getView(position, inflater.inflate(R.layout.empty, parent, false), parent);
     }
 
 }

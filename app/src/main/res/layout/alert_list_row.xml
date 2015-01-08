@@ -74,7 +74,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:text="{fa-clock-o}"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:gravity="center"
                 android:id="@+id/timeIcon" />
 
@@ -89,7 +89,7 @@
                 android:layout_alignBottom="@+id/app_icon"
                 android:layout_toRightOf="@+id/app_icon"
                 android:layout_alignTop="@+id/app_icon"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:layout_marginLeft="5dp" />
         </LinearLayout>
 

@@ -45,10 +45,16 @@ public class AlertsFragment extends RoboFragment {
 
     private User user;
 
+    private List<Alert> allAlerts;
+
+    private ProgressDialog loading;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alerts, container, false);
         dataHelper = DataHelper.getInstance(getActivity());
+
+        loading = ProgressDialog.show(getActivity(), "Alerts", "Loading...");
 
         if(getArguments() != null) {
             user = (User) getArguments().getSerializable("user");
@@ -62,27 +68,58 @@ public class AlertsFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.title_usage_alerts);
 
-        if(user != null) {
-            getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
-
-            // TODO handle user specific alerts
-        } else {
-
-            createList();
+        if(user != null)
+        {
+            loadUserAlerts();
+        }
+        else
+        {
+            loadAuthUserAlerts();
         }
     }
 
+    /**
+     * Create the alert list
+     */
     public void createList() {
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Alerts", "Loading...");
+        if(allAlerts.size() > 0) {
+            blankMessage.setVisibility(View.GONE);
+            AlertListAdapter adapter = new AlertListAdapter(getActivity(), allAlerts);
+            alertList.setAdapter(adapter);
+        }
 
+        loading.cancel();
+    }
+
+    /**
+     * Load in alerts from the currently authenticated user
+     */
+    public void loadAuthUserAlerts() {
         rest.getAlerts(new Callback<List<Alert>>() {
             @Override
             public void success(List<Alert> alerts, Response response) {
-                blankMessage.setVisibility(View.GONE);
-                AlertListAdapter adapter = new AlertListAdapter(getActivity(), alerts);
-                alertList.setAdapter(adapter);
+                allAlerts = alerts;
+                createList();
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
                 loading.cancel();
+            }
+        });
+    }
+
+    /**
+     * Load in a child users alerts
+     */
+    public void loadUserAlerts() {
+        getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
+
+        rest.getUserAlerts(user.getId(), new Callback<List<Alert>>() {
+            @Override
+            public void success(List<Alert> alerts, Response response) {
+                allAlerts = alerts;
+                createList();
             }
 
             @Override

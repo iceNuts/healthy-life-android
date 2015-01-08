@@ -14,11 +14,11 @@ public class Alert {
     private String target_type;
     private String created_at;
     private String updated_at;
-    private User user;
     public String subject;
     private String action;
     private String target;
     private String message;
+    private User user;
 
     public Alert(String subject) {
         this.subject = subject;
@@ -46,6 +46,10 @@ public class Alert {
         }
 
         return Integer.valueOf(target_id);
+    }
+
+    public String getTargetType() {
+        return target_type;
     }
 
     public String getSubject() {

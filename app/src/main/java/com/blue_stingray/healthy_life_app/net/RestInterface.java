@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.net;
 import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
+import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
@@ -36,6 +37,12 @@ public interface RestInterface {
 
     @GET("/user/{id}")
     void getUser(@Path("id") int id, Callback<User> cb);
+
+    @GET("/user/{id}/devices")
+    void getUserDevices(@Path("id") int id, Callback<List<Device>> cb);
+
+    @GET("/user/{id}/alerts")
+    void getUserAlerts(@Path("id") int id, Callback<List<Alert>> cb);
 
     @GET("/user")
     void getUsersChangedSince(@Query("timestamp") int timestamp, Callback<List<User>> cb);
@@ -112,5 +119,9 @@ public interface RestInterface {
     // Alerts
     @GET("/alert")
     void getAlerts(Callback<List<Alert>> cb);
+
+    // Devices
+    @GET("/device/{id}/apps")
+    void getDeviceApps(@Path("id") int id, Callback<List<Application>> cb);
 
 }
