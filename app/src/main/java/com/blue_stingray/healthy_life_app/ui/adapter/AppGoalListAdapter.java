@@ -2,10 +2,13 @@ package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -41,8 +44,15 @@ public class AppGoalListAdapter extends BaseListAdapter<Application> {
         Application app = data.get(position);
 
         ((TextView) convertView.findViewById(R.id.app_name)).setText(app.getName());
-        ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
 
+        // Set the icon if it exists, otherwise remove icon
+        if(app.hasIcon()) {
+            ((ImageView) convertView.findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
+        } else {
+            ((LinearLayout) convertView.findViewById(R.id.container)).removeView(convertView.findViewById(R.id.app_icon_container));
+        }
+
+        // Set if the app has a goal or not
         if(app.hasGoal()) {
             ((TextView) convertView.findViewById(R.id.message)).setText("Goal is set");
             convertView.findViewById(R.id.container).setBackgroundColor(activity.getResources().getColor(R.color.green_primary_light));

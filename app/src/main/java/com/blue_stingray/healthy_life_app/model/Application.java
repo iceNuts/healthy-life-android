@@ -30,6 +30,7 @@ public class Application implements Serializable {
     private String createdAt;
     private String updatedAt;
     private String deletedAt;
+    private Goal[] active_goals;
 
     /**
      * @param pm PackageManager
@@ -50,7 +51,19 @@ public class Application implements Serializable {
      * @return String name
      */
     public String getName() {
-        return info.loadLabel(pm).toString();
+        if(name == null) {
+            name = info.loadLabel(pm).toString();
+        }
+
+        return name;
+    }
+
+    /**
+     * Checks if the application can pull an icon from the package manager
+     * @return boolean
+     */
+    public boolean hasIcon() {
+        return !(info == null || pm == null);
     }
 
     /**
@@ -58,6 +71,10 @@ public class Application implements Serializable {
      * @return Drawable icon
      */
     public Drawable getIcon() {
+        if(!hasIcon()) {
+            return null;
+        }
+
         return info.loadIcon(pm);
     }
 
@@ -66,6 +83,10 @@ public class Application implements Serializable {
      * @return boolean
      */
     public boolean hasGoal() {
+        if(dataHelper == null) {
+            return !(active_goals == null || active_goals.length == 0);
+        }
+
         return dataHelper.isGoal(getPackageName());
     }
 
@@ -74,6 +95,10 @@ public class Application implements Serializable {
     }
 
     public String getPackageName() {
+        if(info == null) {
+            return null;
+        }
+
         return info.activityInfo.packageName;
     }
 

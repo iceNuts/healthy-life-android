@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.blue_stingray.healthy_life_app.App;
@@ -45,46 +46,63 @@ public class ManageGoalsFragment extends RoboFragment {
     @InjectView(R.id.apps)
     private ListView appList;
 
+    @InjectView(R.id.blank_message)
+    private LinearLayout blankMessage;
+
     private ProgressDialog loadingDialog;
 
     private ArrayList<Application> apps;
 
     private User user;
 
+    private int requestsMade;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_goals, container, false);
         getActivity().setTitle(R.string.title_manage_goals);
 
+        loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
+        requestsMade = 0;
+        apps = new ArrayList<>();
+
         if(getArguments() != null) {
             user = (User) getArguments().getSerializable("user");
             getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
 
-            // TODO handle user specfic applications
             rest.getUserDevices(user.getId(), new Callback<List<Device>>() {
                 @Override
-                public void success(List<Device> devices, Response response) {
+                public void success(final List<Device> devices, Response response) {
 
-                    for(Device device : devices) {
-                        rest.getDeviceApps(device.id, new Callback<List<Application>>() {
-                            @Override
-                            public void success(List<Application> applications, Response response) {}
+                    if(devices.size() > 0) {
 
-                            @Override
-                            public void failure(RetrofitError error) {}
-                        });
+                        for(Device device : devices) {
+                            rest.getDeviceApps(device.id, new Callback<List<Application>>() {
+                                @Override
+                                public void success(List<Application> applications, Response response) {
+                                    updateList(applications, devices.size());
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    loadingDialog.dismiss();
+                                }
+                            });
+                        }
+
+                    } else {
+                        loadingDialog.dismiss();
                     }
 
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    loadingDialog.dismiss();
                 }
             });
 
         } else {
-            loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
             new CreateList().start();
             setHasOptionsMenu(true);
         }
@@ -109,12 +127,28 @@ public class ManageGoalsFragment extends RoboFragment {
         }
     }
 
+    private synchronized void updateList(List<Application> apps, int requestLimit) {
+        this.apps.addAll(apps);
+
+        if(++requestsMade == requestLimit) {
+            createList();
+        }
+    }
+
     private void createList() {
+        final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
+        appList.setAdapter(adapter);
+        blankMessage.setVisibility(View.GONE);
+        loadingDialog.dismiss();
+    }
+
+    private void createAuthList() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
+                blankMessage.setVisibility(View.GONE );
                 appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -165,7 +199,7 @@ public class ManageGoalsFragment extends RoboFragment {
                     }
                 }
             } finally {
-                createList();
+                createAuthList();
                 loadingDialog.dismiss();
             }
         }
