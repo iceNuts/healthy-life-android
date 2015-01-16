@@ -133,4 +133,8 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
     }
 
+    public void showSocialConnect(View v) {
+        startActivity(new Intent(LoginActivity.this, SocialConnectActivity.class));
+    }
+
 }

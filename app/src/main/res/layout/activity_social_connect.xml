@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_primary">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="@color/blue_primary" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout7"
+            android:paddingBottom="60dp" >
+
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/imageView6"
+                android:src="@drawable/healthy"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp" />
+
+            <Button
+                style="@style/Submit"
+                android:text="Facebook"
+                android:id="@+id/button4"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                android:textColor="@color/blue_primary"/>
+
+            <Button
+                style="@style/Submit"
+                android:text="Google"
+                android:id="@+id/button3"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                android:textColor="@color/blue_primary"/>
+
+            <Button
+                android:background="@drawable/link_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go back"
+                android:textSize="14dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:id="@+id/button2"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:layout_marginTop="10dp"
+                android:onClick="showLogin"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
