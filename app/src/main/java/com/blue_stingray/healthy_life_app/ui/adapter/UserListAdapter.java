@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class UserListAdapter extends BaseListAdapter<User> {
@@ -26,24 +28,19 @@ public class UserListAdapter extends BaseListAdapter<User> {
 
         User user = data.get(position);
         TextView name = ((TextView) convertView.findViewById(R.id.user_name));
-        TextView trackableApps = ((TextView) convertView.findViewById(R.id.trackable_apps));
-        TextView goalsActive = ((TextView) convertView.findViewById(R.id.goals_active));
         TextView score = ((TextView) convertView.findViewById(R.id.score));
+        TextView email = ((TextView) convertView.findViewById(R.id.email));
 
         if(name != null) {
             name.setText(user.getName());
         }
 
-        if(trackableApps != null) {
-            trackableApps.setText(String.valueOf("N/A"));
-        }
-
-        if(goalsActive != null) {
-            goalsActive.setText(String.valueOf("N/A"));
-        }
-
         if(score != null) {
             score.setText(String.valueOf(user.getScore()));
+        }
+
+        if(email != null) {
+            email.setText(user.getEmail());
         }
 
         return convertView;

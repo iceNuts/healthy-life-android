@@ -8,69 +8,39 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/grey_background_light">
 
         <LinearLayout
             style="@style/Card"
             android:orientation="vertical"
-            android:weightSum="2"
-            android:id="@+id/linearLayout6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_gravity="center_horizontal"
+            android:gravity="center|center_vertical"
+            android:id="@+id/linearLayout6">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Most used apps"
-                android:id="@+id/textView15"
-                android:textSize="20dp"
-                android:paddingBottom="4dp"
+                android:id="@+id/locked_apps_text"
+                android:textSize="40dp"
                 android:textStyle="bold" />
 
-            <com.blue_stingray.healthy_life_app.ui.widget.LinearList
-                android:id="@+id/most_used"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"/>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="locked apps"
+                android:id="@+id/locked_apps_label"
+                android:textSize="20dp" />
         </LinearLayout>
 
-        <LinearLayout
+        <com.blue_stingray.healthy_life_app.ui.widget.LinearList
+            android:id="@+id/locked"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_height="match_parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Locked Apps"
-                android:id="@+id/textView19"
-                android:textColor="@color/blue_primary"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/textView24"
-                android:background="@color/blue_primary"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp" />
-
-            <com.blue_stingray.healthy_life_app.ui.widget.LinearList
-                android:id="@+id/locked"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
     </LinearLayout>
 
 

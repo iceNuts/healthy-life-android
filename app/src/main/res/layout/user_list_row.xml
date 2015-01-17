@@ -64,29 +64,8 @@
                 android:layout_toRightOf="@+id/app_icon"
                 android:layout_alignTop="@+id/app_icon"
                 android:textSize="22dp"
-                android:gravity="center_vertical" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="26dp"
-                    android:layout_height="wrap_content"
-                    android:text="13"
-                    android:id="@+id/trackable_apps"
-                    android:textStyle="bold"
-                    android:textSize="14dp" />
-
-                <TextView
-                    android:layout_width="258dp"
-                    android:layout_height="wrap_content"
-                    android:text="trackable apps "
-                    android:id="@+id/trackable_apps_label"
-                    android:textSize="13dp" />
-
-            </LinearLayout>
+                android:gravity="center_vertical"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -95,20 +74,11 @@
                 android:id="@+id/linearLayout2">
 
                 <TextView
-                    android:layout_width="26dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="09"
-                    android:id="@+id/goals_active"
-                    android:textStyle="bold"
-                    android:textAlignment="textEnd"
-                    android:textSize="14dp" />
-
-                <TextView
-                    android:layout_width="258dp"
-                    android:layout_height="wrap_content"
-                    android:text="goals active"
-                    android:id="@+id/goals_active_label"
-                    android:textSize="13dp" />
+                    android:text="N/A"
+                    android:id="@+id/email"
+                    android:textColor="#666" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

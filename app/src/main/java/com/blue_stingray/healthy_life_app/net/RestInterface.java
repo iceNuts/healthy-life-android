@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.net;
 
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -43,6 +44,9 @@ public interface RestInterface {
 
     @GET("/user/{id}/alerts")
     void getUserAlerts(@Path("id") int id, Callback<List<Alert>> cb);
+
+    @GET("/user/{id}/lockedApps")
+    void getUserLockedApps(@Path("id") int id, Callback<List<Application>> cb);
 
     @GET("/user")
     void getUsersChangedSince(@Query("timestamp") int timestamp, Callback<List<User>> cb);
