@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,17 +38,16 @@ public class UserOverviewFragment extends RoboFragment {
 
     private View view;
 
-    ArrayList<Application> apps = new ArrayList<>();
-
     private User authUser;
+
+    private ProgressDialog loading;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_user_overview, container, false);
-
-        apps = Application.createFromUserApplications(getActivity());
-
+        loading = ProgressDialog.show(getActivity(), "User Overview", "Loading...");
         authUser = ((App) getActivity().getApplication()).getAuthUser(getActivity());
+
         if(authUser == null) {
             ViewHelper.unauthorized(getActivity());
             return null;
@@ -70,10 +70,13 @@ public class UserOverviewFragment extends RoboFragment {
                 AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
                 lockedList.setAdapter(adapter);
                 lockedAppsText.setText(String.valueOf(apps.size()));
+                loading.cancel();
             }
 
             @Override
-            public void failure(RetrofitError error) {}
+            public void failure(RetrofitError error) {
+                loading.cancel();
+            }
         });
     }
 

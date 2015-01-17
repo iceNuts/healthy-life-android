@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -32,8 +33,11 @@ public class LifelineRequestFragment extends RoboFragment {
     @InjectView(R.id.blank_message)
     private LinearLayout blankMessage;
 
+    private ProgressDialog loading;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        loading = ProgressDialog.show(getActivity(), "Lifelines", "Loading...");
         return inflater.inflate(R.layout.fragment_lifeline_requests, container, false);
     }
 
@@ -61,6 +65,7 @@ public class LifelineRequestFragment extends RoboFragment {
                                 blankMessage.setVisibility(View.GONE);
                                 final LifelineRequestListAdapter adapter = new LifelineRequestListAdapter(getActivity(), lifelineSeq, rest);
                                 lifelineRequestList.setAdapter(adapter);
+                                loading.cancel();
                             }
                         });
                     }
@@ -69,6 +74,7 @@ public class LifelineRequestFragment extends RoboFragment {
                 @Override
                 public void onFailure(RetrofitError retrofitError) {
                     Log.d("Lifeline", retrofitError.toString());
+                    loading.cancel();
                 }
             }
         );
