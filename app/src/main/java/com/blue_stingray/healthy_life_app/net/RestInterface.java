@@ -71,7 +71,7 @@ public interface RestInterface {
     void createSession(@Body SessionForm sessionForm, Callback<SessionDevice> cb);
 
     @DELETE("/session")
-    void destroySession(Callback cb);
+    void destroySession(Callback<Object> cb);
 
     // Apps
     @POST("/app")

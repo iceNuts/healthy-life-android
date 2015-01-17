@@ -33,7 +33,9 @@ import android.widget.ListView;
 
 import com.blue_stingray.healthy_life_app.R;
 
-public abstract class PreferenceFragment extends Fragment implements PreferenceManagerCompat.OnPreferenceTreeClickListener {
+import roboguice.fragment.RoboFragment;
+
+public abstract class PreferenceFragment extends RoboFragment implements PreferenceManagerCompat.OnPreferenceTreeClickListener {
 
     private static final String PREFERENCES_TAG = "android:preferences";
 

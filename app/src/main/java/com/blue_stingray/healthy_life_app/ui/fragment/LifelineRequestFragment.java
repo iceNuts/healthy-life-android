@@ -25,7 +25,8 @@ import java.util.List;
 
 public class LifelineRequestFragment extends RoboFragment {
 
-    @Inject private RestInterface rest;
+    @Inject
+    private RestInterface rest;
 
     @InjectView(R.id.lifeline_request_list)
     private ListView lifelineRequestList;
