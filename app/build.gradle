@@ -7,13 +7,28 @@ buildscript {
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
     maven {
         url 'https://oss.sonatype.org/content/groups/public'
     }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'org.roboguice:roboguice:3.+'
+    compile 'com.squareup.retrofit:retrofit:1.7.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.google.android.gms:play-services-base:6.5+'
+    compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
+    compile 'com.joanzapata.android:android-iconify:1.0.8'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.facebook.android:facebook-android-sdk:3.21.1@aar'
 }
 
 android {
@@ -52,18 +67,4 @@ android {
     aaptOptions {
         ignoreAssetsPattern '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home'
     }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.android.support:appcompat-v7:21.0.0'
-    compile 'org.roboguice:roboguice:3.+'
-    compile 'com.squareup.retrofit:retrofit:1.7.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.okhttp:okhttp:2.0.0'
-    compile 'com.google.guava:guava:18.0'
-    compile 'com.google.android.gms:play-services-base:6.5+'
-    compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
-    compile 'com.joanzapata.android:android-iconify:1.0.8'
-    compile 'com.nineoldandroids:library:2.4.0'
 }

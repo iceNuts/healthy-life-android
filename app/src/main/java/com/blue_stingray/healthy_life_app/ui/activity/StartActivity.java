@@ -7,6 +7,7 @@ import android.util.Log;
 import com.blue_stingray.healthy_life_app.net.GcmHelper;
 import com.blue_stingray.healthy_life_app.service.ServiceStarter;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
+import com.facebook.AppEventsLogger;
 import com.google.inject.Inject;
 
 
@@ -39,6 +40,20 @@ public class StartActivity extends BaseActivity {
         }
 
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        AppEventsLogger.deactivateApp(this);
     }
 
 }

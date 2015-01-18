@@ -4,6 +4,9 @@
     <!-- App Info -->
     <string name="app_name">Healthy App</string>
 
+    <!-- Social -->
+    <string name="facebook_app_id">352436308115292</string>
+
     <!-- Intents -->
     <string name="app_change">JZ_APP_CHANGE</string>
     <string name="activity_change">JZ_ACTIVITY_CHANGE</string>
