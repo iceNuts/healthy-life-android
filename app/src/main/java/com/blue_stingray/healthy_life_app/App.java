@@ -3,13 +3,7 @@ package com.blue_stingray.healthy_life_app;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Toast;
-
 import com.blue_stingray.healthy_life_app.model.User;
-import com.blue_stingray.healthy_life_app.ui.activity.LoginActivity;
-import com.blue_stingray.healthy_life_app.ui.activity.RegistrationActivity;
 import com.blue_stingray.healthy_life_app.vendor.guice.GuiceModule;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
 
@@ -36,6 +30,11 @@ public class App extends Application {
         appCache = new Cache<>();
         RoboGuice.setUseAnnotationDatabases(false);
         RoboGuice.getOrCreateBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE, RoboGuice.newDefaultRoboModule(this), new GuiceModule());
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
     }
 
     /**
