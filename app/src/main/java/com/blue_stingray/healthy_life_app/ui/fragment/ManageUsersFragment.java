@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +45,10 @@ public class ManageUsersFragment extends RoboFragment {
     private RestInterface rest;
 
     @InjectView(R.id.users)
-    private ListView userList;
+    private LinearList userList;
+
+    @InjectView(R.id.create_user_button)
+    private Button createUserButton;
 
     private List<User> users = new ArrayList<>();
 
@@ -57,6 +63,7 @@ public class ManageUsersFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        createUserButton.setOnClickListener(new CreateUserListener());
         createList();
     }
 
@@ -87,9 +94,7 @@ public class ManageUsersFragment extends RoboFragment {
                 loading.cancel();
 
                 users = usersList;
-                final UserListAdapter adapter = new UserListAdapter(getActivity(), users);
-                userList.setAdapter(adapter);
-                userList.setOnItemClickListener(new UserListClickListener());
+                userList.setAdapter(new UserListAdapter(getActivity(), users), new UserListClickListener());
             }
 
             @Override
@@ -99,11 +104,11 @@ public class ManageUsersFragment extends RoboFragment {
         });
     }
 
-    private class UserListClickListener implements AdapterView.OnItemClickListener {
+    private class UserListClickListener implements View.OnClickListener {
 
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            User user = users.get(position);
+        public void onClick(View v) {
+            User user = users.get((int) v.getTag());
             final String[] options = getResources().getStringArray(R.array.user_selection);
             DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(user, options)).show();
         }
@@ -185,6 +190,15 @@ public class ManageUsersFragment extends RoboFragment {
             }
 
             dialog.cancel();
+        }
+
+    }
+
+    private class CreateUserListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            ViewHelper.injectFragment(new CreateUserFragment(), getFragmentManager(), R.id.frame_container);
         }
 
     }

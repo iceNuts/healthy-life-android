@@ -16,7 +16,7 @@ public class User implements Serializable {
     private String is_admin;
     private String age;
     private String score;
-    private int percentage;
+    private String percentage;
     private int rank;
 
     public User(String name) {
@@ -32,7 +32,7 @@ public class User implements Serializable {
     }
 
     public int getPercentile() {
-        return percentage;
+        return Integer.parseInt(percentage);
     }
 
     public String getPercentileFormatted() {

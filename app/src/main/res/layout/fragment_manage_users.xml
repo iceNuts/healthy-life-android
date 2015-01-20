@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,11 +9,24 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <ListView
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create User"
+            android:id="@+id/create_user_button"
+            android:background="@color/blue_primary"
+            android:textColor="@color/white"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:textSize="16dp" />
+
+        <com.blue_stingray.healthy_life_app.ui.widget.LinearList
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"
-            android:id="@+id/users" />
+            android:id="@+id/users"
+            android:orientation="vertical" />
 
     </LinearLayout>
-</LinearLayout>
+
+</ScrollView>
