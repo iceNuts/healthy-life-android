@@ -65,6 +65,32 @@
             android:orientation="horizontal"
             android:gravity="top"
             android:weightSum="1"
+            android:id="@+id/linearLayout9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <android.widget.IconTextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="{fa-bar-chart-o}"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:id="@+id/appIcon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:id="@+id/goal_name"
+                android:textSize="13sp"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:weightSum="1"
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
