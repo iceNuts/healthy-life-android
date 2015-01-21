@@ -33,6 +33,15 @@ public class UserOverviewFragment extends RoboFragment {
     @InjectView(R.id.locked_apps_text)
     private TextView lockedAppsText;
 
+    @InjectView(R.id.user_name)
+    private TextView userName;
+
+    @InjectView(R.id.percentile_ranking)
+    private TextView percentileRanking;
+
+    @InjectView(R.id.current_score)
+    private TextView currentScore;
+
     private View view;
 
     private User authUser;
@@ -56,7 +65,12 @@ public class UserOverviewFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         getActivity().setTitle("Overview - " + authUser.getName());
+        userName.setText(authUser.getName());
+        percentileRanking.setText("Ranks in the top " + authUser.getPercentile() + "% of healthy life users.");
+        currentScore.setText(String.valueOf(authUser.getScore()));
+
         createLockedList();
     }
 
