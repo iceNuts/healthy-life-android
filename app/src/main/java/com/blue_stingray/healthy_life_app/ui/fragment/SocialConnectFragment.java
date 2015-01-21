@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.ui.activity.GoogleLoginActivity;
 import com.blue_stingray.healthy_life_app.ui.activity.LoginActivity;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -135,7 +136,7 @@ public class SocialConnectFragment extends RoboFragment {
 
         @Override
         public void onClick(View v) {
-            // TODO
+            startActivity(new Intent(getActivity(), GoogleLoginActivity.class));
         }
 
     }
