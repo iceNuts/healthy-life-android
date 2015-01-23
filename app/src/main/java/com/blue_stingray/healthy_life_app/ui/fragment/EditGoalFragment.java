@@ -14,6 +14,8 @@ import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
@@ -23,6 +25,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -128,6 +137,23 @@ public class EditGoalFragment extends RoboFragment {
 
         @Override
         protected void submit() {
+            HashMap<Integer, Integer> dayMap = getDayHours();
+            Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
+            final Iterator it = conDayMap.entrySet().iterator();
+
+
+            while(it.hasNext()) {
+                Map.Entry data = (Map.Entry) it.next();
+                String dayString = DayTranslate((Integer)data.getKey());
+                Integer hours = (Integer)data.getValue();
+
+                Log.i("healthy", "\nApp : " + app.getPackageName());
+                Log.i("healthy", "Hours : " + hours);
+                Log.i("healthy", "Day String : " + dayString + "\n");
+
+                it.remove();
+            }
+
             progressDialog.cancel();
         }
     }

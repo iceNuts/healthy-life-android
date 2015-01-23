@@ -95,6 +95,9 @@ public interface RestInterface {
     @GET("/goal")
     void getGoals(Callback<Goal[]> cb);
 
+    @PUT("/goal")
+    void updateGoal(@Body GoalForm goalForm, Callback<Object> cb);
+
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
 
