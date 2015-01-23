@@ -100,9 +100,9 @@
 
     <!-- Manage Users -->
     <string-array name="user_selection">
-        <item>Trackable Apps</item>
+        <item>Goals</item>
         <item>Alerts</item>
-        <item>Usage Statistics</item>
+        <item>Usage</item>
         <item>Edit</item>
         <item>Remove</item>
     </string-array>

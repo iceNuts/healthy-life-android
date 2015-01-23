@@ -132,33 +132,39 @@ public class ManageUsersFragment extends RoboFragment {
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);
 
-            switch (item) {
-                case "Trackable Apps":
+            // Goals
+            if(item.equals(options[0]))
+            {
+                Fragment manageGoalsFragment = new ManageGoalsFragment();
+                manageGoalsFragment.setArguments(bundle);
+                ViewHelper.injectFragment(manageGoalsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
+            }
+            // Alerts
+            else if(item.equals(options[1]))
+            {
+                Fragment alertsFragment = new AlertsFragment();
+                alertsFragment.setArguments(bundle);
+                ViewHelper.injectFragment(alertsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
 
-                    Fragment manageGoalsFragment = new ManageGoalsFragment();
-                    manageGoalsFragment.setArguments(bundle);
-
-                    ViewHelper.injectFragment(manageGoalsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
-                    break;
-                case "Alerts":
-
-                    Fragment alertsFragment = new AlertsFragment();
-                    alertsFragment.setArguments(bundle);
-
-                    ViewHelper.injectFragment(alertsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
-                    break;
-                case "Usage Statistics":
-                    ViewHelper.injectFragment(new UserOverviewFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
-                    break;
-                case "Edit":
-
-                    Fragment editUserFragment = new EditUserFragment();
-                    editUserFragment.setArguments(bundle);
-
-                    ViewHelper.injectFragment(editUserFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
-                    break;
-                case "Remove":
-                    final AlertDialog choiceDialog = DialogHelper.createYesNoDialog(getActivity(), "Are you sure?", "Yes", "No",
+            }
+            // Usage
+            else if(item.equals(options[2]))
+            {
+                Fragment userOverviewFragment = new UserOverviewFragment();
+                userOverviewFragment.setArguments(bundle);
+                ViewHelper.injectFragment(userOverviewFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
+            }
+            // Edit User
+            else if(item.equals(options[3]))
+            {
+                Fragment editUserFragment = new EditUserFragment();
+                editUserFragment.setArguments(bundle);
+                ViewHelper.injectFragment(editUserFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
+            }
+            // Remove User
+            else if(item.equals(options[4]))
+            {
+                final AlertDialog choiceDialog = DialogHelper.createYesNoDialog(getActivity(), "Are you sure?", "Yes", "No",
                         new DialogInterface.OnClickListener() {
 
                             @Override
@@ -183,10 +189,8 @@ public class ManageUsersFragment extends RoboFragment {
                             }
                         });
 
-                    dialog.cancel();
-                    choiceDialog.show();
-
-                    break;
+                dialog.cancel();
+                choiceDialog.show();
             }
 
             dialog.cancel();

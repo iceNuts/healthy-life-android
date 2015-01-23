@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center|center_vertical"
+    android:id="@+id/linearLayout8"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@style/Card">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Facebook"
+            android:id="@+id/app_name"
+            android:textSize="20dp"
+            android:paddingBottom="4dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:weightSum="1"
+            android:id="@+id/linearLayout4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.widget.IconTextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="{fa-clock-o}"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:id="@+id/user_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24 hours remaining"
+                android:id="@+id/time_remaining"
+                android:textSize="12sp"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:backgroundPadding="5dp"
+            app:backgroundRadius="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            app:backgroundColor="#F7F7F7"
+            app:progressColor="@color/blue_primary"
+            app:progress="50"
+            app:max="100"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 of 24 hours used"
+            android:id="@+id/hours_used"
+            android:textSize="12sp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>
+
