@@ -14,14 +14,15 @@ public class Alert {
     private String target_type;
     private String created_at;
     private String updated_at;
-    public String subject;
-    private String action;
-    private String target;
-    private String message;
     private User user;
+    private Bundle bundle;
 
     public Alert(String subject) {
-        this.subject = subject;
+        if(bundle == null) {
+            bundle = new Bundle();
+        }
+
+        this.bundle.subject = subject;
     }
 
     public int getId() {
@@ -53,15 +54,15 @@ public class Alert {
     }
 
     public String getSubject() {
-        return subject;
+        return bundle.subject;
     }
 
     public String getTarget() {
-        return target;
+        return bundle.target;
     }
 
     public String getAction() {
-        return action;
+        return bundle.action;
     }
 
     public Timestamp getCreatedAt() {
@@ -76,8 +77,12 @@ public class Alert {
         return user;
     }
 
-    public String build() {
-        return message;
+    private class Bundle {
+
+        public String subject;
+        public String action;
+        public String target;
+
     }
 
 }

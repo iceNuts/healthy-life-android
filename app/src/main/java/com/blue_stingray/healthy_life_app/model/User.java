@@ -32,7 +32,7 @@ public class User implements Serializable {
     }
 
     public int getPercentile() {
-        return Integer.parseInt(percentage);
+        return (int) Double.parseDouble(percentage);
     }
 
     public String getPercentileFormatted() {

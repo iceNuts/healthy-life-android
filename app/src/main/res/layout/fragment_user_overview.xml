@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:id="@+id/scroll">
@@ -12,34 +14,126 @@
         android:background="@color/grey_background_light">
 
         <LinearLayout
-            style="@style/Card"
             android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center|center_vertical"
-            android:id="@+id/linearLayout6">
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/locked_apps_text"
-                android:textSize="40dp"
-                android:textStyle="bold" />
+                android:text="Name"
+                android:id="@+id/user_name"
+                android:textColor="@color/grey_text_dark"
+                android:textStyle="bold"
+                android:textSize="24sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="220dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="locked apps"
-                android:id="@+id/locked_apps_label"
-                android:textSize="20dp" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="You rank in the top N/A% of healthy life users."
+                android:id="@+id/percentile_ranking"
+                android:textSize="14sp"
+                android:textColor="@color/grey_text_light" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Card"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical">
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/imageView2"
+                    android:background="@drawable/round_green"/>
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="89"
+                    android:id="@+id/current_score"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textSize="60dp"
+                    android:textColor="@color/white"
+                    android:layout_alignLeft="@+id/imageView2"
+                    android:layout_alignStart="@+id/imageView2"
+                    android:layout_alignTop="@+id/imageView2"
+                    android:layout_alignBottom="@+id/imageView2"
+                    android:layout_alignRight="@+id/imageView2"
+                    android:layout_alignEnd="@+id/imageView2"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Rating Details"
+                        android:id="@+id/textView"
+                        android:textSize="20dp"
+                        android:paddingBottom="4dp" />
+
+                    <android.widget.IconTextView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:text="{fa-gear}"
+                        android:textSize="20dp"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/grey_text_light"
+                        android:id="@+id/details_button" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All apps"
+                    android:id="@+id/textView2"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/grey_text_light"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum"
+                    android:id="@+id/textView3"
+                    android:textColor="@color/grey_text_light"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <com.blue_stingray.healthy_life_app.ui.widget.LinearList
-            android:id="@+id/locked"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/app_progress_list">
+
+        </com.blue_stingray.healthy_life_app.ui.widget.LinearList>
 
     </LinearLayout>
 

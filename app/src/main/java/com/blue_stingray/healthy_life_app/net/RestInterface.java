@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.net;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.model.Alert;
+import com.blue_stingray.healthy_life_app.model.AppGoal;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Device;
@@ -44,6 +45,9 @@ public interface RestInterface {
 
     @GET("/user/{id}/alerts")
     void getUserAlerts(@Path("id") int id, Callback<List<Alert>> cb);
+
+    @GET("/user/{id}/apps/usage")
+    void getUserAppsUsage(@Path("id") int id, Callback<List<AppGoal>> cb);
 
     @GET("/user/{id}/lockedApps")
     void getUserLockedApps(@Path("id") int id, Callback<List<Application>> cb);
@@ -90,6 +94,9 @@ public interface RestInterface {
     // Goals
     @GET("/goal")
     void getGoals(Callback<Goal[]> cb);
+
+    @PUT("/goal")
+    void updateGoal(@Body GoalForm goalForm, Callback<Object> cb);
 
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);

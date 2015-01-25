@@ -31,6 +31,7 @@ dependencies {
     compile 'com.joanzapata.android:android-iconify:1.0.8'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.facebook.android:facebook-android-sdk:3.21.1@aar'
+    compile 'com.akexorcist:RoundCornerProgressBar:1.0.0'
 }
 
 android {
@@ -70,80 +71,4 @@ android {
         ignoreAssetsPattern '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home'
     }
 }
-
-//buildscript {
-//    repositories {
-//        mavenCentral()
-//    }
-//    dependencies {
-//        classpath 'com.android.tools.build:gradle:1.0.0'
-//    }
-//}
-//
-//apply plugin: 'com.android.application'
-//
-//repositories {
-//    mavenCentral()
-//    maven {
-//        url 'https://oss.sonatype.org/content/groups/public'
-//    }
-//}
-//
-//configurations {
-//    all*.exclude group: 'com.android.support', module: 'support-v4'
-//    all*.exclude group: 'com.google.android.gms', module: 'play-services'
-//}
-//
-//android {
-//    compileSdkVersion 21
-//    buildToolsVersion '21.0.1'
-//    defaultConfig {
-//        minSdkVersion 15
-//        targetSdkVersion 21
-//        versionCode 1
-//        versionName "1.0"
-//    }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_7
-//        targetCompatibility JavaVersion.VERSION_1_7
-//    }
-//    buildTypes {
-//        release {
-//            buildConfigField "String", "ENDPOINT_URL", '"https://replaceme/api"'
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-//        }
-//        debug {
-//            buildConfigField "String", "ENDPOINT_URL", '"http://healthy.wherewedev.com/api"'
-//            buildConfigField "String", "GCM_APP_KEY", '"AIzaSyDPZYu3Hp94xG3N3qI9HGT_oj1_gUz0I08"'
-//            buildConfigField "String", "GCM_APP_ID", '"147028396651"'
-//        }
-//    }
-//    signingConfigs {
-//        debug {
-//            storeFile file("debug.keystore")
-//            storePassword "debugpass"
-//            keyAlias "debug"
-//            keyPassword "debugpass"
-//        }
-//    }
-//    aaptOptions {
-//        ignoreAssetsPattern '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home'
-//    }
-//}
-//
-//dependencies {
-//    compile fileTree(dir: 'libs', include: '*.jar')
-//    compile 'com.android.support:appcompat-v7:21.0.0'
-//    compile 'com.google.android.gms:play-services:6.5.+'
-//    compile 'org.roboguice:roboguice:3.+'
-//    compile 'com.squareup.retrofit:retrofit:1.7.0'
-//    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-//    compile 'com.squareup.okhttp:okhttp:2.0.0'
-//    compile 'com.google.guava:guava:18.0'
-//    compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
-//    compile 'com.joanzapata.android:android-iconify:1.0.8'
-//    compile 'com.nineoldandroids:library:2.4.0'
-//    compile 'com.facebook.android:facebook-android-sdk:3.21.1@aar'
-//}
 

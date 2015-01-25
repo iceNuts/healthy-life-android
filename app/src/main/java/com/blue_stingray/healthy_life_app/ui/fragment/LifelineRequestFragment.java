@@ -69,6 +69,8 @@ public class LifelineRequestFragment extends RoboFragment {
                                 loading.cancel();
                             }
                         });
+                    } else {
+                        loading.cancel();
                     }
                 }
 

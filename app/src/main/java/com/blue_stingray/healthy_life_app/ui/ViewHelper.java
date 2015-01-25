@@ -18,7 +18,7 @@ public class ViewHelper {
     public static void injectFragment(Fragment fragment, FragmentManager manager, int container) {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(container, fragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(fragment.getClass().getName());
         transaction.commit();
     }
 
