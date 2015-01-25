@@ -25,7 +25,6 @@ import roboguice.inject.InjectView;
 public class SocialConnectFragment extends RoboFragment {
 
     private static final String TAG = "SocialConnectFragment";
-    private static final int RC_SIGN_IN = 0;
 
     @InjectView(R.id.goBackButton)
     private Button goBackButton;
@@ -112,6 +111,7 @@ public class SocialConnectFragment extends RoboFragment {
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
+            Log.d(TAG, "Token:" + session.getAccessToken());
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }

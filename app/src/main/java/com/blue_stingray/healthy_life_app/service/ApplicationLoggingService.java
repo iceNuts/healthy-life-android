@@ -23,6 +23,7 @@ import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.DatabaseHelper;
 import com.blue_stingray.healthy_life_app.receiver.SelfAttachingReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.ui.activity.BlockerActivity;
 import com.google.inject.Inject;
 
 import java.net.URI;
@@ -315,7 +316,10 @@ public class ApplicationLoggingService extends RoboService {
                 }
                 if (timedCount == 90) {
                     timedCount = 0;
-                    fireNotification("You have used 90s, want a rest?");
+                    Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    dialogIntent.putExtra("AlertInfo", "You have used 90s, want a rest?");
+                    getApplication().startActivity(dialogIntent);
                 }
                 timedCount++;
                 synchronized (mPauseLock) {

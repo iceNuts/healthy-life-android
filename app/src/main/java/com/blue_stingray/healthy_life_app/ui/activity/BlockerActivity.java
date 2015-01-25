@@ -51,46 +51,61 @@ public class BlockerActivity extends BaseActivity{
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         activityManager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
         final String packageName = getIntent().getStringExtra("packageName");
-        Log.d("String", packageName);
-        builder.setMessage(R.string.app_usage_limit_reached).setTitle(R.string.app_name);
-        builder.setPositiveButton(R.string.app_alert_close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                BlockerActivity.this.startActivity(launcherIntent);
-                activityManager.killBackgroundProcesses(packageName);
-                finish();
-            }
-        });
+        final String alertInfo = getIntent().getStringExtra("AlertInfo");
+        if (packageName != null) {
+            builder.setMessage(R.string.app_usage_limit_reached).setTitle(R.string.app_name);
+            builder.setPositiveButton(R.string.app_alert_close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    BlockerActivity.this.startActivity(launcherIntent);
+                    activityManager.killBackgroundProcesses(packageName);
+                    finish();
+                }
+            });
 
-        builder.setNegativeButton(R.string.app_alert_request, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                activityManager.killBackgroundProcesses(packageName);
-                rest.createLifeline(
-                        new LifelineForm(
-                                packageName,
-                                String.valueOf(new Date().getTime() / 1000)
-                        ),
-                        new RetrofitDialogCallback<Lifeline>(
-                                getApplicationContext(),
-                                null
-                        ) {
-                            @Override
-                            public void onSuccess(Lifeline lifeline, Response response) {
-                                BlockerActivity.this.startActivity(launcherIntent);
-                                finish();
-                            }
+            builder.setNegativeButton(R.string.app_alert_request, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    activityManager.killBackgroundProcesses(packageName);
+                    rest.createLifeline(
+                            new LifelineForm(
+                                    packageName,
+                                    String.valueOf(new Date().getTime() / 1000)
+                            ),
+                            new RetrofitDialogCallback<Lifeline>(
+                                    getApplicationContext(),
+                                    null
+                            ) {
+                                @Override
+                                public void onSuccess(Lifeline lifeline, Response response) {
+                                    BlockerActivity.this.startActivity(launcherIntent);
+                                    finish();
+                                }
 
-                            @Override
-                            public void onFailure(RetrofitError retrofitError) {
-                                BlockerActivity.this.startActivity(launcherIntent);
-                                finish();
+                                @Override
+                                public void onFailure(RetrofitError retrofitError) {
+                                    BlockerActivity.this.startActivity(launcherIntent);
+                                    finish();
+                                }
                             }
-                        }
-                );
-            }
-        });
-        builder.create();
-        builder.show();
+                    );
+                }
+            });
+            builder.create();
+            builder.show();
+        }
+        else {
+            builder.setMessage(alertInfo).setTitle(R.string.app_name);
+            builder.setPositiveButton(R.string.app_alert_close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    BlockerActivity.this.startActivity(launcherIntent);
+                    activityManager.killBackgroundProcesses(packageName);
+                    finish();
+                }
+            });
+            builder.create();
+            builder.show();
+        }
     }
 }
