@@ -93,13 +93,13 @@ public interface RestInterface {
 
     // Goals
     @GET("/goal")
-    void getGoals(Callback<Goal[]> cb);
-
-    @PUT("/goal")
-    void updateGoal(@Body GoalForm goalForm, Callback<Object> cb);
+    void getMyGoals(Callback<List<Goal>> cb);
 
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
+
+    @POST("/goal/many")
+    void createGoalMany(@Body GoalForm[] goalForms, Callback<List<Goal>> cb);
 
     // Stat
     @GET("/stat/lastUpdate")

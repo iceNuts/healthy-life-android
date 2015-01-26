@@ -4,17 +4,16 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.util.Time;
 
 public class Goal {
 
-    private String id;
-    private String application_id;
     private String packageName;
-    private String day;
     private String hours;
-    private String timeRemaining;
-    private String usedToday;
+    private String day;
+    private Application app;
 
     private transient float timeLimit;
     private transient float limitDay;
@@ -24,12 +23,36 @@ public class Goal {
         this.dataHelper = DataHelper.getInstance(context);
     }
 
+    public Application getApp() {
+        return app;
+    }
+
     public String getPackageName() {
+        if(packageName == null) {
+            packageName = getApp().getPackageName();
+        }
+        
         return packageName;
     }
 
-    public float getGoalTime() {
-        return timeLimit;
+    public int getGoalTime() {
+        if(hours == null) {
+            hours = String.valueOf(timeLimit);
+        }
+
+        return (int) Float.parseFloat(hours);
+    }
+
+    public String getDay() {
+        if(day == null) {
+            day = Time.dayTranslate((int) limitDay);
+        }
+
+        return day;
+    }
+
+    public float getLimitDay() {
+        return limitDay;
     }
 
     public double getTimeUsedSeconds() {
@@ -44,10 +67,6 @@ public class Goal {
         return getTimeUsedMinutes() / 60.0;
     }
 
-    public float getDay() {
-        return limitDay;
-    }
-
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
@@ -58,5 +77,9 @@ public class Goal {
 
     public void setLimitDay(float limitDay) {
         this.limitDay = limitDay;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 }

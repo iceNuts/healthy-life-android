@@ -52,5 +52,54 @@ public class Time {
         return formatter.format(timestamp);
     }
 
+    public static int dayTranslate(String day) {
+        day = day.toLowerCase();
+
+        if(day.equals("mon")) {
+            return Calendar.MONDAY;
+        }
+        else if (day.equals("tue") ) {
+            return Calendar.TUESDAY;
+        }
+        else if (day.equals("wed")) {
+            return Calendar.WEDNESDAY;
+        }
+        else if (day.equals("thu")) {
+            return Calendar.THURSDAY;
+        }
+        else if (day.equals("fri")) {
+            return Calendar.FRIDAY;
+        }
+        else if (day.equals("sat")) {
+            return Calendar.SATURDAY;
+        }
+        else {
+            return Calendar.SUNDAY;
+        }
+    }
+
+    public static String dayTranslate(int day) {
+        if(day == Calendar.MONDAY) {
+            return "mon";
+        }
+        else if (day == Calendar.TUESDAY) {
+            return "tue";
+        }
+        else if (day == Calendar.WEDNESDAY) {
+            return "wed";
+        }
+        else if (day == Calendar.THURSDAY) {
+            return "thu";
+        }
+        else if (day == Calendar.FRIDAY) {
+            return "fri";
+        }
+        else if (day == Calendar.SATURDAY) {
+            return "sat";
+        }
+        else {
+            return "sun";
+        }
+    }
 
 }

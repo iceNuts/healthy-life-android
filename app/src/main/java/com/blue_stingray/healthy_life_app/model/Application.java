@@ -23,7 +23,7 @@ public class Application implements Serializable {
 
     private String id;
     private String deviceId;
-    private String packageName;
+    private String package_name;
     private String name;
     private String version;
     private String color;
@@ -94,11 +94,16 @@ public class Application implements Serializable {
         return dataHelper.getGoal(context, getPackageName());
     }
 
+    public List<Goal> getGoals() {
+        return dataHelper.getGoals(context, getPackageName());
+    }
+
     public String getPackageName() {
         if(info == null) {
-            return null;
+            return package_name;
         }
 
+        package_name = info.activityInfo.packageName;
         return info.activityInfo.packageName;
     }
 

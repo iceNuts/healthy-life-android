@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.receiver.GcmBroadcastReceiver;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -90,7 +91,7 @@ public class GcmIntentService extends IntentService {
             String packageName = message.getString("package_name");
 
             HashMap<Integer, Integer> newGoalMap = new HashMap<>();
-            newGoalMap.put(DayTranslate(goalDay), Integer.valueOf(goalHour));
+            newGoalMap.put(Time.dayTranslate(goalDay), Integer.valueOf(goalHour));
 
             dataHelper.createNewGoal(packageName, newGoalMap);
             final PackageManager pm = getApplicationContext().getPackageManager();
@@ -116,27 +117,4 @@ public class GcmIntentService extends IntentService {
         mNotificationManager.notify(mId, mBuilder.build());
     }
 
-    public Integer DayTranslate(String day) {
-        if(day.equals("mon")) {
-            return Calendar.MONDAY;
-        }
-        else if (day.equals("tue") ) {
-            return Calendar.TUESDAY;
-        }
-        else if (day.equals("wed")) {
-            return Calendar.WEDNESDAY;
-        }
-        else if (day.equals("thu")) {
-            return Calendar.THURSDAY;
-        }
-        else if (day.equals("fri")) {
-            return Calendar.FRIDAY;
-        }
-        else if (day.equals("sat")) {
-            return Calendar.SATURDAY;
-        }
-        else {
-            return Calendar.SUNDAY;
-        }
-    }
 }

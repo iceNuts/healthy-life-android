@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import roboguice.RoboGuice;
@@ -78,10 +79,10 @@ public class DataHelper {
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
 
                     // Delete old goal
-                    Log.i("healthy", "Deleted goal : " + db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
+                    db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
                             packageName,
                             pairs.getKey().toString()
-                    }));
+                    });
 
                     // Insert new goal
                     db.insert(GOAL_TABLE, null, newStat);
@@ -153,6 +154,30 @@ public class DataHelper {
         }
 
         return null;
+    }
+
+    public List<Goal> getGoals(Context context, String packageName) {
+        ArrayList<Goal> goals = new ArrayList<>();
+        Cursor goalCursor = db.rawQuery(
+                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"",
+                new String[]{
+                }
+        );
+
+        while(goalCursor.moveToNext()) {
+            Goal goal = new Goal(context);
+            goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
+            goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
+            goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
+            goals.add(goal);
+        }
+
+        goalCursor.close();
+        return goals;
+    }
+
+    public void removeGoals() {
+        db.delete(GOAL_TABLE, null, null);
     }
 
     public Integer packageRemainingTime(String packageName) {
