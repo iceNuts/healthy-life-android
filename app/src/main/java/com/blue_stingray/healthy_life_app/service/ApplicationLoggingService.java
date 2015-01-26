@@ -314,11 +314,12 @@ public class ApplicationLoggingService extends RoboService {
                 } catch (InterruptedException e) {
                     break;
                 }
-                if (timedCount == 90) {
+                // 5400 seconds = 90 min
+                if (timedCount == 5400) {
                     timedCount = 0;
                     Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
                     dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    dialogIntent.putExtra("AlertInfo", "You have used 90s, want a rest?");
+                    dialogIntent.putExtra("AlertInfo", "You've used your phone for 90 minutes today. Take a break!");
                     getApplication().startActivity(dialogIntent);
                 }
                 timedCount++;
