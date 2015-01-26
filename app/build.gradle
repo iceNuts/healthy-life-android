@@ -25,6 +25,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.android.gms:play-services-base:6.5+'
+    compile 'com.google.android.gms:play-services-identity:6.5+'
+    compile 'com.google.android.gms:play-services-plus:6.5+'
     compile 'com.github.blackfizz:eazegraph:1.1.14-SNAPSHOT@aar'
     compile 'com.joanzapata.android:android-iconify:1.0.8'
     compile 'com.nineoldandroids:library:2.4.0'
