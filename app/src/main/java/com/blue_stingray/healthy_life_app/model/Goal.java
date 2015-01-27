@@ -9,7 +9,9 @@ import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 
-public class Goal {
+import java.io.Serializable;
+
+public class Goal implements Serializable {
 
     private String packageName;
     private String hours;
