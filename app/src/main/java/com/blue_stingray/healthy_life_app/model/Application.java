@@ -12,6 +12,8 @@ import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class Application implements Serializable {
@@ -22,7 +24,7 @@ public class Application implements Serializable {
     public transient Context context;
 
     private String id;
-    private String deviceId;
+    private String device_id;
     private String package_name;
     private String name;
     private String version;
@@ -91,11 +93,30 @@ public class Application implements Serializable {
     }
 
     public Goal getGoal() {
+        if(dataHelper == null) {
+            Goal today = null;
+
+            for(Goal goal : active_goals) {
+                Log.i("healthy", "Today " + Calendar.DAY_OF_WEEK + " vs " + goal.getLimitDay());
+                if(goal.getLimitDay() == Calendar.DAY_OF_WEEK) {
+                    today = goal;
+                    break;
+                }
+            }
+
+            return today;
+        }
+
         return dataHelper.getGoal(context, getPackageName());
     }
 
     public List<Goal> getGoals() {
-        return dataHelper.getGoals(context, getPackageName());
+        if(active_goals == null) {
+            List<Goal> list = dataHelper.getGoals(context, getPackageName());
+            active_goals = list.toArray(new Goal[list.size()]);
+        }
+
+        return Arrays.asList(active_goals);
     }
 
     public String getPackageName() {
@@ -105,6 +126,22 @@ public class Application implements Serializable {
 
         package_name = info.activityInfo.packageName;
         return info.activityInfo.packageName;
+    }
+
+    public Integer getDeviceId() {
+        if(device_id != null) {
+            return Integer.parseInt(device_id);
+        }
+
+        return null;
+    }
+
+    public void setActiveGoals(Goal[] goals) {
+        this.active_goals = goals;
+    }
+
+    public Goal[] getActiveGoals() {
+        return active_goals;
     }
 
     /**

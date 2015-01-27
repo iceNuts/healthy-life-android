@@ -111,6 +111,7 @@ public class LoginActivity extends BaseActivity {
                     new Callback<SessionDevice>() {
                 @Override
                 public void success(SessionDevice sessionDevice, Response response) {
+                    prefs.setDeviceId(sessionDevice.device.id);
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     prefs.setUserLevel(sessionDevice.is_admin);

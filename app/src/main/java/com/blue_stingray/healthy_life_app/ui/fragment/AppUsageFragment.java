@@ -14,6 +14,7 @@ import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
@@ -62,6 +63,7 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.percent_usage)
     private TextView percentUsage;
 
+    private User user;
     private View view;
     private Application app;
     private Goal goal;
@@ -70,10 +72,16 @@ public class AppUsageFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_app_usage, container,false);
-
         dataHelper = DataHelper.getInstance(getActivity().getApplicationContext());
+        user = (User) getArguments().getSerializable("user");
         app = (Application) getArguments().getSerializable("appinfo");
         goal = app.getGoal();
+
+        if(user != null) {
+            getActivity().setTitle(app.getName() + " - " + user.getName());
+        } else {
+            getActivity().setTitle(app.getName());
+        }
 
         return view;
     }
@@ -81,7 +89,6 @@ public class AppUsageFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(app.getName());
         setup();
     }
 
@@ -97,7 +104,7 @@ public class AppUsageFragment extends RoboFragment {
 
             final ProgressDialog progress = ProgressDialog.show(getActivity(), "", "Loading...", true);
 
-            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end), new Callback<Stat[]>() {
+            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end, app.getDeviceId()), new Callback<Stat[]>() {
                 @Override
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
@@ -126,7 +133,7 @@ public class AppUsageFragment extends RoboFragment {
                 }
             });
 
-            rest.getApp(app.getPackageName(), new Callback<Application>() {
+            rest.getApp(app.getPackageName(), app.getDeviceId(), new Callback<Application>() {
                 @Override
                 public void success(Application application, Response response) {
                     rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
@@ -197,6 +204,10 @@ public class AppUsageFragment extends RoboFragment {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("appinfo", app);
+
+            if(user != null) {
+                bundle.putSerializable("user", user);
+            }
 
             Fragment fragment = new EditGoalFragment();
             fragment.setArguments(bundle);

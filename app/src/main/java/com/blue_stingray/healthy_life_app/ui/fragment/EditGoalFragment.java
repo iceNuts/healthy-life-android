@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,12 +19,15 @@ import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
+import com.blue_stingray.healthy_life_app.net.form.ManyGoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
@@ -98,15 +102,21 @@ public class EditGoalFragment extends RoboFragment {
     @Inject
     private RestInterface rest;
 
+    @Inject
+    public SharedPreferencesHelper prefs;
+
     private FormValidationManager validationManager;
 
     private DataHelper dataHelper;
 
     private Application app;
 
+    private User user;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (Application) getArguments().getSerializable("appinfo");
+        user = (User) getArguments().getSerializable("user");
         return inflater.inflate(R.layout.fragment_edit_goal, container,false);
     }
 
@@ -192,33 +202,7 @@ public class EditGoalFragment extends RoboFragment {
                 it.remove();
             }
 
-            rest.createGoalMany(goalForms.toArray(new GoalForm[goalForms.size()]), new Callback<List<Goal>>() {
-                @Override
-                public void success(List<Goal> goals, Response response) {
-                    for(Goal goal : goals) {
-                        HashMap<Integer, Integer> newGoalMap = new HashMap<>();
-                        newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
-                        dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
-                    }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("appinfo", app);
-
-                    Fragment fragment = new AppUsageFragment();
-                    fragment.setArguments(bundle);
-                    ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
-                    Toast.makeText(getActivity(), "Successful Edit", Toast.LENGTH_LONG).show();
-
-                    progressDialog.cancel();
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    //
-
-                    progressDialog.cancel();
-                }
-            });
+            rest.createGoalMany(new ManyGoalForm(app.getDeviceId(), goalForms.toArray(new GoalForm[goalForms.size()])), new CreateManyGoalsCallback(progressDialog));
         }
     }
 
@@ -295,6 +279,47 @@ public class EditGoalFragment extends RoboFragment {
         dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress());
         dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress());
         return dayMap;
+    }
+
+    private class CreateManyGoalsCallback implements Callback<List<Goal>> {
+
+        private ProgressDialog progressDialog;
+
+        public CreateManyGoalsCallback(ProgressDialog progressDialog) {
+            this.progressDialog = progressDialog;
+        }
+
+        @Override
+        public void success(List<Goal> goals, Response response) {
+            if(app.getDeviceId() == prefs.getDeviceId()) {
+                for(Goal goal : goals) {
+                    HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                    newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
+                    dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                }
+            } else {
+                app.setActiveGoals(goals.toArray(new Goal[goals.size()]));
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("appinfo", app);
+
+            if(user != null) {
+                bundle.putSerializable("user", user);
+            }
+
+            Fragment fragment = new AppUsageFragment();
+            fragment.setArguments(bundle);
+            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            Toast.makeText(getActivity(), "Successful Edit", Toast.LENGTH_LONG).show();
+
+            progressDialog.cancel();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            progressDialog.cancel();
+        }
     }
 
 }

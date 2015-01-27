@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.model;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
@@ -13,10 +14,12 @@ public class Goal {
     private String packageName;
     private String hours;
     private String day;
+    private Integer usedToday;
+    private Integer timeRemaining;
     private Application app;
 
-    private transient float timeLimit;
-    private transient float limitDay;
+    private transient Float timeLimit;
+    private transient Float limitDay;
     public transient DataHelper dataHelper;
 
     public Goal(Context context) {
@@ -45,18 +48,26 @@ public class Goal {
 
     public String getDay() {
         if(day == null) {
-            day = Time.dayTranslate((int) limitDay);
+            day = Time.dayTranslate(limitDay.intValue());
         }
 
         return day;
     }
 
     public float getLimitDay() {
+        if(limitDay == null) {
+            limitDay = (float) Time.dayTranslate(day);
+        }
+
         return limitDay;
     }
 
     public double getTimeUsedSeconds() {
-        return dataHelper.getDBRecordedTotalTime(getPackageName());
+        if(usedToday == null) {
+            usedToday = dataHelper.getDBRecordedTotalTime(getPackageName());
+        }
+
+        return usedToday;
     }
 
     public double getTimeUsedMinutes() {

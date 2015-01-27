@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -138,6 +139,7 @@ public class ManageGoalsFragment extends RoboFragment {
     private void createList() {
         final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
         appList.setAdapter(adapter);
+        appList.setOnItemClickListener(new ChildOnClickListener());
         blankMessage.setVisibility(View.GONE);
         loadingDialog.dismiss();
     }
@@ -149,35 +151,7 @@ public class ManageGoalsFragment extends RoboFragment {
                 final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
                 blankMessage.setVisibility(View.GONE );
-                appList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        Log.d("App Adapter View", String.valueOf(position));
-                        Log.d("App Adapter View", String.valueOf(apps.get(position)));
-
-                        Application app = apps.get(position);
-
-                        if(app.hasGoal()) {
-
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("appinfo", app);
-
-                            Fragment fragment = new AppUsageFragment();
-                            fragment.setArguments(bundle);
-                            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
-                        } else {
-
-                            Bundle bundle = new Bundle();
-                            bundle.putString("appName", app.getName());
-
-                            Fragment fragment = new CreateGoalFragment();
-                            fragment.setArguments(bundle);
-
-                            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
-                        }
-
-                    }
-                });
+                appList.setOnItemClickListener(new AuthOnClickListener());
             }
         });
     }
@@ -202,6 +176,64 @@ public class ManageGoalsFragment extends RoboFragment {
                 createAuthList();
                 loadingDialog.dismiss();
             }
+        }
+    }
+
+    private class ChildOnClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            Log.d("App Adapter View", String.valueOf(position));
+            Log.d("App Adapter View", String.valueOf(apps.get(position)));
+
+            Application app = apps.get(position);
+
+            if(app.hasGoal()) {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                bundle.putSerializable("appinfo", app);
+
+                Fragment fragment = new AppUsageFragment();
+                fragment.setArguments(bundle);
+                ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            } else {
+
+                Toast.makeText(getActivity(), "No Goal Set", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+    }
+
+    private class AuthOnClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            Log.d("App Adapter View", String.valueOf(position));
+            Log.d("App Adapter View", String.valueOf(apps.get(position)));
+
+            Application app = apps.get(position);
+
+            if(app.hasGoal()) {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("appinfo", app);
+
+                Fragment fragment = new AppUsageFragment();
+                fragment.setArguments(bundle);
+                ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            } else {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("appName", app.getName());
+
+                Fragment fragment = new CreateGoalFragment();
+                fragment.setArguments(bundle);
+
+                ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            }
+
         }
     }
 
