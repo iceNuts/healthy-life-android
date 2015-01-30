@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.support.v4.app.Fragment;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -81,6 +84,7 @@ public class AppUsageFragment extends RoboFragment {
             getActivity().setTitle(app.getName() + " - " + user.getName());
         } else {
             getActivity().setTitle(app.getName());
+            user = ((App) getActivity().getApplication()).getAuthUser(getActivity());
         }
 
         return view;
@@ -89,6 +93,12 @@ public class AppUsageFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if(!user.canEdit()) {
+            ViewGroup layout = (ViewGroup) editGoal.getParent();
+            layout.removeView(editGoal);
+        }
+
         setup();
     }
 
@@ -133,26 +143,11 @@ public class AppUsageFragment extends RoboFragment {
                 }
             });
 
-            rest.getApp(app.getPackageName(), app.getDeviceId(), new Callback<Application>() {
-                @Override
-                public void success(Application application, Response response) {
-                    rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
-                        @Override
-                        public void success(AppUsage usage, Response response) {
-                            setupChart(usage.getData());
-                            percentUsage.setText(usage.getPercentageUseFormatted());
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {}
-                    });
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+            if(app.getDeviceId() == null) {
+                rest.getApp(app.getPackageName(), new GetAppCallback());
+            } else {
+                rest.getApp(app.getPackageName(), app.getDeviceId(), new GetAppCallback());
+            }
 
         } else {
             editGoal.setVisibility(View.GONE);
@@ -162,12 +157,14 @@ public class AppUsageFragment extends RoboFragment {
         }
 
         // set create goal button listener
-        Button createButton = (Button) view.findViewById(R.id.create_goal);
-        createButton.setOnClickListener(new CreateGoalButtonListener());
+        if(createGoal != null) {
+            createGoal.setOnClickListener(new CreateGoalButtonListener());
+        }
 
         // set edit goal button listener
-        Button editButton = (Button) view.findViewById(R.id.edit_goal);
-        editButton.setOnClickListener(new EditGoalButtonListener());
+        if(editGoal != null) {
+            editGoal.setOnClickListener(new EditGoalButtonListener());
+        }
     }
 
     public void setupChart(Integer[] data) {
@@ -214,6 +211,29 @@ public class AppUsageFragment extends RoboFragment {
 
             ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
         }
+    }
+
+    private class GetAppCallback implements Callback<Application> {
+
+        @Override
+        public void success(Application application, Response response) {
+            rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
+                @Override
+                public void success(AppUsage usage, Response response) {
+                    setupChart(usage.getData());
+                    percentUsage.setText(usage.getPercentageUseFormatted());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {}
+            });
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+        }
+
     }
 
 }

@@ -17,6 +17,7 @@ public class User implements Serializable {
     private String age;
     private String score;
     private String percentage;
+    private String can_edit;
     private int rank;
 
     public User(String name) {
@@ -62,6 +63,10 @@ public class User implements Serializable {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean canEdit() {
+        return can_edit != null && can_edit.equals("1");
     }
 
 }
