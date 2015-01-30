@@ -74,7 +74,7 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
     private View getUsageReportView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, inflater.inflate(R.layout.alert_usage_report_list_row, parent, false), parent);
 
-        view.findViewById(R.id.alert_container).setOnClickListener(new LinkToListener(alert.getTarget()));
+        view.findViewById(R.id.alert_container).setOnClickListener(new LinkToListener(alert.getTarget() + "?id=" + alert.getTargetId()));
         ((TextView) view.findViewById(R.id.subject)).setText(alert.getSubject());
         ((TextView) view.findViewById(R.id.action)).setText("has a new");
         ((TextView) view.findViewById(R.id.target)).setText("usage report");
