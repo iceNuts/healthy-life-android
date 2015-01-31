@@ -19,6 +19,7 @@ import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
+import com.blue_stingray.healthy_life_app.net.form.ManyGoalForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
@@ -86,6 +87,9 @@ public interface RestInterface {
     @GET("/app/{id}")
     void getApp(@Path("id") String id, Callback<Application> cb);
 
+    @GET("/app/{id}")
+    void getApp(@Path("id") String id, @Query("device_id") int deviceId, Callback<Application> cb);
+
     @GET("/app/{id}/usage")
     void getAppUsage(@Path("id") String id, Callback<AppUsage> cb);
 
@@ -95,13 +99,13 @@ public interface RestInterface {
 
     // Goals
     @GET("/goal")
-    void getGoals(Callback<Goal[]> cb);
-
-    @PUT("/goal")
-    void updateGoal(@Body GoalForm goalForm, Callback<Object> cb);
+    void getMyGoals(Callback<List<Goal>> cb);
 
     @POST("/goal")
     void createGoal(@Body GoalForm goalForm, Callback<Goal> cb);
+
+    @POST("/goal/many")
+    void createGoalMany(@Body ManyGoalForm goalForms, Callback<List<Goal>> cb);
 
     // Stat
     @GET("/stat/lastUpdate")

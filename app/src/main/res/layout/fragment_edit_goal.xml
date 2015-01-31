@@ -64,7 +64,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/monday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -81,7 +81,7 @@
                 android:id="@+id/monday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
 
         </LinearLayout>
 
@@ -115,7 +115,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/tuesday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -132,7 +132,7 @@
                 android:id="@+id/tuesday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -165,7 +165,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/wednesday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -182,7 +182,7 @@
                 android:id="@+id/wednesday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -215,7 +215,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/thursday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -232,7 +232,7 @@
                 android:id="@+id/thursday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -265,7 +265,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/friday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -282,7 +282,7 @@
                 android:id="@+id/friday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -315,7 +315,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/saturday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -332,7 +332,7 @@
                 android:id="@+id/saturday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -365,7 +365,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="24 hours"
+                    android:text="0 hours"
                     android:id="@+id/sunday"
                     android:textSize="18dp"
                     android:paddingBottom="4dp"
@@ -382,7 +382,7 @@
                 android:id="@+id/sunday_seek_bar"
                 android:max="24"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="0" />
         </LinearLayout>
 
         <Button

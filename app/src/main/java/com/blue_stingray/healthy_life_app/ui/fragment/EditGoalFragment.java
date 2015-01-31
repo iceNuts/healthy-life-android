@@ -1,6 +1,9 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,22 +13,30 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
+import com.blue_stingray.healthy_life_app.net.form.ManyGoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.ui.ViewHelper;
+import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -91,15 +102,21 @@ public class EditGoalFragment extends RoboFragment {
     @Inject
     private RestInterface rest;
 
+    @Inject
+    public SharedPreferencesHelper prefs;
+
     private FormValidationManager validationManager;
 
     private DataHelper dataHelper;
 
     private Application app;
 
+    private User user;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (Application) getArguments().getSerializable("appinfo");
+        user = (User) getArguments().getSerializable("user");
         return inflater.inflate(R.layout.fragment_edit_goal, container,false);
     }
 
@@ -126,9 +143,43 @@ public class EditGoalFragment extends RoboFragment {
         fridaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         saturdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         sundaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+
+        // prepopulate seek bars
+        List<Goal> goals = app.getGoals();
+        for(Goal goal : goals) {
+            Log.i("healthy", goal.getPackageName() + " : " + goal.getDay() + " : " + goal.getGoalTime());
+
+            if(goal.getLimitDay() == Calendar.MONDAY)
+            {
+                mondaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.TUESDAY)
+            {
+                tuesdaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.WEDNESDAY)
+            {
+                wednesdaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.THURSDAY)
+            {
+                thursdaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.FRIDAY)
+            {
+                fridaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.SATURDAY)
+            {
+                saturdaySeekBar.setProgress(goal.getGoalTime());
+            }
+            else if(goal.getLimitDay() == Calendar.SUNDAY)
+            {
+                sundaySeekBar.setProgress(goal.getGoalTime());
+            }
+        }
     }
 
-    // TODO
     private class EditGoalButtonListener extends FormSubmitClickListener {
 
         public EditGoalButtonListener() {
@@ -140,21 +191,18 @@ public class EditGoalFragment extends RoboFragment {
             HashMap<Integer, Integer> dayMap = getDayHours();
             Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
             final Iterator it = conDayMap.entrySet().iterator();
+            ArrayList<GoalForm> goalForms = new ArrayList<>();
 
 
             while(it.hasNext()) {
                 Map.Entry data = (Map.Entry) it.next();
                 String dayString = DayTranslate((Integer)data.getKey());
                 Integer hours = (Integer)data.getValue();
-
-                Log.i("healthy", "\nApp : " + app.getPackageName());
-                Log.i("healthy", "Hours : " + hours);
-                Log.i("healthy", "Day String : " + dayString + "\n");
-
+                goalForms.add(new GoalForm(app.getPackageName(), hours, dayString));
                 it.remove();
             }
 
-            progressDialog.cancel();
+            rest.createGoalMany(new ManyGoalForm(app.getDeviceId(), goalForms.toArray(new GoalForm[goalForms.size()])), new CreateManyGoalsCallback(progressDialog));
         }
     }
 
@@ -231,6 +279,47 @@ public class EditGoalFragment extends RoboFragment {
         dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress());
         dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress());
         return dayMap;
+    }
+
+    private class CreateManyGoalsCallback implements Callback<List<Goal>> {
+
+        private ProgressDialog progressDialog;
+
+        public CreateManyGoalsCallback(ProgressDialog progressDialog) {
+            this.progressDialog = progressDialog;
+        }
+
+        @Override
+        public void success(List<Goal> goals, Response response) {
+            if(app.getDeviceId() == prefs.getDeviceId()) {
+                for(Goal goal : goals) {
+                    HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                    newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
+                    dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                }
+            } else {
+                app.setActiveGoals(goals.toArray(new Goal[goals.size()]));
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("appinfo", app);
+
+            if(user != null) {
+                bundle.putSerializable("user", user);
+            }
+
+            Fragment fragment = new AppUsageFragment();
+            fragment.setArguments(bundle);
+            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            Toast.makeText(getActivity(), "Successful Edit", Toast.LENGTH_LONG).show();
+
+            progressDialog.cancel();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            progressDialog.cancel();
+        }
     }
 
 }

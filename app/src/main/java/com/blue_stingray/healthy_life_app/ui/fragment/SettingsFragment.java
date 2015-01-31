@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RestInterfaceProvider;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.BaseActivity;
@@ -34,11 +35,14 @@ public class SettingsFragment extends PreferenceFragment {
     @Inject
     private RestInterface rest;
 
+    private DataHelper dataHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.title_user_settings);
         addPreferencesFromResource(R.xml.main_prefs);
+        dataHelper = DataHelper.getInstance(getActivity());
 
         findPreference("logout").setOnPreferenceClickListener(new OnLogoutListener());
     }
@@ -52,6 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
             rest.destroySession(new Callback<Object>() {
                 @Override
                 public void success(Object o, Response response) {
+                    dataHelper.removeGoals();
                     ((BaseActivity) getActivity()).prefs.setState(SharedPreferencesHelper.State.NONE);
                     startActivity(new Intent(getActivity(), StartActivity.class));
                     loading.dismiss();

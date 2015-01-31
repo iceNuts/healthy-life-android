@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -12,7 +13,9 @@ import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
@@ -22,7 +25,10 @@ import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
+import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
+
+import org.json.JSONObject;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -30,6 +36,8 @@ import retrofit.client.Response;
 import roboguice.inject.InjectView;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -52,10 +60,14 @@ public class LoginActivity extends BaseActivity {
 
     private FormValidationManager validationManager;
 
+    private DataHelper dataHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        this.dataHelper = DataHelper.getInstance(this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -89,17 +101,17 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
+            ProgressDialog.show(LoginActivity.this, "", "Logging in...");
             rest.createSession(
                     new SessionForm(
                             LoginActivity.this,
                             emailField.getText(),
                             passwordField.getText(),
                             prefs.getGCMRegId()),
-                    new RetrofitDialogCallback<SessionDevice>(
-                            LoginActivity.this,
-                            progressDialog) {
+                    new Callback<SessionDevice>() {
                 @Override
-                public void onSuccess(SessionDevice sessionDevice, Response response) {
+                public void success(SessionDevice sessionDevice, Response response) {
+                    prefs.setDeviceId(sessionDevice.device.id);
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     prefs.setUserLevel(sessionDevice.is_admin);
@@ -109,8 +121,29 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void success(User user, Response response) {
                             ((App) getApplication()).setAuthUser(user);
-                            startActivity(new Intent(LoginActivity.this, StartActivity.class));
-                            finish();
+
+                            // sync my goals
+                            rest.getMyGoals(new Callback<List<Goal>>() {
+                                @Override
+                                public void success(List<Goal> goals, Response response) {
+                                    for(Goal goal : goals) {
+                                        HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                                        newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
+                                        dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                                    }
+
+                                    progressDialog.cancel();
+                                    startActivity(new Intent(LoginActivity.this, StartActivity.class));
+                                    finish();
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.i("healthy", "Login /goal error");
+                                    Log.i("healthy", error.getCause().toString());
+                                    progressDialog.cancel();
+                                }
+                            });
                         }
 
                         @Override
@@ -122,7 +155,7 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onFailure(RetrofitError retrofitError) {
+                public void failure(RetrofitError retrofitError) {
                     DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
                 }
             });

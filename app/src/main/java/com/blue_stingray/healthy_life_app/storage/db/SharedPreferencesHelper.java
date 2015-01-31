@@ -17,6 +17,7 @@ public class SharedPreferencesHelper {
     private final static String STATE_KEY = "state";
     private final static String GCM_REGID = "GCM_REGID";
     private final static String USER_LEVEL = "IS_ADMIN";
+    private final static String DEVICE_ID = "DEVICE_ID";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -108,4 +109,13 @@ public class SharedPreferencesHelper {
         int current = prefs.getInt(STATE_KEY, 0);
         return State.from(current);
     }
+
+    public void setDeviceId(int id) {
+        prefs.edit().putInt(DEVICE_ID, id);
+    }
+
+    public int getDeviceId() {
+        return prefs.getInt(DEVICE_ID, 0);
+    }
+
 }

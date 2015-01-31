@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,14 @@ import android.widget.Button;
 import android.support.v4.app.Fragment;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
@@ -62,6 +66,7 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.percent_usage)
     private TextView percentUsage;
 
+    private User user;
     private View view;
     private Application app;
     private Goal goal;
@@ -70,10 +75,17 @@ public class AppUsageFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_app_usage, container,false);
-
         dataHelper = DataHelper.getInstance(getActivity().getApplicationContext());
+        user = (User) getArguments().getSerializable("user");
         app = (Application) getArguments().getSerializable("appinfo");
         goal = app.getGoal();
+
+        if(user != null) {
+            getActivity().setTitle(app.getName() + " - " + user.getName());
+        } else {
+            getActivity().setTitle(app.getName());
+            user = ((App) getActivity().getApplication()).getAuthUser(getActivity());
+        }
 
         return view;
     }
@@ -81,7 +93,12 @@ public class AppUsageFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(app.getName());
+
+        if(!user.canEdit()) {
+            ViewGroup layout = (ViewGroup) editGoal.getParent();
+            layout.removeView(editGoal);
+        }
+
         setup();
     }
 
@@ -97,7 +114,7 @@ public class AppUsageFragment extends RoboFragment {
 
             final ProgressDialog progress = ProgressDialog.show(getActivity(), "", "Loading...", true);
 
-            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end), new Callback<Stat[]>() {
+            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end, app.getDeviceId()), new Callback<Stat[]>() {
                 @Override
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
@@ -126,26 +143,11 @@ public class AppUsageFragment extends RoboFragment {
                 }
             });
 
-            rest.getApp(app.getPackageName(), new Callback<Application>() {
-                @Override
-                public void success(Application application, Response response) {
-                    rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
-                        @Override
-                        public void success(AppUsage usage, Response response) {
-                            setupChart(usage.getData());
-                            percentUsage.setText(usage.getPercentageUseFormatted());
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {}
-                    });
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+            if(app.getDeviceId() == null) {
+                rest.getApp(app.getPackageName(), new GetAppCallback());
+            } else {
+                rest.getApp(app.getPackageName(), app.getDeviceId(), new GetAppCallback());
+            }
 
         } else {
             editGoal.setVisibility(View.GONE);
@@ -155,12 +157,14 @@ public class AppUsageFragment extends RoboFragment {
         }
 
         // set create goal button listener
-        Button createButton = (Button) view.findViewById(R.id.create_goal);
-        createButton.setOnClickListener(new CreateGoalButtonListener());
+        if(createGoal != null) {
+            createGoal.setOnClickListener(new CreateGoalButtonListener());
+        }
 
         // set edit goal button listener
-        Button editButton = (Button) view.findViewById(R.id.edit_goal);
-        editButton.setOnClickListener(new EditGoalButtonListener());
+        if(editGoal != null) {
+            editGoal.setOnClickListener(new EditGoalButtonListener());
+        }
     }
 
     public void setupChart(Integer[] data) {
@@ -198,11 +202,38 @@ public class AppUsageFragment extends RoboFragment {
             Bundle bundle = new Bundle();
             bundle.putSerializable("appinfo", app);
 
+            if(user != null) {
+                bundle.putSerializable("user", user);
+            }
+
             Fragment fragment = new EditGoalFragment();
             fragment.setArguments(bundle);
 
             ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
         }
+    }
+
+    private class GetAppCallback implements Callback<Application> {
+
+        @Override
+        public void success(Application application, Response response) {
+            rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
+                @Override
+                public void success(AppUsage usage, Response response) {
+                    setupChart(usage.getData());
+                    percentUsage.setText(usage.getPercentageUseFormatted());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {}
+            });
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+        }
+
     }
 
 }
