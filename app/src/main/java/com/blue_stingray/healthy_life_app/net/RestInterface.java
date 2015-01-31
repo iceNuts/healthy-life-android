@@ -9,6 +9,7 @@ import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
+import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
@@ -19,6 +20,7 @@ import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
+import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import retrofit.Callback;
@@ -134,5 +136,13 @@ public interface RestInterface {
     // Devices
     @GET("/device/{id}/apps")
     void getDeviceApps(@Path("id") int id, Callback<List<Application>> cb);
+
+    // Facebook Login
+    @POST("/session/facebook")
+    void facebookLogin(@Body SocialSessionForm socialSessionForm, Callback<SessionDevice> cb);
+
+    // Google Login
+    @POST("/session/google")
+    void googleLogin(@Body SocialSessionForm socialSessionForm, Callback<SessionDevice> cb);
 
 }

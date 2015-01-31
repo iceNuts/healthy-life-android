@@ -7,6 +7,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.blue_stingray.healthy_life_app.model.SessionDevice;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -15,13 +20,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.plus.Account;
+import com.google.inject.Inject;
 
 import java.io.IOException;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import roboguice.activity.RoboActivity;
 
 /**
  * Created by BillZeng on 1/21/15.
  */
-public class GoogleLoginActivity extends Activity implements
+public class GoogleLoginActivity extends RoboActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -31,6 +41,12 @@ public class GoogleLoginActivity extends Activity implements
     private GoogleApiClient mGoogleApiClient;
 
     public static final String SCOPES = "https://www.googleapis.com/auth/plus.login";
+
+    @Inject
+    private RestInterface rest;
+
+    @Inject
+    public SharedPreferencesHelper prefs;
 
     private boolean mIntentInProgress;
 
@@ -97,7 +113,29 @@ public class GoogleLoginActivity extends Activity implements
 
             @Override
             protected void onPostExecute(String token) {
+
                 Log.d(TAG, "Token Retrieved:" + token);
+                rest.googleLogin(
+                    new SocialSessionForm(
+                        GoogleLoginActivity.this,
+                        token,
+                        prefs.getGCMRegId()
+                    ),
+                    new RetrofitDialogCallback<SessionDevice>(
+                        GoogleLoginActivity.this,
+                        null
+                    ) {
+                        @Override
+                        public void onSuccess(SessionDevice sessionDevice, Response response) {
+                            Log.d(TAG, "Logged In");
+                        }
+
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {
+                            Log.d(TAG, "Failed");
+                        }
+                    }
+                );
             }
         };
         task.execute();

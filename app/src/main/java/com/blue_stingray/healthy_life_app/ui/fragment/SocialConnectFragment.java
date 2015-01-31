@@ -9,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.SessionDevice;
+import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.GoogleLoginActivity;
 import com.blue_stingray.healthy_life_app.ui.activity.LoginActivity;
 import com.facebook.Request;
@@ -19,6 +24,9 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
+import com.google.inject.Inject;
+
+import retrofit.RetrofitError;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -33,6 +41,12 @@ public class SocialConnectFragment extends RoboFragment {
     private SignInButton googleAuthButton;
 
     private UiLifecycleHelper uiHelper;
+
+    @Inject
+    private RestInterface rest;
+
+    @Inject
+    public SharedPreferencesHelper prefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +93,24 @@ public class SocialConnectFragment extends RoboFragment {
                     }
                 }
             });
+
+            rest.facebookLogin(
+                    new SocialSessionForm(
+                        getActivity(),
+                        session.getAccessToken(),
+                        prefs.getGCMRegId()),
+                    new RetrofitDialogCallback<SessionDevice>(
+                        getActivity(),
+                        null) {
+                        @Override
+                        public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
+                            Log.d(TAG, "Logged In");
+                        }
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {
+                            Log.d(TAG, "Failed");
+                        }
+                    });
         }
 
         uiHelper.onResume();
@@ -111,7 +143,6 @@ public class SocialConnectFragment extends RoboFragment {
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
-            Log.d(TAG, "Token:" + session.getAccessToken());
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
