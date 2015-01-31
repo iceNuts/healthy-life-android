@@ -42,6 +42,8 @@ public class GoogleLoginActivity extends RoboActivity implements
 
     public static final String SCOPES = "https://www.googleapis.com/auth/plus.login";
 
+    private Intent returnIntent;
+
     @Inject
     private RestInterface rest;
 
@@ -54,6 +56,7 @@ public class GoogleLoginActivity extends RoboActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        returnIntent = new Intent();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -81,9 +84,12 @@ public class GoogleLoginActivity extends RoboActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             mIntentInProgress = false;
-            if (!mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
+            if (mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.disconnect();
             }
+            returnIntent.putExtra("google_result", "failed");
+            setResult(Activity.RESULT_CANCELED, returnIntent);
+            finish();
         }
     }
 
@@ -115,27 +121,10 @@ public class GoogleLoginActivity extends RoboActivity implements
             protected void onPostExecute(String token) {
 
                 Log.d(TAG, "Token Retrieved:" + token);
-                rest.googleLogin(
-                    new SocialSessionForm(
-                        GoogleLoginActivity.this,
-                        token,
-                        prefs.getGCMRegId()
-                    ),
-                    new RetrofitDialogCallback<SessionDevice>(
-                        GoogleLoginActivity.this,
-                        null
-                    ) {
-                        @Override
-                        public void onSuccess(SessionDevice sessionDevice, Response response) {
-                            Log.d(TAG, "Logged In");
-                        }
-
-                        @Override
-                        public void onFailure(RetrofitError retrofitError) {
-                            Log.d(TAG, "Failed");
-                        }
-                    }
-                );
+                returnIntent.putExtra("google_result", "ok");
+                returnIntent.putExtra("token", token);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
         };
         task.execute();
@@ -143,6 +132,7 @@ public class GoogleLoginActivity extends RoboActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
+
         mGoogleApiClient.connect();
     }
 

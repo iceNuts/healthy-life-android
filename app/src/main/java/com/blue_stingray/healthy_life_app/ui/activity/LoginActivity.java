@@ -167,7 +167,19 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void showSocialConnect(View v) {
-        startActivity(new Intent(LoginActivity.this, SocialConnectActivity.class));
+        startActivityForResult(
+                new Intent(LoginActivity.this, SocialConnectActivity.class),
+                1
+        );
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+
+            }
+        }
+    }
 }

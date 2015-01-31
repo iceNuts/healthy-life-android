@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,9 +35,6 @@ public class SocialConnectFragment extends RoboFragment {
 
     private static final String TAG = "SocialConnectFragment";
 
-    @InjectView(R.id.goBackButton)
-    private Button goBackButton;
-
     @InjectView(R.id.googleAuthButton)
     private SignInButton googleAuthButton;
 
@@ -45,13 +43,17 @@ public class SocialConnectFragment extends RoboFragment {
     @Inject
     private RestInterface rest;
 
+    private Intent returnIntent;
+
     @Inject
     public SharedPreferencesHelper prefs;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        returnIntent = new Intent();
         uiHelper = new UiLifecycleHelper(getActivity(), callback);
         uiHelper.onCreate(savedInstanceState);
     }
@@ -70,7 +72,6 @@ public class SocialConnectFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        goBackButton.setOnClickListener(new GoBackListener());
         googleAuthButton.setOnClickListener(new GoogleAuthListener());
     }
 
@@ -84,33 +85,6 @@ public class SocialConnectFragment extends RoboFragment {
         Session session = Session.getActiveSession();
         if (session != null && (session.isOpened() || session.isClosed()) ) {
             onSessionStateChange(session, session.getState(), null);
-
-            Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
-                @Override
-                public void onCompleted(GraphUser user, Response response) {
-                    if (user != null) {
-                        Toast.makeText(getActivity(), "Hi, " + user.getFirstName() + "!", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
-            rest.facebookLogin(
-                    new SocialSessionForm(
-                        getActivity(),
-                        session.getAccessToken(),
-                        prefs.getGCMRegId()),
-                    new RetrofitDialogCallback<SessionDevice>(
-                        getActivity(),
-                        null) {
-                        @Override
-                        public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
-                            Log.d(TAG, "Logged In");
-                        }
-                        @Override
-                        public void onFailure(RetrofitError retrofitError) {
-                            Log.d(TAG, "Failed");
-                        }
-                    });
         }
 
         uiHelper.onResume();
@@ -119,7 +93,38 @@ public class SocialConnectFragment extends RoboFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == getActivity().RESULT_OK) {
+                String token = data.getStringExtra("token");
+                rest.googleLogin(
+                        new SocialSessionForm(
+                                getActivity(),
+                                token,
+                                prefs.getGCMRegId()
+                        ),
+                        new RetrofitDialogCallback<SessionDevice>(
+                                getActivity(),
+                                null
+                        ) {
+                            @Override
+                            public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
+                                Log.d(TAG, "Logged In");
+                                returnIntent.putExtra("google_result", "ok");
+                                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                                getActivity().finish();
+                            }
+
+                            @Override
+                            public void onFailure(RetrofitError retrofitError) {
+                                Log.d(TAG, "Failed");
+                                returnIntent.putExtra("google_result", "failed");
+                                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                            }
+                        }
+                );
+            }
+            uiHelper.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -143,6 +148,28 @@ public class SocialConnectFragment extends RoboFragment {
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
+            rest.facebookLogin(
+                    new SocialSessionForm(
+                            getActivity(),
+                            session.getAccessToken(),
+                            prefs.getGCMRegId()),
+                    new RetrofitDialogCallback<SessionDevice>(
+                            getActivity(),
+                            null) {
+                        @Override
+                        public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
+                            Log.d(TAG, "Logged In");
+                            returnIntent.putExtra("fb_result", "ok");
+                            getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                            getActivity().finish();
+                        }
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {
+                            Log.d(TAG, "Failed");
+                            returnIntent.putExtra("fb_result", "failed");
+                            getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                        }
+                    });
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
@@ -155,19 +182,14 @@ public class SocialConnectFragment extends RoboFragment {
         }
     };
 
-    private class GoBackListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        }
-    }
-
     private class GoogleAuthListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getActivity(), GoogleLoginActivity.class));
+            startActivityForResult(
+                    new Intent(getActivity(), GoogleLoginActivity.class),
+                    1
+            );
         }
 
     }

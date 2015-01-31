@@ -70,6 +70,7 @@
     <string name="child_edit_success_title">Edit Successful</string>
     <string name="child_edit_success_description">You successfully edited a user.</string>
     <string name="email_in_use">Email address is already in use.</string>
+    <string name="Social_Login_RequestCode">social_login</string>
 
     <!-- Settings -->
     <string name="action_settings">Settings</string>
