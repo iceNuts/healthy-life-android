@@ -273,6 +273,126 @@ public class ApplicationLoggingService extends RoboService {
         }).start();
     }
 
+    private void logPhoneUsage(final Map<String, String> logTime, final int flag) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.beginTransaction();
+                try {
+
+                    // log the end time
+
+                    if (flag == ENDFLAG) {
+
+                        // Begin Finding
+
+                        Cursor phoneUsageCursor = db.rawQuery(
+                                "SELECT * FROM wake_up_record WHERE end_time = ?",
+                                new String[]{
+                                        "-1"
+                                }
+                        );
+
+                        int phoneUsageCount = phoneUsageCursor.getCount();
+                        // FAILED TO Find
+
+                        if (phoneUsageCount == 0) {
+                        }
+
+                        // ERROR DELETE ALL
+                        // Store every records by start_time -1 when the app is still open, replace -1 by end_time
+                        // But some accidents may occur result in a few -1 ending records
+
+                        else if (phoneUsageCount > 1) {
+                            db.delete(WAKE_UP_RECORD_TABLE, "end_time=?", new String[]{
+                                    "-1"
+                            });
+                        }
+
+                        // ONLY ONE ENTRY NICE :-)
+
+                        else {
+
+                            phoneUsageCursor.moveToFirst();
+                            String lastDay = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(USAGE_DAY));
+
+                            String startTime = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME));
+
+                            // SPLIT TIME :(
+
+                            if (!lastDay.equals(logTime.get("day"))) {
+
+                                // Generate the ZERO timestamp
+
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
+                                c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
+                                c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
+                                c.set(Calendar.MINUTE, 0);
+                                c.set(Calendar.HOUR_OF_DAY, 0);
+                                c.set(Calendar.SECOND, 0);
+                                c.set(Calendar.MILLISECOND, 0);
+                                String zeroTime = String.valueOf(c.getTimeInMillis()/1000);
+
+                                // Update the one-day bound
+
+                                ContentValues updateValues = new ContentValues();
+                                updateValues.put(END_TIME, zeroTime);
+                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=?", new String[]{
+                                        "-1"
+                                });
+
+                                // Insert a new day
+
+                                ContentValues newUsage = new ContentValues();
+                                newUsage.put(USAGE_YEAR, logTime.get("year"));
+                                newUsage.put(USAGE_MONTH, logTime.get("month"));
+                                newUsage.put(USAGE_DAY, logTime.get("day"));
+                                newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
+                                newUsage.put(START_TIME, zeroTime);
+                                newUsage.put(END_TIME, logTime.get("timestamp"));
+                                newUsage.put(USER_SESSION, prefs.getSession());
+                                db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newUsage);
+
+                            }
+                            // BEST : NO Need to Split
+                            else {
+                                ContentValues updateValues = new ContentValues();
+                                updateValues.put(END_TIME, logTime.get("timestamp"));
+                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=?", new String[]{
+                                        "-1"
+                                });
+                            }
+                        }
+                        phoneUsageCursor.close();
+                    }
+
+                    // log start time
+
+                    else if (flag == STARTFLAG) {
+                        ContentValues newStat = new ContentValues();
+                        newStat.put(USAGE_YEAR, logTime.get("year"));
+                        newStat.put(USAGE_MONTH, logTime.get("month"));
+                        newStat.put(USAGE_DAY, logTime.get("day"));
+                        newStat.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
+                        newStat.put(START_TIME, logTime.get("timestamp"));
+                        newStat.put(END_TIME, "-1");
+                        newStat.put(USER_SESSION, prefs.getSession());
+                        db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newStat);
+                    }
+                }
+
+                // Clean up
+
+                finally {
+                    db.setTransactionSuccessful();
+                    db.endTransaction();
+                }
+
+            }
+        }).start();
+    }
+
     // this may be useful to monitor the screen is off and don't count the usage time
 
     private class ScreenStateReceiver extends BroadcastReceiver {
@@ -339,6 +459,10 @@ public class ApplicationLoggingService extends RoboService {
             Log.d("Screen", "on pause");
             synchronized (mPauseLock) {
                 mPaused = true;
+                // record screen off
+                Map<String, String> currentTime = currentTime();
+                Log.d("currentTime", currentTime.get("timestamp"));
+                logPhoneUsage(currentTime, ENDFLAG);
             }
         }
 
@@ -347,6 +471,10 @@ public class ApplicationLoggingService extends RoboService {
             synchronized (mPauseLock) {
                 mPaused = false;
                 mPauseLock.notifyAll();
+                // record screen start
+                Map<String, String> currentTime = currentTime();
+                Log.d("currentTime", currentTime.get("timestamp"));
+                logPhoneUsage(currentTime, STARTFLAG);
             }
         }
     }

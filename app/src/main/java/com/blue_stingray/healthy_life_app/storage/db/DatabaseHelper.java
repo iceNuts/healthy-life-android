@@ -57,8 +57,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ALERT_SUBJECT + " text not null"
     );
 
+    public static final String WAKE_UP_RECORD_TABLE = "wake_up_record";
+    private static final String WAKE_UP_RECORD_TABLE_CREATE = tableCreateString(
+            WAKE_UP_RECORD_TABLE,
+            USAGE_YEAR + " integer not null",
+            USAGE_MONTH + " integer not null",
+            USAGE_DAY + " integer not null",
+            USAGE_DAY_OF_WEEK + " integer not null",
+            START_TIME + " integer not null",
+            END_TIME + " integer not null",
+            USER_SESSION + " text not null"
+    );
+
     private static final String DB_NAME = "app.db";
-    private static final int SCHEMA_VERSION = 3;
+    private static final int SCHEMA_VERSION = 5;
 
 
     @Inject
@@ -72,7 +84,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (String tableCreateString : new String[] {
                 APPLICATION_USAGE_CREATE,
                 GOAL_CREATE,
-                ALERT_RECORD_TABLE_CREATE
+                ALERT_RECORD_TABLE_CREATE,
+                WAKE_UP_RECORD_TABLE_CREATE
         }) {
             db.execSQL(tableCreateString);
         }
@@ -83,7 +96,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (String tableName : new String[] {
                 APPLICATION_USAGE_TABLE,
                 GOAL_TABLE,
-                ALERT_RECORD_TABLE
+                ALERT_RECORD_TABLE,
+                WAKE_UP_RECORD_TABLE
         }) {
             db.execSQL("DROP TABLE IF EXISTS " + tableName);
         }

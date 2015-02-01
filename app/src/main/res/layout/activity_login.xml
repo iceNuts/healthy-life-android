@@ -35,7 +35,7 @@
                 android:inputType="textEmailAddress"
                 android:id="@+id/emailField"
                 android:hint="@string/email"
-                android:text="brian@bluestingray.com" />
+                android:text="info@bluestingray.com" />
 
             <EditText
                 style="@style/Input"

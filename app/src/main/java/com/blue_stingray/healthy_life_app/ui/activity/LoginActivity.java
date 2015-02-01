@@ -127,6 +127,9 @@ public class LoginActivity extends BaseActivity {
                                 @Override
                                 public void success(List<Goal> goals, Response response) {
                                     for(Goal goal : goals) {
+                                        // TO FIX
+                                        // data type error when login in with Brian account
+                                        // 0.2 ? int type
                                         HashMap<Integer, Integer> newGoalMap = new HashMap<>();
                                         newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                                         dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);

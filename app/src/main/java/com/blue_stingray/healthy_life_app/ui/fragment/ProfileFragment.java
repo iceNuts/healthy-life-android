@@ -16,16 +16,21 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 import com.google.inject.Inject;
 
+import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.ValueLineChart;
+import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.ValueLinePoint;
 import org.eazegraph.lib.models.ValueLineSeries;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -54,9 +59,22 @@ public class ProfileFragment extends RoboFragment {
     @InjectView(R.id.percentile_ranking)
     private TextView percentileRanking;
 
+    @InjectView(R.id.usage_time)
+    private BarChart PhoneUsageTimeChart;
+
+    @InjectView(R.id.wake_up_time)
+    private BarChart PhoneWakeUpTimeChart;
+
     private User authUser;
 
     private Integer[] scoresByMonth;
+
+    private List<DataHelper.PhoneUsageTuple> totalUseHours;
+
+    private List<DataHelper.PhoneUsageTuple> wakeupTimes;
+
+    private DataHelper dataHelper;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +98,8 @@ public class ProfileFragment extends RoboFragment {
         percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         detailsButton.setOnClickListener(new OnDetailsClickListener());
         setupLineChart();
+        // setup phone usage graph
+        setupPhoneUsageChart();
     }
 
     private void setupLineChart() {
@@ -109,7 +129,6 @@ public class ProfileFragment extends RoboFragment {
 
                 ratingHistory.addSeries(series);
                 ratingHistory.startAnimation();
-
                 loading.cancel();
             }
 
@@ -118,6 +137,48 @@ public class ProfileFragment extends RoboFragment {
 
             }
         });
+    }
+
+    private void setupPhoneUsageChart() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dataHelper = DataHelper.getInstance(getActivity());
+                wakeupTimes = dataHelper.getRecentPhoneWakeUpTimes();
+                totalUseHours = dataHelper.getRecentPhoneUsageHours();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // parsing total time
+                        for (int i = 0; i < totalUseHours.size(); i++) {
+                            DataHelper.PhoneUsageTuple tuple = totalUseHours.get(i);
+                            BarModel model = new BarModel((Float)tuple.value, 0xFF1FF4AC);
+                            if (i == 0) {
+                                model.setLegendLabel("Today");
+                            }
+                            else {
+                                model.setLegendLabel((String)tuple.key);
+                            }
+                            PhoneUsageTimeChart.addBar(model);
+                        }
+                        // parsing wake up times
+                        for (int i = 0; i < wakeupTimes.size(); i++) {
+                            DataHelper.PhoneUsageTuple tuple = wakeupTimes.get(i);
+                            BarModel model = new BarModel((Integer)tuple.value, 0xFF123456);
+                            if (i == 0) {
+                                model.setLegendLabel("Today");
+                            }
+                            else {
+                                model.setLegendLabel((String)tuple.key);
+                            }
+                            PhoneWakeUpTimeChart.addBar(model);
+                        }
+                        PhoneUsageTimeChart.startAnimation();
+                        PhoneWakeUpTimeChart.startAnimation();
+                    }
+                });
+            }
+        }).start();
     }
 
     private class OnDetailsClickListener implements View.OnClickListener {

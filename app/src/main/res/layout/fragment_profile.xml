@@ -167,5 +167,59 @@
                 app:egLegendHeight="40dp"
                 app:egShowStandardValue="true"/>
         </LinearLayout>
+
+        <LinearLayout
+            style="@style/Card"
+            android:orientation="vertical"
+            android:weightSum="2"
+            android:id="@+id/PhoneUsageLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Phone Usage"
+                android:id="@+id/textView_PhoneUsage"
+                android:textSize="20dp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usage Time"
+                android:id="@+id/textView_UsageTime"
+                android:paddingBottom="4dp"
+                android:textColor="@color/grey_text_light" />
+
+            <org.eazegraph.lib.charts.BarChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/usage_time"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:egUseCubic="true"
+                app:egUseOverlapFill="true"
+                app:egCurveSmoothness="0.4"
+                app:egLegendHeight="40dp"
+                app:egShowStandardValue="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wake Up Time"
+                android:id="@+id/textView_WakeUpTime"
+                android:paddingBottom="4dp"
+                android:textColor="@color/grey_text_light" />
+
+            <org.eazegraph.lib.charts.BarChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/wake_up_time"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:egUseCubic="true"
+                app:egUseOverlapFill="true"
+                app:egCurveSmoothness="0.4"
+                app:egLegendHeight="40dp"
+                app:egShowStandardValue="true"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

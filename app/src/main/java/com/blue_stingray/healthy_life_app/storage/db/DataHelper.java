@@ -376,4 +376,110 @@ public class DataHelper {
         instance.db.endTransaction();
     }
 
+    // Android holds a different date/month count
+
+    public Map<String, String> currentTime() {
+        Map<String, String> timeInfo = new HashMap<String, String>();
+        Calendar c = Calendar.getInstance();
+        timeInfo.put("year", String.valueOf(c.get(Calendar.YEAR)));
+        timeInfo.put("month", String.valueOf(c.get(Calendar.MONTH)));
+        timeInfo.put("day", String.valueOf(c.get(Calendar.DATE)));
+        timeInfo.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
+        timeInfo.put("timestamp", String.valueOf(new Date().getTime()/1000));
+        return timeInfo;
+    }
+
+    // fetch user wake up times latest 5 days
+    public List<PhoneUsageTuple> getRecentPhoneWakeUpTimes() {
+        instance.db.beginTransaction();
+        List<PhoneUsageTuple> list = new ArrayList<>();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        for (int i = 0; i < recentDays.size(); i++) {
+            Map<String, String> day = recentDays.get(i);
+            Cursor phoneUsageCursor = db.rawQuery(
+                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ?",
+                    new String[]{
+                        day.get("year"),
+                        day.get("month"),
+                        day.get("day"),
+                        day.get("day_of_week")
+                    }
+            );
+            int phoneUsageCount = phoneUsageCursor.getCount();
+            PhoneUsageTuple<String, Integer> tuple = new PhoneUsageTuple(
+                    day.get("month")+"/"+day.get("day"),
+                    phoneUsageCount);
+            list.add(tuple);
+            phoneUsageCursor.close();
+        }
+        instance.db.endTransaction();
+        return list;
+    }
+
+
+    // fetch user total wake up usage time
+    public List<PhoneUsageTuple> getRecentPhoneUsageHours() {
+        instance.db.beginTransaction();
+        List<PhoneUsageTuple> list = new ArrayList<>();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        for (int i = 0; i < recentDays.size(); i++) {
+            Map<String, String> day = recentDays.get(i);
+            Cursor phoneUsageCursor = db.rawQuery(
+                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ?",
+                    new String[]{
+                            day.get("year"),
+                            day.get("month"),
+                            day.get("day"),
+                            day.get("day_of_week")
+                    }
+            );
+            phoneUsageCursor.moveToFirst();
+            Integer totalSec = 0;
+            while (!phoneUsageCursor.isAfterLast()) {
+                Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                if (endTime != -1) {
+                    totalSec += (endTime-startTime);
+                }
+                Log.d("TotalUsed", day.get("month")+"/"+day.get("day")+" "+String.valueOf(startTime)+" "+String.valueOf(endTime)+" "+String.valueOf(totalSec));
+                phoneUsageCursor.moveToNext();
+            }
+            PhoneUsageTuple<String, Float> tuple = new PhoneUsageTuple(
+                    day.get("month")+"/"+day.get("day"),
+                    totalSec/60f);
+            list.add(tuple);
+            phoneUsageCursor.close();
+        }
+        instance.db.endTransaction();
+        return list;
+    }
+
+    private List<Map<String, String>> getRecentDaysInCalendar() {
+        int limit = 0;
+        List<Map<String, String>> list = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        while (limit < 5) {
+            Map<String, String> timeInfo = new HashMap<String, String>();
+            timeInfo.put("year", String.valueOf(c.get(Calendar.YEAR)));
+            timeInfo.put("month", String.valueOf(c.get(Calendar.MONTH)));
+            timeInfo.put("day", String.valueOf(c.get(Calendar.DATE)));
+            timeInfo.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
+            timeInfo.put("timestamp", String.valueOf(new Date().getTime()/1000));
+            list.add(timeInfo);
+            c.add(Calendar.DAY_OF_MONTH, -1);
+            limit += 1;
+        }
+        return list;
+    }
+
+    public class PhoneUsageTuple<X, Y> {
+        public final X key;
+        public final Y value;
+        public PhoneUsageTuple(X key, Y value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
 }
+
