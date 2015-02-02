@@ -407,7 +407,7 @@ public class DataHelper {
             );
             int phoneUsageCount = phoneUsageCursor.getCount();
             PhoneUsageTuple<String, Integer> tuple = new PhoneUsageTuple(
-                    day.get("month")+"/"+day.get("day"),
+                    String.valueOf(Integer.valueOf(day.get("month"))+1)+"/"+day.get("day"),
                     phoneUsageCount);
             list.add(tuple);
             phoneUsageCursor.close();
@@ -445,7 +445,7 @@ public class DataHelper {
                 phoneUsageCursor.moveToNext();
             }
             PhoneUsageTuple<String, Float> tuple = new PhoneUsageTuple(
-                    day.get("month")+"/"+day.get("day"),
+                    String.valueOf(Integer.valueOf(day.get("month"))+1)+"/"+day.get("day"),
                     totalSec/60f);
             list.add(tuple);
             phoneUsageCursor.close();
