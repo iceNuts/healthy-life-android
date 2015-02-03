@@ -16,8 +16,8 @@ public class Goal implements Serializable {
     private String packageName;
     private String hours;
     private String day;
-    private Integer usedToday;
-    private Integer timeRemaining;
+    private Double usedToday;
+    private Double timeRemaining;
     private Application app;
 
     private transient Float timeLimit;
@@ -66,7 +66,7 @@ public class Goal implements Serializable {
 
     public double getTimeUsedSeconds() {
         if(usedToday == null) {
-            usedToday = dataHelper.getDBRecordedTotalTime(getPackageName());
+            usedToday = dataHelper.getDBRecordedTotalTime(getPackageName()).doubleValue();
         }
 
         return usedToday;
