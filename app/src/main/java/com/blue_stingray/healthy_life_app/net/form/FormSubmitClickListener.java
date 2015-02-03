@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.net.form;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.util.Log;
 import android.view.View;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 

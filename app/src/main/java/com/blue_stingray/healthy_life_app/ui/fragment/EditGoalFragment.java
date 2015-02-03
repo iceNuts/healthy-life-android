@@ -202,7 +202,8 @@ public class EditGoalFragment extends RoboFragment {
                 it.remove();
             }
 
-            rest.createGoalMany(new ManyGoalForm(app.getDeviceId(), goalForms.toArray(new GoalForm[goalForms.size()])), new CreateManyGoalsCallback(progressDialog));
+            ManyGoalForm goalForm = new ManyGoalForm(prefs.getDeviceId(), goalForms.toArray(new GoalForm[goalForms.size()]));
+            rest.createGoalMany(goalForm, new CreateManyGoalsCallback(progressDialog));
         }
     }
 

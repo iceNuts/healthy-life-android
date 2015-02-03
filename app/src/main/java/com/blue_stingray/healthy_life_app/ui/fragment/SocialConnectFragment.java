@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +57,7 @@ public class SocialConnectFragment extends RoboFragment {
         returnIntent = new Intent();
         uiHelper = new UiLifecycleHelper(getActivity(), callback);
         uiHelper.onCreate(savedInstanceState);
+        callFacebookLogout(getActivity());
     }
 
     @Override
@@ -64,7 +66,6 @@ public class SocialConnectFragment extends RoboFragment {
 
         LoginButton authButton = (LoginButton) view.findViewById(R.id.facebookAuthButton);
         authButton.setFragment(this);
-
         return view;
     }
 
@@ -93,7 +94,10 @@ public class SocialConnectFragment extends RoboFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // for google
         if (requestCode == 1) {
+            Log.d(TAG, "google login return");
+            Log.d(TAG, String.valueOf(resultCode));
             if (resultCode == getActivity().RESULT_OK) {
                 String token = data.getStringExtra("token");
                 rest.googleLogin(
@@ -110,6 +114,10 @@ public class SocialConnectFragment extends RoboFragment {
                             public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
                                 Log.d(TAG, "Logged In");
                                 returnIntent.putExtra("google_result", "ok");
+                                prefs.setDeviceId(sessionDevice.device.id);
+                                prefs.setSession(sessionDevice.session.token);
+                                prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
+                                prefs.setUserLevel(sessionDevice.is_admin);
                                 getActivity().setResult(Activity.RESULT_OK, returnIntent);
                                 getActivity().finish();
                             }
@@ -123,8 +131,9 @@ public class SocialConnectFragment extends RoboFragment {
                         }
                 );
             }
-            uiHelper.onActivityResult(requestCode, resultCode, data);
         }
+        // for fb
+        uiHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -160,6 +169,10 @@ public class SocialConnectFragment extends RoboFragment {
                         public void onSuccess(SessionDevice sessionDevice, retrofit.client.Response response) {
                             Log.d(TAG, "Logged In");
                             returnIntent.putExtra("fb_result", "ok");
+                            prefs.setDeviceId(sessionDevice.device.id);
+                            prefs.setSession(sessionDevice.session.token);
+                            prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
+                            prefs.setUserLevel(sessionDevice.is_admin);
                             getActivity().setResult(Activity.RESULT_OK, returnIntent);
                             getActivity().finish();
                         }
@@ -173,6 +186,26 @@ public class SocialConnectFragment extends RoboFragment {
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
+    }
+
+    private static void callFacebookLogout(Context context) {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+
+            if (!session.isClosed()) {
+                session.closeAndClearTokenInformation();
+                //clear your preferences if saved
+            }
+        } else {
+
+            session = new Session(context);
+            Session.setActiveSession(session);
+
+            session.closeAndClearTokenInformation();
+            //clear your preferences if saved
+
+        }
+
     }
 
     private Session.StatusCallback callback = new Session.StatusCallback() {

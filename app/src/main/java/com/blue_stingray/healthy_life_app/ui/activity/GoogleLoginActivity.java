@@ -27,6 +27,8 @@ import java.io.IOException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.activity.RoboActivity;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by BillZeng on 1/21/15.
@@ -87,6 +89,7 @@ public class GoogleLoginActivity extends RoboActivity implements
             if (mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.disconnect();
             }
+//            mGoogleApiClient.reconnect();
             returnIntent.putExtra("google_result", "failed");
             setResult(Activity.RESULT_CANCELED, returnIntent);
             finish();

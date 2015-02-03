@@ -60,6 +60,8 @@ public class LoginActivity extends BaseActivity {
 
     private FormValidationManager validationManager;
 
+    private ProgressDialog progressDialog;
+
     private DataHelper dataHelper;
 
     @Override
@@ -115,46 +117,7 @@ public class LoginActivity extends BaseActivity {
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     prefs.setUserLevel(sessionDevice.is_admin);
-
-                    // get the auth user
-                    rest.getMyUser(new Callback<User>() {
-                        @Override
-                        public void success(User user, Response response) {
-                            ((App) getApplication()).setAuthUser(user);
-
-                            // sync my goals
-                            rest.getMyGoals(new Callback<List<Goal>>() {
-                                @Override
-                                public void success(List<Goal> goals, Response response) {
-                                    for(Goal goal : goals) {
-                                        // TO FIX
-                                        // data type error when login in with Brian account
-                                        // 0.2 ? int type
-                                        HashMap<Integer, Integer> newGoalMap = new HashMap<>();
-                                        newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
-                                        dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
-                                    }
-
-                                    progressDialog.cancel();
-                                    startActivity(new Intent(LoginActivity.this, StartActivity.class));
-                                    finish();
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    Log.i("healthy", "Login /goal error");
-                                    Log.i("healthy", error.getCause().toString());
-                                    progressDialog.cancel();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Log.i("healthy", "Login /user/me error");
-                            Log.i("healthy", error.getCause().toString());
-                        }
-                    });
+                    getAuthUser();
                 }
 
                 @Override
@@ -163,6 +126,48 @@ public class LoginActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    private void getAuthUser() {
+        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Logging in...");
+        // get the auth user
+        rest.getMyUser(new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                ((App) getApplication()).setAuthUser(user);
+
+                // sync my goals
+                rest.getMyGoals(new Callback<List<Goal>>() {
+                    @Override
+                    public void success(List<Goal> goals, Response response) {
+                        for(Goal goal : goals) {
+                            // TO FIX
+                            // data type error when login in with Brian account
+                            // 0.2 ? int type
+                            HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                            newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
+                            dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                        }
+                        progressDialog.cancel();
+                        startActivity(new Intent(LoginActivity.this, StartActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.i("healthy", "Login /goal error");
+                        Log.i("healthy", error.getCause().toString());
+                        progressDialog.cancel();
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("healthy", "Login /user/me error");
+                Log.i("healthy", error.getCause().toString());
+            }
+        });
     }
 
     public void showRegister(View v) {
@@ -181,7 +186,18 @@ public class LoginActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-
+                String fbReturnStatus = data.getStringExtra("fb_result");
+                String googleReturnStatus = data.getStringExtra("google_result");
+                if (fbReturnStatus != null && fbReturnStatus.equals("ok") ) {
+                    getAuthUser();
+                }
+                else if (googleReturnStatus != null && googleReturnStatus.equals("ok")) {
+                    getAuthUser();
+                }
+                else {
+                    // show failed
+                    DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
+                }
             }
         }
     }
