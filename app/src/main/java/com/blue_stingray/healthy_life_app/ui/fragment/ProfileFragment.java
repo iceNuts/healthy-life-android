@@ -2,14 +2,21 @@ package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.IconTextView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
@@ -75,6 +82,12 @@ public class ProfileFragment extends RoboFragment {
 
     private DataHelper dataHelper;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,6 +113,21 @@ public class ProfileFragment extends RoboFragment {
         setupLineChart();
         // setup phone usage graph
         setupPhoneUsageChart();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_fragment_actions, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        ShareActionProvider shareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+        // Create the share Intent
+        String shareLink = "http://healthy.wherewedev.com/";
+        String shareText = "Check out my Healthy App profile! " + shareLink;
+        Intent shareIntent = ShareCompat.IntentBuilder.from(getActivity()).setType("text/plain").setText(shareText).getIntent();
+
+        // Set the share Intent
+        shareActionProvider.setShareIntent(shareIntent);
     }
 
     private void setupLineChart() {
