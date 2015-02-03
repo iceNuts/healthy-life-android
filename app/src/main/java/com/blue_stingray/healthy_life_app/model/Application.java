@@ -133,7 +133,7 @@ public class Application implements Serializable {
             return Integer.parseInt(device_id);
         }
 
-        return null;
+        return -1;
     }
 
     public void setActiveGoals(Goal[] goals) {

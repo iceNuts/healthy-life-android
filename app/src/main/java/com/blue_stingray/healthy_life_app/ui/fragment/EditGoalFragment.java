@@ -202,7 +202,7 @@ public class EditGoalFragment extends RoboFragment {
                 it.remove();
             }
             int deviceID = app.getDeviceId();
-            if (null == String.valueOf(deviceID)) {
+            if (-1 == app.getDeviceId()) {
                 deviceID = prefs.getDeviceId();
             }
             ManyGoalForm goalForm = new ManyGoalForm(deviceID, goalForms.toArray(new GoalForm[goalForms.size()]));
