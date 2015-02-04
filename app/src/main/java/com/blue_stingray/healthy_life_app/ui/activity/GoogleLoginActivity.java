@@ -29,6 +29,7 @@ import retrofit.client.Response;
 import roboguice.activity.RoboActivity;
 import java.util.Iterator;
 import java.util.Set;
+import android.view.View;
 
 /**
  * Created by BillZeng on 1/21/15.
@@ -53,6 +54,7 @@ public class GoogleLoginActivity extends RoboActivity implements
     public SharedPreferencesHelper prefs;
 
     private boolean mIntentInProgress;
+    private boolean mSignInClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class GoogleLoginActivity extends RoboActivity implements
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+        mSignInClicked = true;
     }
 
     @Override
@@ -76,23 +79,29 @@ public class GoogleLoginActivity extends RoboActivity implements
     @Override
     protected void onStop() {
         super.onStop();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            mIntentInProgress = false;
-            if (mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.disconnect();
+            if (resultCode != RESULT_OK) {
+                mSignInClicked = false;
             }
-//            mGoogleApiClient.reconnect();
-            returnIntent.putExtra("google_result", "failed");
-            setResult(Activity.RESULT_CANCELED, returnIntent);
-            finish();
+            mIntentInProgress = false;
+            if (!mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            }
         }
     }
 
@@ -117,6 +126,7 @@ public class GoogleLoginActivity extends RoboActivity implements
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                mSignInClicked = false;
                 return token;
             }
 
@@ -139,23 +149,33 @@ public class GoogleLoginActivity extends RoboActivity implements
         mGoogleApiClient.connect();
     }
 
+    private void resolveSignInError(ConnectionResult connectionResult) {
+        try {
+            mIntentInProgress = true;
+            startIntentSenderForResult(
+                    connectionResult.getResolution().getIntentSender(),
+                    RC_SIGN_IN,
+                    null,
+                    0, 0, 0);
+        } catch (IntentSender.SendIntentException e) {
+            // The intent was canceled before it was sent.  Return to the default
+            // state and attempt to connect to get an updated ConnectionResult.
+            mIntentInProgress = false;
+            mGoogleApiClient.connect();
+        }
+    }
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         if (!mIntentInProgress && connectionResult.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                startIntentSenderForResult(
-                        connectionResult.getResolution().getIntentSender(),
-                        RC_SIGN_IN,
-                        null,
-                        0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
+            if (mSignInClicked) {
+                resolveSignInError(connectionResult);
+            }
+            else {
+                finish();
             }
         }
     }
+
 }
 
