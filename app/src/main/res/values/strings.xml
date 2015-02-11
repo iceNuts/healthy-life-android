@@ -83,6 +83,7 @@
     <string name="app_usage_limit_reached">Sorry, this App is no longer available to use today, please request more time from Administrator</string>
     <string name="app_alert_close">Close</string>
     <string name="app_alert_request">Request</string>
+    <string name="app_alert_unlock">Unlock</string>
 
     <!-- Create Goal -->
     <string name="creating_goal">Creating goal...</string>

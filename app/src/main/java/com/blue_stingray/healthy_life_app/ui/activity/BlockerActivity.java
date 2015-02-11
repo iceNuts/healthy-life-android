@@ -12,13 +12,16 @@ import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
+import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.google.inject.Inject;
 
 import java.util.Date;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -30,9 +33,13 @@ public class BlockerActivity extends BaseActivity{
     @Inject private RestInterface rest;
     ProgressDialog progressDialog;
 
+    private DataHelper dataHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dataHelper = DataHelper.getInstance(this);
 
         // hide action bar
         ActionBar actionBar = getActionBar();
@@ -48,10 +55,44 @@ public class BlockerActivity extends BaseActivity{
         launcherIntent = new Intent();
         launcherIntent.setAction(Intent.ACTION_MAIN);
         launcherIntent.addCategory(Intent.CATEGORY_HOME);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         activityManager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+
+        final ProgressDialog loading = ProgressDialog.show(this, "", "Loading...");
+        rest.getMyUser(
+            new Callback<User>() {
+                @Override
+                public void success(User user, Response response) {
+                    loading.cancel();
+                    // it is admin
+                    if (1 == user.getIsAdmin()) {
+                        // has mentor?
+                        try {
+                            Integer mentorId = user.getMentorId();
+                            // there is a mentor
+                            showBlockerDialog();
+                        }
+                        catch (Exception e) {
+                            showUnlockDialog();
+                        }
+                    }
+                    else {
+                        showBlockerDialog();
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    loading.cancel();
+                    showBlockerDialog();
+                }
+            }
+        );
+    }
+
+    private void showBlockerDialog() {
         final String packageName = getIntent().getStringExtra("packageName");
         final String alertInfo = getIntent().getStringExtra("AlertInfo");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (packageName != null) {
             builder.setMessage(R.string.app_usage_limit_reached).setTitle(R.string.app_name);
             builder.setPositiveButton(R.string.app_alert_close, new DialogInterface.OnClickListener() {
@@ -107,5 +148,20 @@ public class BlockerActivity extends BaseActivity{
             builder.create();
             builder.show();
         }
+    }
+
+    private void showUnlockDialog() {
+        final String packageName = getIntent().getStringExtra("packageName");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("You have used up time for this app, click unlock to continue use. ").setTitle(R.string.app_name);
+        builder.setPositiveButton(R.string.app_alert_unlock, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dataHelper.extendLifeline(packageName);
+                finish();
+            }
+        });
+        builder.create();
+        builder.show();
     }
 }
