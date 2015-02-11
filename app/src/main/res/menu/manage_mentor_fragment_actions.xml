@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_mentor_notification"
+          android:icon="@drawable/ic_arrow_forward_white_dot"
+          android:title="Notification"
+          android:showAsAction="always"/>
+</menu>

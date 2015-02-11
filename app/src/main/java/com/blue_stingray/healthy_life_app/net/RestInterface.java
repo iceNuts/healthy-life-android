@@ -9,6 +9,7 @@ import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Icon;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
+import com.blue_stingray.healthy_life_app.model.MentorRequest;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
@@ -20,13 +21,17 @@ import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.blue_stingray.healthy_life_app.net.form.ManyGoalForm;
+import com.blue_stingray.healthy_life_app.net.form.RequestMentorForm;
+import com.blue_stingray.healthy_life_app.net.form.SearchMentorForm;
 import com.blue_stingray.healthy_life_app.net.form.SessionForm;
 import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
+import com.blue_stingray.healthy_life_app.net.form.UpdateMentorRequestForm;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import retrofit.Callback;
 import retrofit.http.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The RESTful interface
@@ -148,5 +153,21 @@ public interface RestInterface {
     // Google Login
     @POST("/session/google")
     void googleLogin(@Body SocialSessionForm socialSessionForm, Callback<SessionDevice> cb);
+
+    // Mentor
+    @POST("/mentor/remove")
+    void removeMentor(Callback<Object> cb);
+
+    @POST("/mentor/search")
+    void searchMentor(@Body SearchMentorForm searchMentorForm, Callback<List<User>> cb);
+
+    @POST("/mentor/request")
+    void requestMentor(@Body RequestMentorForm requestMentorForm, Callback<Object> cb);
+
+    @GET("/mentor/request")
+    void getMentorRequest(Callback<List<MentorRequest>> cb);
+
+    @POST("/mentor/request/update/{id}")
+    void updateMentorRequest(@Path("id") int id, @Body UpdateMentorRequestForm updateMentorRequestForm, Callback<Object> cb);
 
 }

@@ -3,6 +3,8 @@ package com.blue_stingray.healthy_life_app.storage.db;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import com.blue_stingray.healthy_life_app.R;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,6 +20,7 @@ public class SharedPreferencesHelper {
     private final static String GCM_REGID = "GCM_REGID";
     private final static String USER_LEVEL = "IS_ADMIN";
     private final static String DEVICE_ID = "DEVICE_ID";
+    private final static String MEN_NOTI_STATUS = "MEN_NOTI_STATUS";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -98,7 +101,7 @@ public class SharedPreferencesHelper {
     }
 
     public void setUserLevel(int userLevel) {
-        prefs.edit().putInt(USER_LEVEL, userLevel);
+        prefs.edit().putInt(USER_LEVEL, userLevel).apply();
     }
 
     public int getUserLevel() {
@@ -111,11 +114,15 @@ public class SharedPreferencesHelper {
     }
 
     public void setDeviceId(int id) {
-        prefs.edit().putInt(DEVICE_ID, id);
+        prefs.edit().putInt(DEVICE_ID, id).apply();
     }
 
     public int getDeviceId() {
         return prefs.getInt(DEVICE_ID, 0);
     }
+
+    public void setMentorNotificationStatus(boolean status) {prefs.edit().putBoolean(MEN_NOTI_STATUS, status).apply();}
+
+    public boolean getMentorNotificationStatus() {return prefs.getBoolean(MEN_NOTI_STATUS, false);}
 
 }

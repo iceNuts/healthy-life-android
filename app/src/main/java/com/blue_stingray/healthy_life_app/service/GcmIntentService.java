@@ -9,10 +9,15 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.receiver.GcmBroadcastReceiver;
+import com.blue_stingray.healthy_life_app.receiver.LocalBroadcastManagerProvider;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.inject.Inject;
+
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,9 +28,14 @@ public class GcmIntentService extends IntentService {
 
     private DataHelper dataHelper;
 
+    private LocalBroadcastManager localBroadcastManager;
+
+    private SharedPreferencesHelper prefs;
+
     public GcmIntentService() {
         super("GcmIntentService");
         dataHelper = DataHelper.getInstance(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -52,6 +62,9 @@ public class GcmIntentService extends IntentService {
                     }
                     else if (message.has("goal")) {
                         syncGoal(message);
+                    }
+                    else if (message.has("mentorRequest")) {
+                        notifyMentorRequest(message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -102,7 +115,19 @@ public class GcmIntentService extends IntentService {
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
+        }
+    }
+
+    private void notifyMentorRequest(JSONObject message) {
+        try {
+            prefs = new SharedPreferencesHelper(getApplicationContext());
+            String subject = message.getString("description");
+            fireNotification(subject);
+            Intent broadcast = new Intent("mem_notification");
+            prefs.setMentorNotificationStatus(true);
+            localBroadcastManager.sendBroadcast(broadcast);
+        } catch (JSONException e) {
         }
     }
 

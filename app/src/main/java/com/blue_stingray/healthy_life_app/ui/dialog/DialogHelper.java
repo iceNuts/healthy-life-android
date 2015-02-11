@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.ui.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.FragmentActivity;
 import android.widget.AdapterView;
 
 import com.blue_stingray.healthy_life_app.R;
@@ -73,5 +74,6 @@ public class DialogHelper {
         builder.setNegativeButton(denyMessage, deny);
         return builder.create();
     }
+
 
 }

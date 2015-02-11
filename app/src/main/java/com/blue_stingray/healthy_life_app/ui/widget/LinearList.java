@@ -43,5 +43,4 @@ public class LinearList extends LinearLayout {
             this.addView(item);
         }
     }
-
 }

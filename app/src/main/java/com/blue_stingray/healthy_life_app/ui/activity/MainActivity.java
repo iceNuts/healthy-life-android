@@ -22,6 +22,7 @@ import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.ManageMentorFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageUsersFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
@@ -38,15 +39,7 @@ public class MainActivity extends BaseActivity {
 
     private User authUser;
 
-    private ArrayList drawerItems = new ArrayList<DrawerItem>() {{
-        add(new DrawerItem(ProfileFragment.class, "fa-bullhorn", "Profile"));
-        add(new DrawerItem(AlertsFragment.class, "fa-globe", "Alerts"));
-        add(new DrawerItem(LifelineRequestFragment.class, "fa-flag", "Lifeline Requests", true));
-        add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
-        add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
-        add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
-        add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
-    }};
+    private ArrayList drawerItems;
 
     private DrawerLayout drawerLayout;
 
@@ -67,6 +60,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
+        setupDrawerItems();
         setupDrawer();
         showSplashFragment();
     }
@@ -131,6 +125,21 @@ public class MainActivity extends BaseActivity {
         }
 
         drawerLayout.closeDrawers();
+    }
+
+    private void setupDrawerItems() {
+        drawerItems = new ArrayList<DrawerItem>() {{
+            add(new DrawerItem(ProfileFragment.class, "fa-bullhorn", "Profile"));
+            add(new DrawerItem(AlertsFragment.class, "fa-globe", "Alerts"));
+            add(new DrawerItem(LifelineRequestFragment.class, "fa-flag", "Lifeline Requests", true));
+            add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
+            add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
+            add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
+        }};
+        if (prefs.getUserLevel() == 1) {
+            drawerItems.add(new DrawerItem(ManageMentorFragment.class, "fa-users", "Manage Mentor", true));
+        }
+        drawerItems.add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
     }
 
     private void setupDrawer() {
