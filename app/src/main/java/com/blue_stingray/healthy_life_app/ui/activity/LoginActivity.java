@@ -117,6 +117,7 @@ public class LoginActivity extends BaseActivity {
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                     prefs.setUserLevel(sessionDevice.is_admin);
+                    prefs.setUserPasswdToken(passwordField.getText().toString());
                     getAuthUser();
                 }
 

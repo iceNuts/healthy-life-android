@@ -1,21 +1,27 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +29,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.UserListAdapter;
 import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
@@ -51,6 +58,9 @@ public class ManageUsersFragment extends RoboFragment {
     private Button createUserButton;
 
     private List<User> users = new ArrayList<>();
+
+    @Inject
+    private SharedPreferencesHelper prefs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,9 +118,31 @@ public class ManageUsersFragment extends RoboFragment {
 
         @Override
         public void onClick(View v) {
-            User user = users.get((int) v.getTag());
+            final User user = users.get((int) v.getTag());
             final String[] options = getResources().getStringArray(R.array.user_selection);
-            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(user, options)).show();
+            final Dialog authDialog = new Dialog(getActivity());
+            authDialog.setTitle("Authorization");
+            authDialog.setContentView(R.layout.password_alert_dialog);
+            final EditText passwdTextView = (EditText) authDialog.findViewById(R.id.passwordField);
+            passwdTextView.setTextColor(Color.BLACK);
+            passwdTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_GO) {
+                        if (prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+                            authDialog.cancel();
+                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(user, options)).show();
+                        }
+                        // show wrong password
+                        else {
+                            passwdTextView.setError("Password is wrong");
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            authDialog.show();
         }
     }
 
