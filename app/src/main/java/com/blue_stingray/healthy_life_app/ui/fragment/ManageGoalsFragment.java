@@ -25,6 +25,8 @@ import com.blue_stingray.healthy_life_app.storage.cache.Cache;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.util.Log;
@@ -172,6 +174,14 @@ public class ManageGoalsFragment extends RoboFragment {
                         appCache.put(app.getName(), app);
                     }
                 }
+
+                // applications that have goals first
+                Collections.sort(apps, new Comparator<Application>() {
+                    @Override
+                    public int compare(Application lhs, Application rhs) {
+                        return Boolean.compare(lhs.hasGoal(), rhs.hasGoal());
+                    }
+                });
             } finally {
                 createAuthList();
                 loadingDialog.dismiss();

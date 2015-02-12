@@ -32,7 +32,12 @@ public class AppGoalListAdapter extends BaseListAdapter<Application> {
         Collections.sort(data, new Comparator<Application>() {
             @Override
             public int compare(Application lhs, Application rhs) {
-                return lhs.getName().compareTo(rhs.getName());
+                int c;
+                c = Boolean.compare(rhs.hasGoal(), lhs.hasGoal());
+                if (c == 0) {
+                    c = lhs.getName().compareTo(rhs.getName());
+                }
+                return c;
             }
         });
     }
