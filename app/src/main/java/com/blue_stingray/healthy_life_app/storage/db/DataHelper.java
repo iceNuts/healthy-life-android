@@ -79,13 +79,13 @@ public class DataHelper {
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
 
                     // Delete old goal
-                    db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
+                    instance.db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
                             packageName,
                             pairs.getKey().toString()
                     });
 
                     // Insert new goal
-                    db.insert(GOAL_TABLE, null, newStat);
+                    long retValue = instance.db.insert(GOAL_TABLE, null, newStat);
                     it.remove();
                 }
                 instance.db.setTransactionSuccessful();

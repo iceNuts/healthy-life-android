@@ -9,6 +9,9 @@ import com.blue_stingray.healthy_life_app.R;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Provides preference manipulation ability
  */
@@ -21,6 +24,7 @@ public class SharedPreferencesHelper {
     private final static String USER_LEVEL = "IS_ADMIN";
     private final static String DEVICE_ID = "DEVICE_ID";
     private final static String MEN_NOTI_STATUS = "MEN_NOTI_STATUS";
+    private final static String PASSWD_USER_TOKEN = "PASSWD_USER_TOKEN";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -125,4 +129,34 @@ public class SharedPreferencesHelper {
 
     public boolean getMentorNotificationStatus() {return prefs.getBoolean(MEN_NOTI_STATUS, false);}
 
+    public void setUserPasswdToken(String passwdToken) {
+        prefs.edit().putString(PASSWD_USER_TOKEN, md5(passwdToken)).apply();
+    }
+
+    public boolean verifyUserPasswdToken(String passwdToken) {
+        String token = prefs.getString(PASSWD_USER_TOKEN, "");
+        if (token.equals(md5(passwdToken))) {
+            return true;
+        }
+        return false;
+    }
+
+    public String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }
