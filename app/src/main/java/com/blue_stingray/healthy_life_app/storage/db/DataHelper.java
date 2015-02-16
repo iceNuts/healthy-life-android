@@ -55,10 +55,10 @@ public class DataHelper {
             instance = new DataHelper();
             instance.dbHelper = new DatabaseHelper(context);
             instance.db = instance.dbHelper.getWritableDatabase();
+            instance.prefs = new SharedPreferencesHelper(context);
             instance.goalCache = instance.loadGoalCache();
             instance.blockedList = new HashMap<>();
             instance.extendList = new HashMap<>();
-            instance.prefs = new SharedPreferencesHelper(context);
         }
         return instance;
     }
@@ -77,11 +77,13 @@ public class DataHelper {
                     newStat.put(PACKAGE_NAME, packageName);
                     newStat.put(LIMIT_DAY, pairs.getKey().toString());
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
+                    newStat.put(USER_ID, prefs.getUserID());
 
                     // Delete old goal
-                    instance.db.delete(GOAL_TABLE, "package_name=? and limit_day=?", new String[]{
+                    instance.db.delete(GOAL_TABLE, "package_name=? and limit_day=? and user_id=?", new String[]{
                             packageName,
-                            pairs.getKey().toString()
+                            pairs.getKey().toString(),
+                            prefs.getUserID()
                     });
 
                     // Insert new goal
@@ -100,7 +102,7 @@ public class DataHelper {
     private HashMap<String, Integer> loadGoalCache() {
         HashMap<String, Integer> cache = new HashMap<>();
         Cursor goalCursor = db.rawQuery(
-                "SELECT * FROM goal_table",
+                "SELECT * FROM goal_table WHERE user_id=\""+prefs.getUserID()+"\"",
                 new String[]{
                 }
         );
@@ -138,7 +140,7 @@ public class DataHelper {
     public Goal getGoal(Context context, String packageName, int day) {
         Goal goal = new Goal(context);
         Cursor goalCursor = db.rawQuery(
-                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\" AND limit_day=\"" + day + "\"",
+                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\" AND limit_day=\"" + day + "\""+"AND user_id=\""+prefs.getUserID()+"\"",
                 new String[]{
                 }
         );
@@ -159,7 +161,7 @@ public class DataHelper {
     public List<Goal> getGoals(Context context, String packageName) {
         ArrayList<Goal> goals = new ArrayList<>();
         Cursor goalCursor = db.rawQuery(
-                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"",
+                "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"" + "AND user_id=\"" + prefs.getUserID() + "\"",
                 new String[]{
                 }
         );
@@ -261,8 +263,6 @@ public class DataHelper {
         Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
         totalTime += currentSec;
 
-        Log.d("Dynamic-GoalTime", String.valueOf(goalTime));
-        Log.d("Dynamic-GoalTime", String.valueOf(totalTime));
 
         if (extendList.containsKey(packageName)) {
             Log.d("Dynamic-GoalTime", String.valueOf(extendList.get(packageName)));
@@ -291,9 +291,10 @@ public class DataHelper {
     public ArrayList<StatForm> getLoggingRecordByTimestamp(String timestamp) {
         ArrayList<StatForm> statForms = new ArrayList<>();
         Cursor statCursor = db.rawQuery(
-                "SELECT * FROM application_usage WHERE start_time >= ? and end_time <> -1",
+                "SELECT * FROM application_usage WHERE start_time >= ? and end_time <> -1 and user_id=?",
                 new String[]{
-                    timestamp
+                    timestamp,
+                    prefs.getUserID()
                 }
         );
         statCursor.moveToFirst();
@@ -348,8 +349,9 @@ public class DataHelper {
     public ArrayList<Alert> getAlertList() {
         ArrayList alerts = new ArrayList<>();
         Cursor alertCursor = db.rawQuery(
-                "SELECT * FROM alert_record",
+                "SELECT * FROM alert_record where user_id=?",
                 new String[]{
+                    prefs.getUserID()
                 }
         );
         alertCursor.moveToFirst();
@@ -371,6 +373,7 @@ public class DataHelper {
         newStat.put(APPLICATION_NAME, appName);
         newStat.put(USER_NAME, userName);
         newStat.put(ALERT_SUBJECT, subject);
+        newStat.put(USER_ID, prefs.getUserID());
         db.insert(ALERT_RECORD_TABLE, null, newStat);
         instance.db.setTransactionSuccessful();
         instance.db.endTransaction();
@@ -397,12 +400,13 @@ public class DataHelper {
         for (int i = 0; i < recentDays.size(); i++) {
             Map<String, String> day = recentDays.get(i);
             Cursor phoneUsageCursor = db.rawQuery(
-                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ?",
+                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ? and user_id = ?",
                     new String[]{
                         day.get("year"),
                         day.get("month"),
                         day.get("day"),
-                        day.get("day_of_week")
+                        day.get("day_of_week"),
+                        prefs.getUserID()
                     }
             );
             int phoneUsageCount = phoneUsageCursor.getCount();
@@ -425,12 +429,13 @@ public class DataHelper {
         for (int i = 0; i < recentDays.size(); i++) {
             Map<String, String> day = recentDays.get(i);
             Cursor phoneUsageCursor = db.rawQuery(
-                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ?",
+                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ? and user_id = ?",
                     new String[]{
                             day.get("year"),
                             day.get("month"),
                             day.get("day"),
-                            day.get("day_of_week")
+                            day.get("day_of_week"),
+                            prefs.getUserID()
                     }
             );
             phoneUsageCursor.moveToFirst();

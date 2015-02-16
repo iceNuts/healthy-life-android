@@ -162,10 +162,11 @@ public class ApplicationLoggingService extends RoboService {
                         // Begin Finding
 
                         Cursor appUsageCursor = db.rawQuery(
-                                "SELECT * FROM application_usage WHERE package_name = ? AND end_time = ?",
+                                "SELECT * FROM application_usage WHERE package_name = ? AND end_time = ? and user_id = ?",
                                 new String[]{
                                     application.getPackageName(),
-                                    "-1"
+                                    "-1",
+                                    prefs.getUserID()
                                 }
                         );
 
@@ -181,9 +182,10 @@ public class ApplicationLoggingService extends RoboService {
                         // But some accidents may occur result in a few -1 ending records
 
                         else if (appUsageCount > 1) {
-                            db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=?", new String[]{
+                            db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=? and user_id=?", new String[]{
                                 application.getPackageName(),
-                                "-1"
+                                "-1",
+                                prefs.getUserID()
                             });
                         }
 
@@ -214,9 +216,10 @@ public class ApplicationLoggingService extends RoboService {
 
                                 ContentValues updateValues = new ContentValues();
                                 updateValues.put(END_TIME, zeroTime);
-                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=?", new String[]{
+                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
                                         application.getPackageName(),
-                                        "-1"
+                                        "-1",
+                                        prefs.getUserID()
                                 });
 
                                 // Insert a new day
@@ -230,6 +233,7 @@ public class ApplicationLoggingService extends RoboService {
                                 newUsage.put(END_TIME, logTime.get("timestamp"));
                                 newUsage.put(PACKAGE_NAME, application.getPackageName());
                                 newUsage.put(USER_SESSION, prefs.getSession());
+                                newUsage.put(USER_ID, prefs.getUserID());
                                 db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
 
                             }
@@ -237,9 +241,10 @@ public class ApplicationLoggingService extends RoboService {
                             else {
                                 ContentValues updateValues = new ContentValues();
                                 updateValues.put(END_TIME, logTime.get("timestamp"));
-                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=?", new String[]{
+                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
                                         application.getPackageName(),
-                                        "-1"
+                                        "-1",
+                                        prefs.getUserID()
                                 });
                             }
                         }
@@ -258,6 +263,7 @@ public class ApplicationLoggingService extends RoboService {
                         newStat.put(END_TIME, "-1");
                         newStat.put(PACKAGE_NAME, application.getPackageName());
                         newStat.put(USER_SESSION, prefs.getSession());
+                        newStat.put(USER_ID, prefs.getUserID());
                         db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newStat);
                     }
                 }
@@ -287,9 +293,10 @@ public class ApplicationLoggingService extends RoboService {
                         // Begin Finding
 
                         Cursor phoneUsageCursor = db.rawQuery(
-                                "SELECT * FROM wake_up_record WHERE end_time = ?",
+                                "SELECT * FROM wake_up_record WHERE end_time = ? and user_id=?",
                                 new String[]{
-                                        "-1"
+                                        "-1",
+                                        prefs.getUserID()
                                 }
                         );
 
@@ -304,8 +311,9 @@ public class ApplicationLoggingService extends RoboService {
                         // But some accidents may occur result in a few -1 ending records
 
                         else if (phoneUsageCount > 1) {
-                            db.delete(WAKE_UP_RECORD_TABLE, "end_time=?", new String[]{
-                                    "-1"
+                            db.delete(WAKE_UP_RECORD_TABLE, "end_time=? and user_id=?", new String[]{
+                                    "-1",
+                                    prefs.getUserID()
                             });
                         }
 
@@ -338,8 +346,9 @@ public class ApplicationLoggingService extends RoboService {
 
                                 ContentValues updateValues = new ContentValues();
                                 updateValues.put(END_TIME, zeroTime);
-                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=?", new String[]{
-                                        "-1"
+                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
+                                        "-1",
+                                        prefs.getUserID()
                                 });
 
                                 // Insert a new day
@@ -352,6 +361,7 @@ public class ApplicationLoggingService extends RoboService {
                                 newUsage.put(START_TIME, zeroTime);
                                 newUsage.put(END_TIME, logTime.get("timestamp"));
                                 newUsage.put(USER_SESSION, prefs.getSession());
+                                newUsage.put(USER_ID, prefs.getUserID());
                                 db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newUsage);
 
                             }
@@ -359,8 +369,9 @@ public class ApplicationLoggingService extends RoboService {
                             else {
                                 ContentValues updateValues = new ContentValues();
                                 updateValues.put(END_TIME, logTime.get("timestamp"));
-                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=?", new String[]{
-                                        "-1"
+                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
+                                        "-1",
+                                        prefs.getUserID()
                                 });
                             }
                         }
@@ -378,6 +389,7 @@ public class ApplicationLoggingService extends RoboService {
                         newStat.put(START_TIME, logTime.get("timestamp"));
                         newStat.put(END_TIME, "-1");
                         newStat.put(USER_SESSION, prefs.getSession());
+                        newStat.put(USER_ID, prefs.getUserID());
                         db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newStat);
                     }
                 }

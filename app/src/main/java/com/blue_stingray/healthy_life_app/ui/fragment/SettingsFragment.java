@@ -37,6 +37,9 @@ public class SettingsFragment extends PreferenceFragment {
 
     private DataHelper dataHelper;
 
+    @Inject
+    public SharedPreferencesHelper prefs;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,7 @@ public class SettingsFragment extends PreferenceFragment {
                 @Override
                 public void success(Object o, Response response) {
                     dataHelper.removeGoals();
+                    prefs.setUserID("");
                     ((BaseActivity) getActivity()).prefs.setState(SharedPreferencesHelper.State.NONE);
                     startActivity(new Intent(getActivity(), StartActivity.class));
                     loading.dismiss();

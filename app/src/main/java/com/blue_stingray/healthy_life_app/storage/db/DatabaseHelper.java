@@ -16,11 +16,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final Context context;
 
     public static final String GOAL_TABLE = "goal_table";
+    public static final String USER_ID = "user_id";
     public static final String PACKAGE_NAME = "package_name";
     public static final String TIME_LIMIT = "time_limit";
     public static final String LIMIT_DAY = "limit_day";
     private static final String GOAL_CREATE = tableCreateString(
             GOAL_TABLE,
+            USER_ID + " text not null",
             PACKAGE_NAME + " text not null",
             TIME_LIMIT + " integer not null",
             LIMIT_DAY + " integer not null"
@@ -36,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String USER_SESSION = "user_session";
     private static final String APPLICATION_USAGE_CREATE = tableCreateString(
             APPLICATION_USAGE_TABLE,
+            USER_ID + " text not null",
             USAGE_YEAR + " integer not null",
             USAGE_MONTH + " integer not null",
             USAGE_DAY + " integer not null",
@@ -52,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String ALERT_SUBJECT = "alert_subject";
     private static final String ALERT_RECORD_TABLE_CREATE = tableCreateString(
             ALERT_RECORD_TABLE,
+            USER_ID + " text not null",
             APPLICATION_NAME + " text not null",
             USER_NAME + " text not null",
             ALERT_SUBJECT + " text not null"
@@ -60,6 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String WAKE_UP_RECORD_TABLE = "wake_up_record";
     private static final String WAKE_UP_RECORD_TABLE_CREATE = tableCreateString(
             WAKE_UP_RECORD_TABLE,
+            USER_ID + " text not null",
             USAGE_YEAR + " integer not null",
             USAGE_MONTH + " integer not null",
             USAGE_DAY + " integer not null",
@@ -70,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     );
 
     private static final String DB_NAME = "app.db";
-    private static final int SCHEMA_VERSION = 5;
+    private static final int SCHEMA_VERSION = 7;
 
 
     @Inject

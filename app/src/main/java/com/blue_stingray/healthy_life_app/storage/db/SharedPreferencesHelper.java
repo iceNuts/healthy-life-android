@@ -25,6 +25,7 @@ public class SharedPreferencesHelper {
     private final static String DEVICE_ID = "DEVICE_ID";
     private final static String MEN_NOTI_STATUS = "MEN_NOTI_STATUS";
     private final static String PASSWD_USER_TOKEN = "PASSWD_USER_TOKEN";
+    private final static String USER_ID = "USER_ID";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -139,6 +140,14 @@ public class SharedPreferencesHelper {
             return true;
         }
         return false;
+    }
+
+    public void setUserID(String userid) {
+        prefs.edit().putString(USER_ID, userid).apply();
+    }
+
+    public String getUserID() {
+        return prefs.getString(USER_ID, "");
     }
 
     public String md5(String s) {
