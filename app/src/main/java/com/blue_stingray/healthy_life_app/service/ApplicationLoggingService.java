@@ -111,12 +111,18 @@ public class ApplicationLoggingService extends RoboService {
         unregisterReceiver(screenStateReceiver);
 
         // Doing something else to notify
+        restartService();
     }
 
     // fix stopping service but not restart error; no need for Android 5.0
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        restartService();
+        super.onTaskRemoved(rootIntent);
+    }
+
+    private void restartService() {
         Intent restartServiceIntent = new Intent(getApplicationContext(), ((Object)this).getClass());
         restartServiceIntent.setPackage(getPackageName());
 
@@ -131,8 +137,6 @@ public class ApplicationLoggingService extends RoboService {
         alarmService.set(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 1000,
                 restartServicePendingIntent);
-
-        super.onTaskRemoved(rootIntent);
     }
 
     // Android holds a different date/month count

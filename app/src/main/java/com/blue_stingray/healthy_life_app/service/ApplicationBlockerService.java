@@ -54,6 +54,7 @@ public class ApplicationBlockerService  extends RoboService {
 
     @Override
     public void onDestroy() {
+        restartService();
         super.onDestroy();
     }
 
@@ -61,6 +62,11 @@ public class ApplicationBlockerService  extends RoboService {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        restartService();
+        super.onTaskRemoved(rootIntent);
+    }
+
+    private void restartService() {
         Intent restartServiceIntent = new Intent(getApplicationContext(), ((Object)this).getClass());
         restartServiceIntent.setPackage(getPackageName());
 
@@ -75,8 +81,6 @@ public class ApplicationBlockerService  extends RoboService {
         alarmService.set(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 1000,
                 restartServicePendingIntent);
-
-        super.onTaskRemoved(rootIntent);
     }
 
     @Override
