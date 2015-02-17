@@ -101,21 +101,26 @@ public class DataHelper {
     // GoalCache key is packageName+dayOfWeek, other cache is only packageName as key
 
     private HashMap<String, Integer> loadGoalCache() {
-        HashMap<String, Integer> cache = new HashMap<>();
-        Cursor goalCursor = db.rawQuery(
-                "SELECT * FROM goal_table WHERE user_id=\""+prefs.getUserID()+"\"",
-                new String[]{
-                }
-        );
-        goalCursor.moveToFirst();
-        while(goalCursor.isAfterLast() == false) {
-            String packageName = goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME));
-            Integer hrs = goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT));
-            Integer day = goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY));
-            cache.put(packageName+String.valueOf(day), hrs);
-            goalCursor.moveToNext();
+
+            HashMap<String, Integer> cache = new HashMap<>();
+            Cursor goalCursor = db.rawQuery(
+                    "SELECT * FROM goal_table WHERE user_id=\"" + prefs.getUserID() + "\"",
+                    new String[]{
+                    }
+            );
+        try {
+            goalCursor.moveToFirst();
+            while (goalCursor.isAfterLast() == false) {
+                String packageName = goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME));
+                Integer hrs = goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT));
+                Integer day = goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY));
+                cache.put(packageName + String.valueOf(day), hrs);
+                goalCursor.moveToNext();
+            }
         }
-        goalCursor.close();
+        finally {
+            goalCursor.close();
+        }
         return cache;
     }
 
@@ -145,7 +150,6 @@ public class DataHelper {
                 new String[]{
                 }
         );
-
         if(goalCursor.getCount() > 0) {
             goalCursor.moveToFirst();
             goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
@@ -155,7 +159,9 @@ public class DataHelper {
 
             return goal;
         }
-
+        else {
+            goalCursor.close();
+        }
         return null;
     }
 
@@ -167,15 +173,18 @@ public class DataHelper {
                 }
         );
 
-        while(goalCursor.moveToNext()) {
-            Goal goal = new Goal(context);
-            goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
-            goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
-            goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
-            goals.add(goal);
+        try {
+            while (goalCursor.moveToNext()) {
+                Goal goal = new Goal(context);
+                goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
+                goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
+                goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
+                goals.add(goal);
+            }
         }
-
-        goalCursor.close();
+        finally {
+            goalCursor.close();
+        }
         return goals;
     }
 
@@ -225,21 +234,25 @@ public class DataHelper {
                         session
                 }
         );
-        appUsageCursor.moveToFirst();
         Integer totalTime = 0;
-        while(appUsageCursor.isAfterLast() == false) {
-            Integer start_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("start_time"));
-            Integer end_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("end_time"));
+        try {
+            appUsageCursor.moveToFirst();
+            while (appUsageCursor.isAfterLast() == false) {
+                Integer start_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("start_time"));
+                Integer end_time = appUsageCursor.getInt(appUsageCursor.getColumnIndex("end_time"));
 
-            // Avoid some unfinished recording
-            if (end_time == -1) {
+                // Avoid some unfinished recording
+                if (end_time == -1) {
+                    appUsageCursor.moveToNext();
+                    continue;
+                }
+                totalTime += (end_time - start_time);
                 appUsageCursor.moveToNext();
-                continue;
             }
-            totalTime += (end_time-start_time);
-            appUsageCursor.moveToNext();
         }
-        appUsageCursor.close();
+        finally {
+            appUsageCursor.close();
+        }
         return totalTime;
     }
 
@@ -266,14 +279,12 @@ public class DataHelper {
 
 
         if (extendList.containsKey(packageName)) {
-            Log.d("Dynamic-GoalTime", String.valueOf(extendList.get(packageName)));
             blockedList.put(packageName, goalTime-totalTime);
             if (extendList.get(packageName)+goalTime-totalTime <= 0) {
                 return round(0, 3);
             }
             else {
                 float ratio = (extendList.get(packageName)+goalTime-totalTime) / (float)(extendList.get(packageName)+goalTime);
-                Log.d("Dynamic-GoalTime", String.valueOf(ratio));
                 return round(ratio, 3);
             }
         }
@@ -294,28 +305,32 @@ public class DataHelper {
         Cursor statCursor = db.rawQuery(
                 "SELECT * FROM application_usage WHERE start_time >= ? and end_time <> -1 and user_id=?",
                 new String[]{
-                    timestamp,
-                    prefs.getUserID()
+                        timestamp,
+                        prefs.getUserID()
                 }
         );
-        statCursor.moveToFirst();
-        while(statCursor.isAfterLast() == false) {
-            String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
-            Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
-            Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
-            // Ignore corner case, this could be caused by opening an app but blocked instantly
-            if (end_time - start_time < 3) {
+        try {
+            statCursor.moveToFirst();
+            while (statCursor.isAfterLast() == false) {
+                String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
+                Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
+                Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
+                // Ignore corner case, this could be caused by opening an app but blocked instantly
+                if (end_time - start_time < 3) {
+                    statCursor.moveToNext();
+                    continue;
+                }
+                statForms.add(new StatForm(
+                        packageName,
+                        String.valueOf(start_time),
+                        String.valueOf(end_time)
+                ));
                 statCursor.moveToNext();
-                continue;
             }
-            statForms.add(new StatForm(
-                packageName,
-                String.valueOf(start_time),
-                String.valueOf(end_time)
-            ));
-            statCursor.moveToNext();
         }
-        statCursor.close();
+        finally {
+            statCursor.close();
+        }
         return statForms;
     }
 
@@ -342,7 +357,6 @@ public class DataHelper {
                 :   goalCache.get(key)*60
             );
         }
-        Log.d("GoalTime", String.valueOf(extendList.get(packageName)));
     }
 
     // Alert is not well formatted checkout the alert model
@@ -352,18 +366,22 @@ public class DataHelper {
         Cursor alertCursor = db.rawQuery(
                 "SELECT * FROM alert_record where user_id=?",
                 new String[]{
-                    prefs.getUserID()
+                        prefs.getUserID()
                 }
         );
-        alertCursor.moveToFirst();
-        while(alertCursor.isAfterLast() == false) {
-            String app_name = alertCursor.getString(alertCursor.getColumnIndex(APPLICATION_NAME));
-            String user_name = alertCursor.getString(alertCursor.getColumnIndex(USER_NAME));
-            String subject = alertCursor.getString(alertCursor.getColumnIndex(ALERT_SUBJECT));
-            alerts.add(new Alert(subject));
-            alertCursor.moveToNext();
+        try {
+            alertCursor.moveToFirst();
+            while (alertCursor.isAfterLast() == false) {
+                String app_name = alertCursor.getString(alertCursor.getColumnIndex(APPLICATION_NAME));
+                String user_name = alertCursor.getString(alertCursor.getColumnIndex(USER_NAME));
+                String subject = alertCursor.getString(alertCursor.getColumnIndex(ALERT_SUBJECT));
+                alerts.add(new Alert(subject));
+                alertCursor.moveToNext();
+            }
         }
-        alertCursor.close();
+        finally {
+            alertCursor.close();
+        }
         Collections.reverse(alerts);
         return alerts;
     }
@@ -410,12 +428,16 @@ public class DataHelper {
                         prefs.getUserID()
                     }
             );
-            int phoneUsageCount = phoneUsageCursor.getCount();
-            PhoneUsageTuple<String, Integer> tuple = new PhoneUsageTuple(
-                    String.valueOf(Integer.valueOf(day.get("month"))+1)+"/"+day.get("day"),
-                    phoneUsageCount);
-            list.add(tuple);
-            phoneUsageCursor.close();
+            try {
+                int phoneUsageCount = phoneUsageCursor.getCount();
+                PhoneUsageTuple<String, Integer> tuple = new PhoneUsageTuple(
+                        String.valueOf(Integer.valueOf(day.get("month")) + 1) + "/" + day.get("day"),
+                        phoneUsageCount);
+                list.add(tuple);
+            }
+            finally {
+                phoneUsageCursor.close();
+            }
         }
         instance.db.endTransaction();
         return list;
@@ -439,22 +461,25 @@ public class DataHelper {
                             prefs.getUserID()
                     }
             );
-            phoneUsageCursor.moveToFirst();
-            Integer totalSec = 0;
-            while (!phoneUsageCursor.isAfterLast()) {
-                Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
-                Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
-                if (endTime != -1) {
-                    totalSec += (endTime-startTime);
+            try {
+                phoneUsageCursor.moveToFirst();
+                Integer totalSec = 0;
+                while (!phoneUsageCursor.isAfterLast()) {
+                    Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                    Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                    if (endTime != -1) {
+                        totalSec += (endTime - startTime);
+                    }
+                    phoneUsageCursor.moveToNext();
                 }
-                Log.d("TotalUsed", day.get("month")+"/"+day.get("day")+" "+String.valueOf(startTime)+" "+String.valueOf(endTime)+" "+String.valueOf(totalSec));
-                phoneUsageCursor.moveToNext();
+                PhoneUsageTuple<String, Float> tuple = new PhoneUsageTuple(
+                        String.valueOf(Integer.valueOf(day.get("month")) + 1) + "/" + day.get("day"),
+                        totalSec / 60f);
+                list.add(tuple);
             }
-            PhoneUsageTuple<String, Float> tuple = new PhoneUsageTuple(
-                    String.valueOf(Integer.valueOf(day.get("month"))+1)+"/"+day.get("day"),
-                    totalSec/60f);
-            list.add(tuple);
-            phoneUsageCursor.close();
+            finally {
+                phoneUsageCursor.close();
+            }
         }
         instance.db.endTransaction();
         return list;
@@ -475,18 +500,22 @@ public class DataHelper {
                         prefs.getUserID()
                 }
         );
-        phoneUsageCursor.moveToFirst();
-        while (!phoneUsageCursor.isAfterLast()) {
-            Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
-            Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
-            Integer usedTime = endTime-startTime;
-            DetailPhoneUsageTuple<String, Integer> tuple = new DetailPhoneUsageTuple(
-                    phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME)),
-                    usedTime/60);
-            list.add(tuple);
-            phoneUsageCursor.moveToNext();
+        try {
+            phoneUsageCursor.moveToFirst();
+            while (!phoneUsageCursor.isAfterLast()) {
+                Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                Integer usedTime = endTime - startTime;
+                DetailPhoneUsageTuple<String, Integer> tuple = new DetailPhoneUsageTuple(
+                        phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME)),
+                        usedTime / 60);
+                list.add(tuple);
+                phoneUsageCursor.moveToNext();
+            }
         }
-        phoneUsageCursor.close();
+        finally {
+            phoneUsageCursor.close();
+        }
         instance.db.endTransaction();
         return list;
     }

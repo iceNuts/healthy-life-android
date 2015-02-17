@@ -64,12 +64,11 @@ public class DetailedPhoneUsageListAdapter extends BaseListAdapter<DataHelper.De
             }
 
             ((TextView) convertView.findViewById(R.id.total_hours)).setText(usedTime);
-            convertView.findViewById(R.id.container).setBackgroundColor(activity.getResources().getColor(R.color.green_primary_light));
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
+        convertView.setOnClickListener(null);
         return convertView;
     }
 }

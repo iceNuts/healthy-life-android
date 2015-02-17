@@ -55,6 +55,7 @@ public class DetailedPhoneUsageFragment extends RoboFragment {
         int dayCount = bundle.getInt("DayCount");
         dataHelper = DataHelper.getInstance(getActivity());
         detailedPhoneUsage = dataHelper.getDetailedPhoneUsage(dayCount);
+        appUsageList.setClickable(false);
         DetailedPhoneUsageListAdapter adapter = new DetailedPhoneUsageListAdapter(getActivity(), detailedPhoneUsage, null);
         appUsageList.setAdapter(adapter);
         loading.cancel();

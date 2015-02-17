@@ -174,85 +174,90 @@ public class ApplicationLoggingService extends RoboService {
                                 }
                         );
 
-                        int appUsageCount = appUsageCursor.getCount();
+                        try {
 
-                        // FAILED TO Find
+                            int appUsageCount = appUsageCursor.getCount();
 
-                        if (appUsageCount == 0) {
-                        }
+                            // FAILED TO Find
 
-                        // ERROR DELETE ALL
-                        // Store every records by start_time -1 when the app is still open, replace -1 by end_time
-                        // But some accidents may occur result in a few -1 ending records
+                            if (appUsageCount == 0) {
+                            }
 
-                        else if (appUsageCount > 1) {
-                            db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=? and user_id=?", new String[]{
-                                application.getPackageName(),
-                                "-1",
-                                prefs.getUserID()
-                            });
-                        }
+                            // ERROR DELETE ALL
+                            // Store every records by start_time -1 when the app is still open, replace -1 by end_time
+                            // But some accidents may occur result in a few -1 ending records
 
-                        // ONLY ONE ENTRY NICE :-)
-
-                        else {
-
-                            appUsageCursor.moveToFirst();
-                            String lastDay = appUsageCursor.getString(appUsageCursor.getColumnIndex(USAGE_DAY));
-
-                            // SPLIT TIME :(
-
-                            if (!lastDay.equals(logTime.get("day"))) {
-
-                                // Generate the ZERO timestamp
-
-                                Calendar c = Calendar.getInstance();
-                                c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
-                                c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
-                                c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
-                                c.set(Calendar.MINUTE, 0);
-                                c.set(Calendar.HOUR_OF_DAY, 0);
-                                c.set(Calendar.SECOND, 0);
-                                c.set(Calendar.MILLISECOND, 0);
-                                String zeroTime = String.valueOf(c.getTimeInMillis()/1000);
-
-                                // Update the one-day bound
-
-                                ContentValues updateValues = new ContentValues();
-                                updateValues.put(END_TIME, zeroTime);
-                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
+                            else if (appUsageCount > 1) {
+                                db.delete(APPLICATION_USAGE_TABLE, "package_name=? and end_time=? and user_id=?", new String[]{
                                         application.getPackageName(),
                                         "-1",
                                         prefs.getUserID()
                                 });
-
-                                // Insert a new day
-
-                                ContentValues newUsage = new ContentValues();
-                                newUsage.put(USAGE_YEAR, logTime.get("year"));
-                                newUsage.put(USAGE_MONTH, logTime.get("month"));
-                                newUsage.put(USAGE_DAY, logTime.get("day"));
-                                newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
-                                newUsage.put(START_TIME, zeroTime);
-                                newUsage.put(END_TIME, logTime.get("timestamp"));
-                                newUsage.put(PACKAGE_NAME, application.getPackageName());
-                                newUsage.put(USER_SESSION, prefs.getSession());
-                                newUsage.put(USER_ID, prefs.getUserID());
-                                db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
-
                             }
-                            // BEST : NO Need to Split
+
+                            // ONLY ONE ENTRY NICE :-)
+
                             else {
-                                ContentValues updateValues = new ContentValues();
-                                updateValues.put(END_TIME, logTime.get("timestamp"));
-                                db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
-                                        application.getPackageName(),
-                                        "-1",
-                                        prefs.getUserID()
-                                });
+
+                                appUsageCursor.moveToFirst();
+                                String lastDay = appUsageCursor.getString(appUsageCursor.getColumnIndex(USAGE_DAY));
+
+                                // SPLIT TIME :(
+
+                                if (!lastDay.equals(logTime.get("day"))) {
+
+                                    // Generate the ZERO timestamp
+
+                                    Calendar c = Calendar.getInstance();
+                                    c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
+                                    c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
+                                    c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
+                                    c.set(Calendar.MINUTE, 0);
+                                    c.set(Calendar.HOUR_OF_DAY, 0);
+                                    c.set(Calendar.SECOND, 0);
+                                    c.set(Calendar.MILLISECOND, 0);
+                                    String zeroTime = String.valueOf(c.getTimeInMillis() / 1000);
+
+                                    // Update the one-day bound
+
+                                    ContentValues updateValues = new ContentValues();
+                                    updateValues.put(END_TIME, zeroTime);
+                                    db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
+                                            application.getPackageName(),
+                                            "-1",
+                                            prefs.getUserID()
+                                    });
+
+                                    // Insert a new day
+
+                                    ContentValues newUsage = new ContentValues();
+                                    newUsage.put(USAGE_YEAR, logTime.get("year"));
+                                    newUsage.put(USAGE_MONTH, logTime.get("month"));
+                                    newUsage.put(USAGE_DAY, logTime.get("day"));
+                                    newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
+                                    newUsage.put(START_TIME, zeroTime);
+                                    newUsage.put(END_TIME, logTime.get("timestamp"));
+                                    newUsage.put(PACKAGE_NAME, application.getPackageName());
+                                    newUsage.put(USER_SESSION, prefs.getSession());
+                                    newUsage.put(USER_ID, prefs.getUserID());
+                                    db.insertOrThrow(APPLICATION_USAGE_TABLE, null, newUsage);
+
+                                }
+                                // BEST : NO Need to Split
+                                else {
+                                    ContentValues updateValues = new ContentValues();
+                                    updateValues.put(END_TIME, logTime.get("timestamp"));
+                                    db.update(APPLICATION_USAGE_TABLE, updateValues, "package_name=? and end_time=? and user_id=?", new String[]{
+                                            application.getPackageName(),
+                                            "-1",
+                                            prefs.getUserID()
+                                    });
+                                }
                             }
                         }
-                        appUsageCursor.close();
+                        finally {
+                            appUsageCursor.close();
+                        }
                     }
 
                     // log start time
@@ -304,82 +309,87 @@ public class ApplicationLoggingService extends RoboService {
                                 }
                         );
 
-                        int phoneUsageCount = phoneUsageCursor.getCount();
-                        // FAILED TO Find
+                        try {
 
-                        if (phoneUsageCount == 0) {
-                        }
+                            int phoneUsageCount = phoneUsageCursor.getCount();
+                            // FAILED TO Find
 
-                        // ERROR DELETE ALL
-                        // Store every records by start_time -1 when the app is still open, replace -1 by end_time
-                        // But some accidents may occur result in a few -1 ending records
+                            if (phoneUsageCount == 0) {
+                            }
 
-                        else if (phoneUsageCount > 1) {
-                            db.delete(WAKE_UP_RECORD_TABLE, "end_time=? and user_id=?", new String[]{
-                                    "-1",
-                                    prefs.getUserID()
-                            });
-                        }
+                            // ERROR DELETE ALL
+                            // Store every records by start_time -1 when the app is still open, replace -1 by end_time
+                            // But some accidents may occur result in a few -1 ending records
 
-                        // ONLY ONE ENTRY NICE :-)
-
-                        else {
-
-                            phoneUsageCursor.moveToFirst();
-                            String lastDay = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(USAGE_DAY));
-
-                            String startTime = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME));
-
-                            // SPLIT TIME :(
-
-                            if (!lastDay.equals(logTime.get("day"))) {
-
-                                // Generate the ZERO timestamp
-
-                                Calendar c = Calendar.getInstance();
-                                c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
-                                c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
-                                c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
-                                c.set(Calendar.MINUTE, 0);
-                                c.set(Calendar.HOUR_OF_DAY, 0);
-                                c.set(Calendar.SECOND, 0);
-                                c.set(Calendar.MILLISECOND, 0);
-                                String zeroTime = String.valueOf(c.getTimeInMillis()/1000);
-
-                                // Update the one-day bound
-
-                                ContentValues updateValues = new ContentValues();
-                                updateValues.put(END_TIME, zeroTime);
-                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
+                            else if (phoneUsageCount > 1) {
+                                db.delete(WAKE_UP_RECORD_TABLE, "end_time=? and user_id=?", new String[]{
                                         "-1",
                                         prefs.getUserID()
                                 });
-
-                                // Insert a new day
-
-                                ContentValues newUsage = new ContentValues();
-                                newUsage.put(USAGE_YEAR, logTime.get("year"));
-                                newUsage.put(USAGE_MONTH, logTime.get("month"));
-                                newUsage.put(USAGE_DAY, logTime.get("day"));
-                                newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
-                                newUsage.put(START_TIME, zeroTime);
-                                newUsage.put(END_TIME, logTime.get("timestamp"));
-                                newUsage.put(USER_SESSION, prefs.getSession());
-                                newUsage.put(USER_ID, prefs.getUserID());
-                                db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newUsage);
-
                             }
-                            // BEST : NO Need to Split
+
+                            // ONLY ONE ENTRY NICE :-)
+
                             else {
-                                ContentValues updateValues = new ContentValues();
-                                updateValues.put(END_TIME, logTime.get("timestamp"));
-                                db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
-                                        "-1",
-                                        prefs.getUserID()
-                                });
+
+                                phoneUsageCursor.moveToFirst();
+                                String lastDay = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(USAGE_DAY));
+
+                                String startTime = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME));
+
+                                // SPLIT TIME :(
+
+                                if (!lastDay.equals(logTime.get("day"))) {
+
+                                    // Generate the ZERO timestamp
+
+                                    Calendar c = Calendar.getInstance();
+                                    c.set(Calendar.YEAR, Integer.valueOf(logTime.get("year")));
+                                    c.set(Calendar.MONTH, Integer.valueOf(logTime.get("month")));
+                                    c.set(Calendar.DATE, Integer.valueOf(logTime.get("day")));
+                                    c.set(Calendar.MINUTE, 0);
+                                    c.set(Calendar.HOUR_OF_DAY, 0);
+                                    c.set(Calendar.SECOND, 0);
+                                    c.set(Calendar.MILLISECOND, 0);
+                                    String zeroTime = String.valueOf(c.getTimeInMillis() / 1000);
+
+                                    // Update the one-day bound
+
+                                    ContentValues updateValues = new ContentValues();
+                                    updateValues.put(END_TIME, zeroTime);
+                                    db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
+                                            "-1",
+                                            prefs.getUserID()
+                                    });
+
+                                    // Insert a new day
+
+                                    ContentValues newUsage = new ContentValues();
+                                    newUsage.put(USAGE_YEAR, logTime.get("year"));
+                                    newUsage.put(USAGE_MONTH, logTime.get("month"));
+                                    newUsage.put(USAGE_DAY, logTime.get("day"));
+                                    newUsage.put(USAGE_DAY_OF_WEEK, logTime.get("day_of_week"));
+                                    newUsage.put(START_TIME, zeroTime);
+                                    newUsage.put(END_TIME, logTime.get("timestamp"));
+                                    newUsage.put(USER_SESSION, prefs.getSession());
+                                    newUsage.put(USER_ID, prefs.getUserID());
+                                    db.insertOrThrow(WAKE_UP_RECORD_TABLE, null, newUsage);
+
+                                }
+                                // BEST : NO Need to Split
+                                else {
+                                    ContentValues updateValues = new ContentValues();
+                                    updateValues.put(END_TIME, logTime.get("timestamp"));
+                                    db.update(WAKE_UP_RECORD_TABLE, updateValues, "end_time=? and user_id=?", new String[]{
+                                            "-1",
+                                            prefs.getUserID()
+                                    });
+                                }
                             }
                         }
-                        phoneUsageCursor.close();
+                        finally {
+                            phoneUsageCursor.close();
+                        }
                     }
 
                     // log start time

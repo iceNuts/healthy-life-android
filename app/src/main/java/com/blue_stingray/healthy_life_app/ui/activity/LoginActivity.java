@@ -92,6 +92,31 @@ public class LoginActivity extends BaseActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("firstRun", true);
         editor.commit();
+
+//        // set field empty on tap
+//        emailField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    emailField.setHint("");
+//                }
+//                else {
+//                    emailField.setHint("email");
+//                }
+//            }
+//        });
+//
+//        passwordField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    passwordField.setHint("");
+//                }
+//                else {
+//                    passwordField.setHint("password");
+//                }
+//            }
+//        });
     }
 
 
