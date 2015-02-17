@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.ValueLineChart;
+import org.eazegraph.lib.communication.IOnBarClickedListener;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.ValueLinePoint;
 import org.eazegraph.lib.models.ValueLineSeries;
@@ -203,10 +204,26 @@ public class ProfileFragment extends RoboFragment {
                         }
                         PhoneUsageTimeChart.startAnimation();
                         PhoneWakeUpTimeChart.startAnimation();
+
+                        // setup clickable graph
+                        PhoneUsageTimeChart.setOnBarClickedListener(new IOnBarClickedListener() {
+                            @Override
+                            public void onBarClicked(int i) {
+                                showDetailedUsageInfo(i);
+                            }
+                        });
                     }
                 });
             }
         }).start();
+    }
+
+    private void showDetailedUsageInfo(int dayCount) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("DayCount", dayCount);
+        DetailedPhoneUsageFragment fragment = new DetailedPhoneUsageFragment();
+        fragment.setArguments(bundle);
+        ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
     }
 
     private class OnDetailsClickListener implements View.OnClickListener {

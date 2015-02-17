@@ -12,6 +12,7 @@ import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.google.inject.Inject;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -459,6 +460,37 @@ public class DataHelper {
         return list;
     }
 
+    public List<DetailPhoneUsageTuple> getDetailedPhoneUsage(int i) {
+        instance.db.beginTransaction();
+        List<DetailPhoneUsageTuple> list = new ArrayList<>();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        Map<String, String> day = recentDays.get(i);
+        Cursor phoneUsageCursor = db.rawQuery(
+                "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
+                new String[]{
+                        day.get("year"),
+                        day.get("month"),
+                        day.get("day"),
+                        day.get("day_of_week"),
+                        prefs.getUserID()
+                }
+        );
+        phoneUsageCursor.moveToFirst();
+        while (!phoneUsageCursor.isAfterLast()) {
+            Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+            Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+            Integer usedTime = endTime-startTime;
+            DetailPhoneUsageTuple<String, Integer> tuple = new DetailPhoneUsageTuple(
+                    phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME)),
+                    usedTime/60);
+            list.add(tuple);
+            phoneUsageCursor.moveToNext();
+        }
+        phoneUsageCursor.close();
+        instance.db.endTransaction();
+        return list;
+    }
+
     private List<Map<String, String>> getRecentDaysInCalendar() {
         int limit = 0;
         List<Map<String, String>> list = new ArrayList<>();
@@ -482,6 +514,15 @@ public class DataHelper {
         public final Y value;
         public PhoneUsageTuple(X key, Y value) {
             this.key = key;
+            this.value = value;
+        }
+    }
+
+    public class DetailPhoneUsageTuple<X, Y>{
+        public final X packageName;
+        public final Y value;
+        public DetailPhoneUsageTuple(X packageName, Y value) {
+            this.packageName = packageName;
             this.value = value;
         }
     }
