@@ -91,7 +91,7 @@ public class CreateUserFragment extends RoboFragment {
 
         @Override
         protected void submit() {
-            rest.createUser(new UserForm(nameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString(), 0, authUser.getId()), new RetrofitDialogCallback<User>(getActivity(), progressDialog) {
+            rest.createUser(new UserForm(nameField.getText().toString(), emailField.getText().toString(), passwordField.getText().toString(), 0, authUser.getId(), null), new RetrofitDialogCallback<User>(getActivity(), progressDialog) {
                 @Override
                 public void onSuccess(User user, Response response) {
                     AlertDialog successDialog = DialogHelper.createDismissiveDialog(getActivity(), R.string.child_registration_success_title, R.string.child_registration_success_description);

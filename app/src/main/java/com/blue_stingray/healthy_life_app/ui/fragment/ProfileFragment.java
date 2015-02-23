@@ -23,6 +23,8 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
+import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
@@ -121,9 +123,22 @@ public class ProfileFragment extends RoboFragment {
         inflater.inflate(R.menu.profile_fragment_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_share);
         ShareActionProvider shareActionProvider = (ShareActionProvider) item.getActionProvider();
+        shareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+            @Override
+            public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+                rest.updateUser(authUser.getId(), new UserForm(true), new Callback<User>() {
+                    @Override
+                    public void success(User user, Response response) {}
+                    @Override
+                    public void failure(RetrofitError error) {}
+                });
+
+                return false;
+            }
+        });
 
         // Create the share Intent
-        String shareLink = "http://healthy.wherewedev.com/";
+        String shareLink = "http://healthy.wherewedev.com/user/" + authUser.getId();
         String shareText = "Check out my Healthy App profile! " + shareLink;
         Intent shareIntent = ShareCompat.IntentBuilder.from(getActivity()).setType("text/plain").setText(shareText).getIntent();
 
