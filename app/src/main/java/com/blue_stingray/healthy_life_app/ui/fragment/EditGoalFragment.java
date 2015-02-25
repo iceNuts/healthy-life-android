@@ -198,7 +198,14 @@ public class EditGoalFragment extends RoboFragment {
                 Map.Entry data = (Map.Entry) it.next();
                 String dayString = DayTranslate((Integer)data.getKey());
                 Integer hours = (Integer)data.getValue();
-                goalForms.add(new GoalForm(app.getPackageName(), hours, dayString));
+                goalForms.add(
+                        new GoalForm(
+                                app,
+                                hours,
+                                dayString,
+                                prefs.getDeviceId()
+                        )
+                );
                 it.remove();
             }
             int deviceID = app.getDeviceId();

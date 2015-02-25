@@ -18,6 +18,7 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.AppGoalListAdapter;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.model.Application;
@@ -52,6 +53,12 @@ public class ManageGoalsFragment extends RoboFragment {
     @InjectView(R.id.blank_message)
     private LinearLayout blankMessage;
 
+    @InjectView(R.id.block_message)
+    private LinearLayout blockMessage;
+
+    @Inject
+    private SharedPreferencesHelper prefs;
+
     private ProgressDialog loadingDialog;
 
     private ArrayList<Application> apps;
@@ -64,6 +71,29 @@ public class ManageGoalsFragment extends RoboFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_goals, container, false);
         getActivity().setTitle(R.string.title_manage_goals);
+
+        rest.getUser(
+            Integer.valueOf(prefs.getUserID()),
+            new Callback<User>() {
+                @Override
+                public void success(User user, Response response) {
+                    loadGoalView(user.canEdit());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {}
+            }
+        );
+
+        return view;
+    }
+
+    private void loadGoalView(boolean canEditFlag) {
+
+        if (!canEditFlag) {
+            blankMessage.setVisibility(View.GONE);
+            return;
+        }
 
         loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);
         requestsMade = 0;
@@ -109,8 +139,6 @@ public class ManageGoalsFragment extends RoboFragment {
             new CreateList().start();
             setHasOptionsMenu(true);
         }
-
-        return view;
     }
 
     @Override
@@ -143,6 +171,7 @@ public class ManageGoalsFragment extends RoboFragment {
         appList.setAdapter(adapter);
         appList.setOnItemClickListener(new ChildOnClickListener());
         blankMessage.setVisibility(View.GONE);
+        blockMessage.setVisibility(View.GONE);
         loadingDialog.dismiss();
     }
 
@@ -152,7 +181,8 @@ public class ManageGoalsFragment extends RoboFragment {
             public void run() {
                 final AppGoalListAdapter adapter = new AppGoalListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
-                blankMessage.setVisibility(View.GONE );
+                blankMessage.setVisibility(View.GONE);
+                blockMessage.setVisibility(View.GONE);
                 appList.setOnItemClickListener(new AuthOnClickListener());
             }
         });

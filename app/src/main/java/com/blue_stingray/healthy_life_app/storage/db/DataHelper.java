@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.storage.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -50,6 +51,7 @@ public class DataHelper {
     private SharedPreferencesHelper prefs;
     private HashMap<String, Integer> blockedList;
     private HashMap<String, Integer> extendList;
+    private PackageManager pm;
 
     public static synchronized DataHelper getInstance(Context context) {
         if (instance == null) {
@@ -60,6 +62,7 @@ public class DataHelper {
             instance.goalCache = instance.loadGoalCache();
             instance.blockedList = new HashMap<>();
             instance.extendList = new HashMap<>();
+            instance.pm = context.getPackageManager();
         }
         return instance;
     }
@@ -313,6 +316,8 @@ public class DataHelper {
             statCursor.moveToFirst();
             while (statCursor.isAfterLast() == false) {
                 String packageName = statCursor.getString(statCursor.getColumnIndex(PACKAGE_NAME));
+                // Get app
+                Application app = new Application(pm, packageName);
                 Integer start_time = statCursor.getInt(statCursor.getColumnIndex(START_TIME));
                 Integer end_time = statCursor.getInt(statCursor.getColumnIndex(END_TIME));
                 // Ignore corner case, this could be caused by opening an app but blocked instantly
@@ -321,7 +326,7 @@ public class DataHelper {
                     continue;
                 }
                 statForms.add(new StatForm(
-                        packageName,
+                        app,
                         String.valueOf(start_time),
                         String.valueOf(end_time)
                 ));

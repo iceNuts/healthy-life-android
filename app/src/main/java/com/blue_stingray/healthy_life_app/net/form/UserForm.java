@@ -9,11 +9,12 @@ import android.provider.Settings;
  */
 public class UserForm {
 
-    private final String name;
-    private final String email;
-    private final String password;
-    private final Integer mentor_id;
-    private final Integer is_admin;
+    private String name;
+    private String email;
+    private String password;
+    private Integer mentor_id;
+    private Integer is_admin;
+    private Integer can_edit;
 
     public UserForm(String name, String email) {
         this(name, email, null, 1, null);
@@ -21,6 +22,10 @@ public class UserForm {
 
     public UserForm(String name, String email, String password) {
         this(name, email, password, 1, null);
+    }
+
+    public UserForm(Integer can_edit) {
+        this.can_edit = can_edit;
     }
 
     public UserForm(String name, String email, String password, Integer is_admin, Integer mentor_id) {

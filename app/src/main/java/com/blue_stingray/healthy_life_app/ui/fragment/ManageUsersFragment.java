@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.UserListAdapter;
@@ -61,6 +62,8 @@ public class ManageUsersFragment extends RoboFragment {
 
     @Inject
     private SharedPreferencesHelper prefs;
+
+    private int lockGoalFlag;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,7 +122,6 @@ public class ManageUsersFragment extends RoboFragment {
         @Override
         public void onClick(View v) {
             final User user = users.get((int) v.getTag());
-            final String[] options = getResources().getStringArray(R.array.user_selection);
             final Dialog authDialog = new Dialog(getActivity());
             authDialog.setTitle("Authorization");
             authDialog.setContentView(R.layout.password_alert_dialog);
@@ -131,7 +133,31 @@ public class ManageUsersFragment extends RoboFragment {
                     if (actionId == EditorInfo.IME_ACTION_GO) {
                         if (prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
                             authDialog.cancel();
-                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_selection, new UserSelectionDialogClickListener(user, options)).show();
+                            lockGoalFlag = -1;
+                            rest.getUser(
+                                user.getId(),
+                                new Callback<User>() {
+                                    @Override
+                                    public void success(User user, Response response) {
+                                        if (user.canEdit()) {
+                                            lockGoalFlag = 1;
+                                            final String[] options = getResources().getStringArray(R.array.user_lock_selection);
+                                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_lock_selection, new UserSelectionDialogClickListener(user, options)).show();
+                                        }
+                                        else {
+                                            lockGoalFlag = 0;
+                                            final String[] options = getResources().getStringArray(R.array.user_unlock_selection);
+                                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unlock_selection, new UserSelectionDialogClickListener(user, options)).show();
+                                        }
+                                    }
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        lockGoalFlag = -1;
+                                        final String[] options = getResources().getStringArray(R.array.user_unavailable_selection);
+                                        DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unavailable_selection, new UserSelectionDialogClickListener(user, options)).show();
+                                    }
+                                }
+                            );
                         }
                         // show wrong password
                         else {
@@ -164,15 +190,69 @@ public class ManageUsersFragment extends RoboFragment {
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);
 
-            // Goals
+            // Edit Goals
             if(item.equals(options[0]))
             {
                 Fragment manageGoalsFragment = new ManageGoalsFragment();
                 manageGoalsFragment.setArguments(bundle);
                 ViewHelper.injectFragment(manageGoalsFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
             }
-            // Alerts
+            // Unlock/Lock Goals
             else if(item.equals(options[1]))
+            {
+                // Do nothing
+                if (lockGoalFlag == -1) {
+
+                }
+                // unlock goal
+                else if (lockGoalFlag == 0) {
+                    final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "unlocking...");
+                    rest.updateUser(
+                            this.user.getId(),
+                            new UserForm(
+                                    1
+                            ),
+                            new Callback<User>() {
+                                @Override
+                                public void success(User user, Response response) {
+                                    loading.cancel();
+                                    Toast.makeText(getActivity(), "Successful", Toast.LENGTH_LONG);
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    loading.cancel();
+                                    Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG);
+                                }
+                            }
+                    );
+                }
+                // lock goal
+                else if (lockGoalFlag == 1) {
+                    final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "locking...");
+                    rest.updateUser(
+                        this.user.getId(),
+                        new UserForm(
+                            0
+                        ),
+                        new Callback<User>() {
+                            @Override
+                            public void success(User user, Response response) {
+                                loading.cancel();
+                                Toast.makeText(getActivity(), "Successful", Toast.LENGTH_LONG);
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                loading.cancel();
+                                Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG);
+                            }
+                        }
+                    );
+                }
+            }
+            // Alerts
+            else if(item.equals(options[2]))
             {
                 Fragment alertsFragment = new AlertsFragment();
                 alertsFragment.setArguments(bundle);
@@ -180,21 +260,21 @@ public class ManageUsersFragment extends RoboFragment {
 
             }
             // Usage
-            else if(item.equals(options[2]))
+            else if(item.equals(options[3]))
             {
                 Fragment userOverviewFragment = new UserOverviewFragment();
                 userOverviewFragment.setArguments(bundle);
                 ViewHelper.injectFragment(userOverviewFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
             }
             // Edit User
-            else if(item.equals(options[3]))
+            else if(item.equals(options[4]))
             {
                 Fragment editUserFragment = new EditUserFragment();
                 editUserFragment.setArguments(bundle);
                 ViewHelper.injectFragment(editUserFragment, getActivity().getSupportFragmentManager(), R.id.frame_container);
             }
             // Remove User
-            else if(item.equals(options[4]))
+            else if(item.equals(options[5]))
             {
                 final AlertDialog choiceDialog = DialogHelper.createYesNoDialog(getActivity(), "Are you sure?", "Yes", "No",
                         new DialogInterface.OnClickListener() {

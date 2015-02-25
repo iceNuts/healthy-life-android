@@ -1,19 +1,27 @@
 package com.blue_stingray.healthy_life_app.net.form;
 
+import com.blue_stingray.healthy_life_app.model.Application;
+
 public class StatForm {
-    private final String package_name;
+    private final AppForm app;
     private final String start;
     private final String stop;
-    private final Integer device_id;
 
-    public StatForm(String package_name, String start, String stop, Integer user_id) {
-        this.package_name = package_name;
+    public StatForm(Application app, String start, String stop) {
+        this.app = new AppForm(app);
         this.start = start;
         this.stop = stop;
-        this.device_id = user_id;
     }
 
-    public StatForm(String package_name, String start, String stop) {
-        this(package_name, start, stop, null);
+    private class AppForm {
+        private String package_name;
+        private String name;
+        private String version;
+
+        public AppForm(Application app) {
+            this.package_name = app.getPackageName();
+            this.name = app.getName();
+            this.version = app.getVersion();
+        }
     }
 }

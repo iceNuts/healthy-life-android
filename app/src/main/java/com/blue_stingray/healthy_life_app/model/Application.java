@@ -3,6 +3,7 @@ package com.blue_stingray.healthy_life_app.model;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -27,6 +28,15 @@ public class Application implements Serializable {
     private String device_id;
     private String package_name;
     private String name;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     private String version;
     private String color;
     private String createdAt;
@@ -42,6 +52,32 @@ public class Application implements Serializable {
         this.info = info;
         this.pm = pm;
         this.dataHelper = DataHelper.getInstance(context);
+    }
+
+    public Application(PackageManager pm, String package_name) {
+
+        this.name = getApplicationName(pm);
+        this.package_name = package_name;
+        this.version = getApplicationVersion(pm);
+    }
+
+    public String getApplicationVersion(PackageManager pm) {
+        try {
+            return pm.getPackageInfo(package_name, 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0";
+        }
+    }
+
+    public String getApplicationName(PackageManager pm) {
+        ApplicationInfo ai;
+        try {
+            ai = pm.getApplicationInfo( this.getPackageName(), 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+            ai = null;
+        }
+        final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+        return applicationName;
     }
 
     public String getId() {

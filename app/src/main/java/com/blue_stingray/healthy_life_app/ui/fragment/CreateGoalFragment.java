@@ -25,6 +25,7 @@ import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationMana
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.inject.Inject;
 
 import java.io.ByteArrayOutputStream;
@@ -97,6 +98,9 @@ public class CreateGoalFragment extends RoboFragment {
 
     @Inject
     private RestInterface rest;
+
+    @Inject
+    private SharedPreferencesHelper prefs;
 
     private FormValidationManager validationManager;
 
@@ -187,9 +191,10 @@ public class CreateGoalFragment extends RoboFragment {
                             Integer hours = (Integer)data.getValue();
                             rest.createGoal(
                                     new GoalForm(
-                                            app.getPackageName(),
+                                            app,
                                             hours,
-                                            dayString
+                                            dayString,
+                                            prefs.getDeviceId()
                                     ),
                                     new RetrofitDialogCallback<Goal>(
                                             getActivity(),

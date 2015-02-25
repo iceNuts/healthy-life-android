@@ -1,15 +1,31 @@
 package com.blue_stingray.healthy_life_app.net.form;
 
+import com.blue_stingray.healthy_life_app.model.Application;
+
 public class GoalForm {
 
     private final int hours;
-    private final String package_name;
     private final String day;
+    private final AppForm app;
+    private final Integer device_id;
 
-    public GoalForm(String package_name, int hours, String day) {
+    public GoalForm(Application app, int hours, String day, Integer device_id) {
         this.hours = hours;
-        this.package_name = package_name;
         this.day = day;
+        this.app = new AppForm(app);
+        this.device_id = device_id;
+    }
+
+    private class AppForm {
+        private String package_name;
+        private String name;
+        private String version;
+
+        public AppForm(Application app) {
+            this.package_name = app.getPackageName();
+            this.name = app.getName();
+            this.version = app.getVersion();
+        }
     }
 
 }

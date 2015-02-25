@@ -21,6 +21,7 @@ import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
@@ -65,6 +66,9 @@ public class AppUsageFragment extends RoboFragment {
 
     @InjectView(R.id.percent_usage)
     private TextView percentUsage;
+
+    @Inject
+    private SharedPreferencesHelper prefs;
 
     private User user;
     private View view;
@@ -114,7 +118,7 @@ public class AppUsageFragment extends RoboFragment {
 
             final ProgressDialog progress = ProgressDialog.show(getActivity(), "", "Loading...", true);
 
-            rest.getStatsByDate(new StatForm(app.getPackageName(), start, end, app.getDeviceId()), new Callback<Stat[]>() {
+            rest.getStatsByDate(new StatForm(app, start, end), new Callback<Stat[]>() {
                 @Override
                 public void success(Stat[] stats, Response response) {
                     usageList.removeAllViews();
@@ -146,7 +150,7 @@ public class AppUsageFragment extends RoboFragment {
             if(app.getDeviceId() == null) {
                 rest.getApp(app.getPackageName(), new GetAppCallback());
             } else {
-                rest.getApp(app.getPackageName(), app.getDeviceId(), new GetAppCallback());
+                rest.getApp(app.getPackageName(), prefs.getDeviceId(), new GetAppCallback());
             }
 
         } else {

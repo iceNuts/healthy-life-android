@@ -103,11 +103,30 @@
     <string name="remote_logging">RemoteLogging</string>
 
     <!-- Manage Users -->
-    <string-array name="user_selection">
-        <item>Goals</item>
+    <string-array name="user_unavailable_selection">
+        <item>Edit Goals</item>
+        <item>Lock Status Unavailable</item>
         <item>Alerts</item>
         <item>Usage</item>
-        <item>Edit</item>
+        <item>Edit User</item>
+        <item>Remove</item>
+    </string-array>
+
+    <string-array name="user_lock_selection">
+        <item>Edit Goals</item>
+        <item>Lock Goals</item>
+        <item>Alerts</item>
+        <item>Usage</item>
+        <item>Edit User</item>
+        <item>Remove</item>
+    </string-array>
+
+    <string-array name="user_unlock_selection">
+        <item>Edit Goals</item>
+        <item>Unlock Goals</item>
+        <item>Alerts</item>
+        <item>Usage</item>
+        <item>Edit User</item>
         <item>Remove</item>
     </string-array>
 
