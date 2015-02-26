@@ -541,9 +541,10 @@ public class ApplicationLoggingService extends RoboService {
                 // App Changed
                 if (lastComponent != currentComponent) {
                     // Log the CURRENT APP START TIME
-//                    if (dataHelper.isGoal(currentComponent.getPackageName()))
-//                    now need to record all time used
-                    logAppUsage(currentComponent, currentTime, STARTFLAG);
+                    if (dataHelper.is3rdParty(currentComponent.getPackageName())) {
+//                    now need to record all 3rd party time used
+                        logAppUsage(currentComponent, currentTime, STARTFLAG);
+                    }
                     // Log the LAST APP END TIME
                     if (lastComponent != null) {
                         logAppUsage(lastComponent, currentTime, ENDFLAG);

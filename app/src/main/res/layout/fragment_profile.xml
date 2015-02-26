@@ -3,7 +3,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -174,14 +174,27 @@
             android:weightSum="2"
             android:id="@+id/PhoneUsageLayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Phone Usage"
-                android:id="@+id/textView_PhoneUsage"
-                android:textSize="20dp"
-                android:paddingBottom="4dp" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <Spinner
+                    android:id="@+id/view_type_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingBottom="4dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_alignParentRight="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Phone Usage"
+                    android:id="@+id/textView_PhoneUsage"
+                    android:textSize="20dp"
+                    android:paddingBottom="4dp"
+                    android:layout_alignParentLeft="true"/>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"

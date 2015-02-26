@@ -56,7 +56,9 @@ public class DetailedPhoneUsageListAdapter extends BaseListAdapter<DataHelper.De
 
             String usedTime;
 
-            if (minutes > 60) {
+            if (minutes == 0) {
+                usedTime = "less than 1 min";
+            } else if (minutes > 60) {
                 usedTime = String.valueOf(minutes/60)+"hr"+String.valueOf(minutes%60)+"min";
             }
             else {

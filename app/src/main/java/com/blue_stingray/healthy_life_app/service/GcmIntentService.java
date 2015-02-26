@@ -34,12 +34,12 @@ public class GcmIntentService extends IntentService {
 
     public GcmIntentService() {
         super("GcmIntentService");
-        dataHelper = DataHelper.getInstance(this);
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        dataHelper = DataHelper.getInstance(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
@@ -111,7 +111,7 @@ public class GcmIntentService extends IntentService {
             ApplicationInfo ai;
             try {
                 ai = pm.getApplicationInfo(packageName, 0);
-                fireNotification("A new goal has been set for "+pm.getApplicationLabel(ai)+" on website.");
+                fireNotification("A new goal has been set for "+pm.getApplicationLabel(ai));
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }

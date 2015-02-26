@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     );
 
     private static final String DB_NAME = "app.db";
-    private static final int SCHEMA_VERSION = 7;
+    private static final int SCHEMA_VERSION = 8;
 
 
     @Inject

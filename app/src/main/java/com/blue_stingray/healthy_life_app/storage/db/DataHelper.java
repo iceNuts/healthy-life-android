@@ -2,7 +2,9 @@ package com.blue_stingray.healthy_life_app.storage.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -52,6 +54,7 @@ public class DataHelper {
     private HashMap<String, Integer> blockedList;
     private HashMap<String, Integer> extendList;
     private PackageManager pm;
+    private ArrayList<String> apps;
 
     public static synchronized DataHelper getInstance(Context context) {
         if (instance == null) {
@@ -59,12 +62,28 @@ public class DataHelper {
             instance.dbHelper = new DatabaseHelper(context);
             instance.db = instance.dbHelper.getWritableDatabase();
             instance.prefs = new SharedPreferencesHelper(context);
-            instance.goalCache = instance.loadGoalCache();
             instance.blockedList = new HashMap<>();
             instance.extendList = new HashMap<>();
             instance.pm = context.getPackageManager();
+            instance.apps = new ArrayList<>();
         }
+        instance.load3rdPartyPackageNames(context);
+        instance.goalCache = instance.loadGoalCache();
         return instance;
+    }
+
+    private void load3rdPartyPackageNames(Context context) {
+        if (context == null)
+            return;
+        apps.clear();
+        final PackageManager pm = context.getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> resolveApps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
+
+        for(ResolveInfo resolveInfo : resolveApps) {
+            apps.add(resolveInfo.activityInfo.packageName);
+        }
     }
 
     // Please refer goal table in database helper
@@ -82,14 +101,12 @@ public class DataHelper {
                     newStat.put(LIMIT_DAY, pairs.getKey().toString());
                     newStat.put(TIME_LIMIT, pairs.getValue().toString());
                     newStat.put(USER_ID, prefs.getUserID());
-
                     // Delete old goal
-                    instance.db.delete(GOAL_TABLE, "package_name=? and limit_day=? and user_id=?", new String[]{
+                    int ret = instance.db.delete(GOAL_TABLE, "package_name=? and limit_day=? and user_id=?", new String[]{
                             packageName,
                             pairs.getKey().toString(),
                             prefs.getUserID()
                     });
-
                     // Insert new goal
                     long retValue = instance.db.insert(GOAL_TABLE, null, newStat);
                     it.remove();
@@ -417,7 +434,7 @@ public class DataHelper {
     }
 
     // fetch user wake up times latest 5 days
-    public List<PhoneUsageTuple> getRecentPhoneWakeUpTimes() {
+    public List<PhoneUsageTuple> getRecentPhoneWakeUpTimes(int option) {
         instance.db.beginTransaction();
         List<PhoneUsageTuple> list = new ArrayList<>();
         List<Map<String, String>> recentDays = getRecentDaysInCalendar();
@@ -450,14 +467,14 @@ public class DataHelper {
 
 
     // fetch user total wake up usage time
-    public List<PhoneUsageTuple> getRecentPhoneUsageHours() {
+    public List<PhoneUsageTuple> getRecentPhoneUsageHours(int option) {
         instance.db.beginTransaction();
         List<PhoneUsageTuple> list = new ArrayList<>();
         List<Map<String, String>> recentDays = getRecentDaysInCalendar();
         for (int i = 0; i < recentDays.size(); i++) {
             Map<String, String> day = recentDays.get(i);
             Cursor phoneUsageCursor = db.rawQuery(
-                    "SELECT * FROM wake_up_record WHERE usage_year = ? and usage_month = ? and usage_day = ? and usage_day_of_week = ? and user_id = ?",
+                    "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
                     new String[]{
                             day.get("year"),
                             day.get("month"),
@@ -511,10 +528,20 @@ public class DataHelper {
                 Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
                 Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
                 Integer usedTime = endTime - startTime;
-                DetailPhoneUsageTuple<String, Integer> tuple = new DetailPhoneUsageTuple(
-                        phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME)),
-                        usedTime / 60);
-                list.add(tuple);
+                String packageName = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME));
+                Integer usedSec = usedTime / 60;
+                boolean notFound = true;
+                for (DetailPhoneUsageTuple tp: list) {
+                    if (packageName.equals(tp.packageName)) {
+                        tp.value = (Integer)tp.value+usedSec;
+                        notFound = false;
+                        break;
+                    }
+                }
+                if (notFound) {
+                    DetailPhoneUsageTuple<String, Integer> tuple = new DetailPhoneUsageTuple(packageName, usedSec);
+                    list.add(tuple);
+                }
                 phoneUsageCursor.moveToNext();
             }
         }
@@ -543,9 +570,14 @@ public class DataHelper {
         return list;
     }
 
+    public boolean is3rdParty(String packageName) {
+        return apps.contains(packageName);
+    }
+
+
     public class PhoneUsageTuple<X, Y> {
-        public final X key;
-        public final Y value;
+        public  X key;
+        public  Y value;
         public PhoneUsageTuple(X key, Y value) {
             this.key = key;
             this.value = value;
@@ -553,8 +585,8 @@ public class DataHelper {
     }
 
     public class DetailPhoneUsageTuple<X, Y>{
-        public final X packageName;
-        public final Y value;
+        public  X packageName;
+        public  Y value;
         public DetailPhoneUsageTuple(X packageName, Y value) {
             this.packageName = packageName;
             this.value = value;

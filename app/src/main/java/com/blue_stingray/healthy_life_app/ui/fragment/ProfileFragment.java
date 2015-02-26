@@ -13,8 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.IconTextView;
 import android.widget.ShareActionProvider;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +49,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+import com.blue_stingray.healthy_life_app.R;
 
 /**
  * Provides a single users profile information.
@@ -72,6 +76,9 @@ public class ProfileFragment extends RoboFragment {
 
     @InjectView(R.id.wake_up_time)
     private BarChart PhoneWakeUpTimeChart;
+
+    @InjectView(R.id.view_type_spinner)
+    private Spinner viewTypeSpinner;
 
     private User authUser;
 
@@ -173,49 +180,77 @@ public class ProfileFragment extends RoboFragment {
             @Override
             public void run() {
                 dataHelper = DataHelper.getInstance(getActivity());
-                wakeupTimes = dataHelper.getRecentPhoneWakeUpTimes();
-                totalUseHours = dataHelper.getRecentPhoneUsageHours();
+                wakeupTimes = dataHelper.getRecentPhoneWakeUpTimes(0);
+                totalUseHours = dataHelper.getRecentPhoneUsageHours(0);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // parsing total time
-                        for (int i = 0; i < totalUseHours.size(); i++) {
-                            DataHelper.PhoneUsageTuple tuple = totalUseHours.get(i);
-                            BarModel model = new BarModel((Float)tuple.value, 0xFF1FF4AC);
-                            if (i == 0) {
-                                model.setLegendLabel("Today");
-                            }
-                            else {
-                                model.setLegendLabel((String)tuple.key);
-                            }
-                            PhoneUsageTimeChart.addBar(model);
-                        }
-                        // parsing wake up times
-                        for (int i = 0; i < wakeupTimes.size(); i++) {
-                            DataHelper.PhoneUsageTuple tuple = wakeupTimes.get(i);
-                            BarModel model = new BarModel((Integer)tuple.value, 0xFF123456);
-                            if (i == 0) {
-                                model.setLegendLabel("Today");
-                            }
-                            else {
-                                model.setLegendLabel((String)tuple.key);
-                            }
-                            PhoneWakeUpTimeChart.addBar(model);
-                        }
-                        PhoneUsageTimeChart.startAnimation();
-                        PhoneWakeUpTimeChart.startAnimation();
-
-                        // setup clickable graph
-                        PhoneUsageTimeChart.setOnBarClickedListener(new IOnBarClickedListener() {
+                        // setup dropdown window
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                                getActivity(),
+                                R.array.view_type_array,
+                                android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        viewTypeSpinner.setAdapter(adapter);
+                        viewTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
-                            public void onBarClicked(int i) {
-                                showDetailedUsageInfo(i);
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                wakeupTimes.clear();
+                                totalUseHours.clear();
+                                wakeupTimes = dataHelper.getRecentPhoneWakeUpTimes(position);
+                                totalUseHours = dataHelper.getRecentPhoneUsageHours(position);
+                                showLineChart(position);
+                            }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
                             }
                         });
+                        showLineChart(0);
                     }
                 });
             }
         }).start();
+    }
+
+    private void showLineChart(int option) {
+        // reset
+        PhoneUsageTimeChart.clearChart();
+        PhoneWakeUpTimeChart.clearChart();
+        // parsing total time
+        for (int i = 0; i < totalUseHours.size(); i++) {
+            DataHelper.PhoneUsageTuple tuple = totalUseHours.get(i);
+            BarModel model = new BarModel((Float)tuple.value, 0xFF1FF4AC);
+            if (i == 0) {
+                model.setLegendLabel("Today");
+            }
+            else {
+                model.setLegendLabel((String)tuple.key);
+            }
+            PhoneUsageTimeChart.addBar(model);
+        }
+        // parsing wake up times
+        for (int i = 0; i < wakeupTimes.size(); i++) {
+            DataHelper.PhoneUsageTuple tuple = wakeupTimes.get(i);
+            BarModel model = new BarModel((Integer)tuple.value, 0xFF123456);
+            if (i == 0) {
+                model.setLegendLabel("Today");
+            }
+            else {
+                model.setLegendLabel((String)tuple.key);
+            }
+            PhoneWakeUpTimeChart.addBar(model);
+        }
+        PhoneUsageTimeChart.startAnimation();
+        PhoneWakeUpTimeChart.startAnimation();
+
+        // setup clickable graph
+        PhoneUsageTimeChart.setOnBarClickedListener(new IOnBarClickedListener() {
+            @Override
+            public void onBarClicked(int i) {
+                showDetailedUsageInfo(i);
+            }
+        });
     }
 
     private void showDetailedUsageInfo(int dayCount) {
