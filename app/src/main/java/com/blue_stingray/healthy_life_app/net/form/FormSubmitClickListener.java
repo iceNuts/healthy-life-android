@@ -40,7 +40,6 @@ public abstract class FormSubmitClickListener implements View.OnClickListener {
             return;
         }
 
-        progressDialog.show();
         submit();
     }
 

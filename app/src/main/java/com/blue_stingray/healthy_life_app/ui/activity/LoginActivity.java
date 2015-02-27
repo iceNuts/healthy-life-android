@@ -128,7 +128,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected void submit() {
-            ProgressDialog.show(LoginActivity.this, "", "Logging in...");
+            progressDialog = ProgressDialog.show(LoginActivity.this, "", "Logging in...");
             rest.createSession(
                     new SessionForm(
                             LoginActivity.this,
@@ -138,6 +138,8 @@ public class LoginActivity extends BaseActivity {
                     new Callback<SessionDevice>() {
                 @Override
                 public void success(SessionDevice sessionDevice, Response response) {
+                    progressDialog.cancel();
+                    progressDialog.dismiss();
                     prefs.setDeviceId(sessionDevice.device.id);
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
@@ -145,13 +147,13 @@ public class LoginActivity extends BaseActivity {
                     prefs.setUserPasswdToken(passwordField.getText().toString());
                     prefs.setUserID(sessionDevice.session.user_id);
                     getAuthUser();
-                    progressDialog.cancel();
                 }
 
                 @Override
                 public void failure(RetrofitError retrofitError) {
-                    DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
                     progressDialog.cancel();
+                    progressDialog.dismiss();
+                    DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
                 }
             });
         }
@@ -169,7 +171,7 @@ public class LoginActivity extends BaseActivity {
                 rest.getMyGoals(new Callback<List<Goal>>() {
                     @Override
                     public void success(List<Goal> goals, Response response) {
-                        for(Goal goal : goals) {
+                        for (Goal goal : goals) {
                             // TO FIX
                             // data type error when login in with Brian account
                             // 0.2 ? int type
@@ -177,7 +179,6 @@ public class LoginActivity extends BaseActivity {
                             newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                             dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
                         }
-                        progressDialog.cancel();
                         startActivity(new Intent(LoginActivity.this, StartActivity.class));
                         finish();
                     }
@@ -186,14 +187,16 @@ public class LoginActivity extends BaseActivity {
                     public void failure(RetrofitError error) {
                         Log.i("healthy", "Login /goal error");
                         progressDialog.cancel();
+                        progressDialog.dismiss();
                     }
                 });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                progressDialog.cancel();
                 Log.i("healthy", "Login /user/me error");
+                progressDialog.cancel();
+                progressDialog.dismiss();
             }
         });
     }
