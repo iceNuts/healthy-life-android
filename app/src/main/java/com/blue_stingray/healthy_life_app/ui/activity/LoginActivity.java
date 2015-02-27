@@ -192,6 +192,7 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void failure(RetrofitError error) {
+                progressDialog.cancel();
                 Log.i("healthy", "Login /user/me error");
             }
         });

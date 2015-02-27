@@ -144,4 +144,7 @@
     <string name="mentor_removed_success">Removed Successfully</string>
     <string name="mentor_removed_failure">Removed Filed</string>
 
+    <string name="no_mentor">No mentor yet :(</string>
+    <string name="network_error">Network Connection Failed</string>
+
 </resources>

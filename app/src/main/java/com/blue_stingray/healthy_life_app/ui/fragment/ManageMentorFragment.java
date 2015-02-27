@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.R;
@@ -58,6 +59,9 @@ public class ManageMentorFragment extends RoboFragment {
 
     @InjectView(R.id.blank_message)
     private View blankMessage;
+
+    @InjectView(R.id.textView13)
+    private TextView blankTextView;
 
     private BroadcastReceiver memNotificationReceiver;
     private Menu menu;
@@ -110,6 +114,7 @@ public class ManageMentorFragment extends RoboFragment {
                 @Override
                 public void success(User user, Response response) {
                     try {
+                        // has mentor
                         Integer mentorId = user.getMentorId();
                         createMentorButton.setVisibility(View.GONE);
                         // Get User information
@@ -129,6 +134,7 @@ public class ManageMentorFragment extends RoboFragment {
                                 public void failure(RetrofitError error) {
                                     loading.cancel();
                                     // show bad request page
+                                    blankTextView.setText(R.string.network_error);
                                     blankMessage.setVisibility(View.VISIBLE);
                                 }
                             }
@@ -138,6 +144,8 @@ public class ManageMentorFragment extends RoboFragment {
                         // there is no mentor
                         // show bad request page
                         loading.cancel();
+                        createMentorButton.setVisibility(View.VISIBLE);
+                        blankTextView.setText(R.string.no_mentor);
                         blankMessage.setVisibility(View.VISIBLE);
                     }
                 }
@@ -145,6 +153,7 @@ public class ManageMentorFragment extends RoboFragment {
                 @Override
                 public void failure(RetrofitError error) {
                     loading.cancel();
+                    blankTextView.setText(R.string.network_error);
                     createMentorButton.setVisibility(View.GONE);
                     blankMessage.setVisibility(View.VISIBLE);
                 }
