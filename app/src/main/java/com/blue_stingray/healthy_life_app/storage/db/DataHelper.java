@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.model.Alert;
@@ -55,6 +56,8 @@ public class DataHelper {
     private HashMap<String, Integer> extendList;
     private PackageManager pm;
     private ArrayList<String> apps;
+    private CountDownTimer GoalCacheTimer;
+    private boolean isLoading;
 
     public static synchronized DataHelper getInstance(Context context) {
         if (instance == null) {
@@ -66,9 +69,22 @@ public class DataHelper {
             instance.extendList = new HashMap<>();
             instance.pm = context.getPackageManager();
             instance.apps = new ArrayList<>();
+            instance.isLoading = false;
+            instance.GoalCacheTimer = new CountDownTimer(2000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    instance.isLoading = false;
+                    instance.__loadGoalCache();
+                }
+            };
         }
         instance.load3rdPartyPackageNames(context);
-        instance.goalCache = instance.loadGoalCache();
+        instance.loadGoalCache();
         return instance;
     }
 
@@ -113,21 +129,32 @@ public class DataHelper {
                 }
                 instance.db.setTransactionSuccessful();
                 instance.db.endTransaction();
-                instance.goalCache = instance.loadGoalCache();
             }
         }).start();
+        instance.loadGoalCache();
     }
 
     // GoalCache key is packageName+dayOfWeek, other cache is only packageName as key
 
-    private HashMap<String, Integer> loadGoalCache() {
+    private void loadGoalCache() {
 
-            HashMap<String, Integer> cache = new HashMap<>();
-            Cursor goalCursor = db.rawQuery(
-                    "SELECT * FROM goal_table WHERE user_id=\"" + prefs.getUserID() + "\"",
-                    new String[]{
-                    }
-            );
+        if (instance.goalCache == null && !isLoading) {
+            __loadGoalCache();
+        }
+
+        if (!isLoading) {
+            isLoading = true;
+            GoalCacheTimer.start();
+        }
+    }
+
+    private void __loadGoalCache() {
+        HashMap<String, Integer> cache = new HashMap<>();
+        Cursor goalCursor = db.rawQuery(
+                "SELECT * FROM goal_table WHERE user_id=\"" + prefs.getUserID() + "\"",
+                new String[]{
+                }
+        );
         try {
             goalCursor.moveToFirst();
             while (goalCursor.isAfterLast() == false) {
@@ -141,7 +168,7 @@ public class DataHelper {
         finally {
             goalCursor.close();
         }
-        return cache;
+        instance.goalCache = cache;
     }
 
     // Quick Access
@@ -187,6 +214,7 @@ public class DataHelper {
 
     public List<Goal> getGoals(Context context, String packageName) {
         ArrayList<Goal> goals = new ArrayList<>();
+        Log.d("CursorWindow", "getGoals Start");
         Cursor goalCursor = db.rawQuery(
                 "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"" + "AND user_id=\"" + prefs.getUserID() + "\"",
                 new String[]{
@@ -201,6 +229,7 @@ public class DataHelper {
                 goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
                 goals.add(goal);
             }
+            Log.d("CursorWindow", "getGoals End");
         }
         finally {
             goalCursor.close();
@@ -437,7 +466,7 @@ public class DataHelper {
     public List<PhoneUsageTuple> getRecentPhoneWakeUpTimes(int option) {
         instance.db.beginTransaction();
         List<PhoneUsageTuple> list = new ArrayList<>();
-        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar(option);
         for (int i = 0; i < recentDays.size(); i++) {
             Map<String, String> day = recentDays.get(i);
             Cursor phoneUsageCursor = db.rawQuery(
@@ -470,7 +499,7 @@ public class DataHelper {
     public List<PhoneUsageTuple> getRecentPhoneUsageHours(int option) {
         instance.db.beginTransaction();
         List<PhoneUsageTuple> list = new ArrayList<>();
-        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar(option);
         for (int i = 0; i < recentDays.size(); i++) {
             Map<String, String> day = recentDays.get(i);
             Cursor phoneUsageCursor = db.rawQuery(
@@ -507,10 +536,10 @@ public class DataHelper {
         return list;
     }
 
-    public List<DetailPhoneUsageTuple> getDetailedPhoneUsage(int i) {
+    public List<DetailPhoneUsageTuple> getDetailedPhoneUsage(int i, int option) {
         instance.db.beginTransaction();
         List<DetailPhoneUsageTuple> list = new ArrayList<>();
-        List<Map<String, String>> recentDays = getRecentDaysInCalendar();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar(option);
         Map<String, String> day = recentDays.get(i);
         Cursor phoneUsageCursor = db.rawQuery(
                 "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
@@ -552,11 +581,26 @@ public class DataHelper {
         return list;
     }
 
-    private List<Map<String, String>> getRecentDaysInCalendar() {
+    private List<Map<String, String>> getRecentDaysInCalendar(int option) {
         int limit = 0;
+        int days = 5;
+        switch (option) {
+            case 0:
+                days = 5;
+                break;
+            case 1:
+                days = 10;
+                break;
+            case 2:
+                days = 15;
+                break;
+            default:
+                days = 5;
+                break;
+        }
         List<Map<String, String>> list = new ArrayList<>();
         Calendar c = Calendar.getInstance();
-        while (limit < 5) {
+        while (limit < days) {
             Map<String, String> timeInfo = new HashMap<String, String>();
             timeInfo.put("year", String.valueOf(c.get(Calendar.YEAR)));
             timeInfo.put("month", String.valueOf(c.get(Calendar.MONTH)));

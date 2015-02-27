@@ -92,6 +92,8 @@ public class ProfileFragment extends RoboFragment {
 
     private DataHelper dataHelper;
 
+    private int viewOption;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +118,7 @@ public class ProfileFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(authUser.getName());
-
+        viewOption = 0;
         currentScore.setText(String.valueOf(authUser.getScore()));
         percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         detailsButton.setOnClickListener(new OnDetailsClickListener());
@@ -212,6 +214,7 @@ public class ProfileFragment extends RoboFragment {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 wakeupTimes.clear();
                                 totalUseHours.clear();
+                                viewOption = position;
                                 wakeupTimes = dataHelper.getRecentPhoneWakeUpTimes(position);
                                 totalUseHours = dataHelper.getRecentPhoneUsageHours(position);
                                 showLineChart(position);
@@ -271,6 +274,7 @@ public class ProfileFragment extends RoboFragment {
     private void showDetailedUsageInfo(int dayCount) {
         Bundle bundle = new Bundle();
         bundle.putInt("DayCount", dayCount);
+        bundle.putInt("Option", viewOption);
         DetailedPhoneUsageFragment fragment = new DetailedPhoneUsageFragment();
         fragment.setArguments(bundle);
         ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);

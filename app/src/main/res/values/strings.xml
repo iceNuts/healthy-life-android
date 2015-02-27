@@ -133,8 +133,8 @@
     <!-- View Type Spinner Drop down -->
     <string-array name="view_type_array">
         <item>5 Day View</item>
-        <item>2 Week View</item>
-        <item>1 Month View</item>
+        <item>10 Day View</item>
+        <item>15 Day View</item>
     </string-array>
 
     <!-- Mentors -->

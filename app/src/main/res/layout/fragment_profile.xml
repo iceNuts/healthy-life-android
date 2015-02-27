@@ -209,6 +209,7 @@
                 android:id="@+id/usage_time"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                
                 app:egUseCubic="true"
                 app:egUseOverlapFill="true"
                 app:egCurveSmoothness="0.4"

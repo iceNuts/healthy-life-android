@@ -145,11 +145,13 @@ public class LoginActivity extends BaseActivity {
                     prefs.setUserPasswdToken(passwordField.getText().toString());
                     prefs.setUserID(sessionDevice.session.user_id);
                     getAuthUser();
+                    progressDialog.cancel();
                 }
 
                 @Override
                 public void failure(RetrofitError retrofitError) {
                     DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
+                    progressDialog.cancel();
                 }
             });
         }
@@ -183,7 +185,6 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void failure(RetrofitError error) {
                         Log.i("healthy", "Login /goal error");
-                        Log.i("healthy", error.getCause().toString());
                         progressDialog.cancel();
                     }
                 });
@@ -192,7 +193,6 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void failure(RetrofitError error) {
                 Log.i("healthy", "Login /user/me error");
-                Log.i("healthy", error.getCause().toString());
             }
         });
     }
