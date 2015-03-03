@@ -159,7 +159,6 @@ public class MainActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        Log.i("healthy", "is admin : " + authUser.isAdmin());
         if(!authUser.isAdmin()) {
 
             List<DrawerItem> toRemove = new ArrayList<>();

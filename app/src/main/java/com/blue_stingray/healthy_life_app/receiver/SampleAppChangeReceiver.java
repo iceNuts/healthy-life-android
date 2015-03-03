@@ -27,7 +27,6 @@ public class SampleAppChangeReceiver extends SelfAttachingReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        Log.d(getClass().getSimpleName(), "Received App change Intent");
         handler.post(new Runnable() {
             @Override
             public void run() {

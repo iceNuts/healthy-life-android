@@ -29,7 +29,6 @@ public class DetailedPhoneUsageListAdapter extends BaseListAdapter<DataHelper.De
 
     public DetailedPhoneUsageListAdapter(Activity activity, List<DataHelper.DetailPhoneUsageTuple> list, RestInterface rest) {
         super(activity, list, R.layout.app_usage_list_row);
-        Log.d("Usage", list.toString());
         this.activity = activity;
         this.appUsagelist = list;
         this.rest = rest;

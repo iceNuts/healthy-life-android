@@ -432,7 +432,6 @@ public class ApplicationLoggingService extends RoboService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("Screen", intent.getAction());
 
             if (intent.getAction() == "android.intent.action.SCREEN_ON") {
                 timedRunnable.onResume();
@@ -482,24 +481,20 @@ public class ApplicationLoggingService extends RoboService {
         }
 
         public void onPause() {
-            Log.d("Screen", "on pause");
             synchronized (mPauseLock) {
                 mPaused = true;
                 // record screen off
                 Map<String, String> currentTime = currentTime();
-                Log.d("currentTime", currentTime.get("timestamp"));
                 logPhoneUsage(currentTime, ENDFLAG);
             }
         }
 
         public void onResume() {
-            Log.d("Screen", "on resume");
             synchronized (mPauseLock) {
                 mPaused = false;
                 mPauseLock.notifyAll();
                 // record screen start
                 Map<String, String> currentTime = currentTime();
-                Log.d("currentTime", currentTime.get("timestamp"));
                 logPhoneUsage(currentTime, STARTFLAG);
             }
         }

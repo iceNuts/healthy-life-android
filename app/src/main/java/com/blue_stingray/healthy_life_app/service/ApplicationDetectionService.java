@@ -125,8 +125,6 @@ public class ApplicationDetectionService extends RoboService {
                             broadcast.setAction(getString(R.string.activity_change));
                         }
 
-                        Log.d(LOG_TAG, "App: " + currentComponent.getPackageName() + " Activity: " + currentComponent.getClassName());
-
                         broadcast.putExtra(getString(R.string.component_name), currentComponent);
 
                         localBroadcastManager.sendBroadcast(broadcast);

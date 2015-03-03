@@ -200,9 +200,9 @@ public class CreateGoalFragment extends RoboFragment {
                                             getActivity(),
                                             progressDialog) {
                                         @Override
-                                        public void onSuccess(Goal goal, Response response) {Log.d("REST", String.valueOf(response.getStatus()));}
+                                        public void onSuccess(Goal goal, Response response) {}
                                         @Override
-                                        public void onFailure(RetrofitError retrofitError) {Log.d("REST", retrofitError.toString());}
+                                        public void onFailure(RetrofitError retrofitError) {}
                                     }
                             );
                             it.remove();

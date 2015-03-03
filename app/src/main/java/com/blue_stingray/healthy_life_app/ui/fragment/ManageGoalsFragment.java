@@ -226,8 +226,6 @@ public class ManageGoalsFragment extends RoboFragment {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Log.d("App Adapter View", String.valueOf(position));
-            Log.d("App Adapter View", String.valueOf(apps.get(position)));
 
             Application app = apps.get(position);
 
@@ -253,8 +251,6 @@ public class ManageGoalsFragment extends RoboFragment {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Log.d("App Adapter View", String.valueOf(position));
-            Log.d("App Adapter View", String.valueOf(apps.get(position)));
 
             Application app = apps.get(position);
 

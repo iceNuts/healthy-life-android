@@ -76,7 +76,6 @@ public class LifelineRequestFragment extends RoboFragment {
 
                 @Override
                 public void onFailure(RetrofitError retrofitError) {
-                    Log.d("Lifeline", retrofitError.toString());
                     loading.cancel();
                 }
             }

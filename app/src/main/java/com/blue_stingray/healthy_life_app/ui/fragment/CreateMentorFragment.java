@@ -67,7 +67,6 @@ public class CreateMentorFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("Mentor", "ViewCreated");
         mentors = new ArrayList<>();
         blankMessage.setVisibility(View.VISIBLE);
     }

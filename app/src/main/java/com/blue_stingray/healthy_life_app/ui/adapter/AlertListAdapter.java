@@ -32,7 +32,6 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         alert = data.get(position);
-        Log.i("healthy", "Alert type : " + alert.getTargetType());
 
         if(alert.getTargetType().equals("Application"))
         {

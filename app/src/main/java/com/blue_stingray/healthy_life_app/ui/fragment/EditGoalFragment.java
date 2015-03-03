@@ -147,7 +147,6 @@ public class EditGoalFragment extends RoboFragment {
         // prepopulate seek bars
         List<Goal> goals = app.getGoals();
         for(Goal goal : goals) {
-            Log.i("healthy", goal.getPackageName() + " : " + goal.getDay() + " : " + goal.getGoalTime());
 
             if(goal.getLimitDay() == Calendar.MONDAY)
             {

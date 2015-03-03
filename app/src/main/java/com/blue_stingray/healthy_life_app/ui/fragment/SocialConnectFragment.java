@@ -96,8 +96,7 @@ public class SocialConnectFragment extends RoboFragment {
         super.onActivityResult(requestCode, resultCode, data);
         // for google
         if (requestCode == 1) {
-            Log.d(TAG, "google login return");
-            Log.d(TAG, String.valueOf(resultCode));
+
             if (resultCode == getActivity().RESULT_OK) {
                 String token = data.getStringExtra("token");
                 rest.googleLogin(
@@ -156,7 +155,6 @@ public class SocialConnectFragment extends RoboFragment {
 
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
-            Log.i(TAG, "Logged in...");
             rest.facebookLogin(
                     new SocialSessionForm(
                             getActivity(),
@@ -184,7 +182,6 @@ public class SocialConnectFragment extends RoboFragment {
                         }
                     });
         } else if (state.isClosed()) {
-            Log.i(TAG, "Logged out...");
         }
     }
 

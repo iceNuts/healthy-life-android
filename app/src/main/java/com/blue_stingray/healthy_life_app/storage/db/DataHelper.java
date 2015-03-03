@@ -214,7 +214,6 @@ public class DataHelper {
 
     public List<Goal> getGoals(Context context, String packageName) {
         ArrayList<Goal> goals = new ArrayList<>();
-        Log.d("CursorWindow", "getGoals Start");
         Cursor goalCursor = db.rawQuery(
                 "SELECT * FROM goal_table WHERE package_name=\"" + packageName + "\"" + "AND user_id=\"" + prefs.getUserID() + "\"",
                 new String[]{
@@ -229,7 +228,6 @@ public class DataHelper {
                 goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
                 goals.add(goal);
             }
-            Log.d("CursorWindow", "getGoals End");
         }
         finally {
             goalCursor.close();

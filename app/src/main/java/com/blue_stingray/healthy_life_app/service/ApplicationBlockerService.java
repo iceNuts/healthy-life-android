@@ -167,7 +167,6 @@ public class ApplicationBlockerService  extends RoboService {
             }
             if (dataHelper.isGoal(currentComponent.getPackageName())) {
                 BigDecimal ratio = dataHelper.getRemainigTimeRatio(currentComponent.getPackageName(), currentSec);
-                Log.d("Dynamic-GoalTime", String.valueOf(ratio));
 
                 // Kick out blocking
 

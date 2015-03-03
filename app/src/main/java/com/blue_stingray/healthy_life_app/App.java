@@ -58,7 +58,6 @@ public class App extends Application {
      * @param user User
      */
     public void setAuthUser(User user) {
-        Log.d("USER", user.toString());
         // store user
         prefs = new SharedPreferencesHelper(this);
         prefs.setCurrentUser(user);
