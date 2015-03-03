@@ -179,6 +179,8 @@ public class LoginActivity extends BaseActivity {
                             newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                             dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
                         }
+                        // fix logging out
+                        prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                         startActivity(new Intent(LoginActivity.this, StartActivity.class));
                         finish();
                     }

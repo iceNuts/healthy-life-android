@@ -72,7 +72,9 @@ public class BlockerActivity extends BaseActivity{
                             showBlockerDialog();
                         }
                         catch (Exception e) {
-                            showUnlockDialog();
+                            // was unlock by itself
+//                            showUnlockDialog();
+                            showBlockerDialog();
                         }
                     }
                     else {

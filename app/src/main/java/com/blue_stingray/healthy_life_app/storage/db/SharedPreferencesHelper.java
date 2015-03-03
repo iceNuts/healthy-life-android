@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.User;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -26,6 +27,7 @@ public class SharedPreferencesHelper {
     private final static String MEN_NOTI_STATUS = "MEN_NOTI_STATUS";
     private final static String PASSWD_USER_TOKEN = "PASSWD_USER_TOKEN";
     private final static String USER_ID = "USER_ID";
+    private final static String CURRENT_USER = "CURRENT_USER";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -167,5 +169,43 @@ public class SharedPreferencesHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public void setCurrentUser(User user) {
+        prefs.edit().putString("id", user.id).apply();
+        prefs.edit().putString("mentor_id", user.mentor_id).apply();
+        prefs.edit().putString("name", user.name).apply();
+        prefs.edit().putString("email", user.email).apply();
+        prefs.edit().putString("created_at", user.created_at).apply();
+        prefs.edit().putString("updated_at", user.updated_at).apply();
+        prefs.edit().putString("deleted_at", user.deleted_at).apply();
+        prefs.edit().putString("is_admin", user.is_admin).apply();
+        prefs.edit().putString("age", user.age).apply();
+        prefs.edit().putString("score", user.score).apply();
+        prefs.edit().putString("percentage", user.percentage).apply();
+        prefs.edit().putString("can_edit", user.can_edit).apply();
+        prefs.edit().putInt("rank", user.rank).apply();
+    }
+
+    public User getCurrentUser() {
+        if (getUserID().equals("")) {
+            return null;
+        }
+        User user = new User(
+                prefs.getString("id", null),
+                prefs.getString("mentor_id", null),
+                prefs.getString("name", null),
+                prefs.getString("email", null),
+                prefs.getString("created_at", null),
+                prefs.getString("updated_at", null),
+                prefs.getString("deleted_at", null),
+                prefs.getString("is_admin", null),
+                prefs.getString("age", null),
+                prefs.getString("score", null),
+                prefs.getString("percentage", null),
+                prefs.getString("can_edit", null),
+                prefs.getInt("rank", -1)
+        );
+        return user;
     }
 }

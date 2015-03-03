@@ -3,7 +3,10 @@ package com.blue_stingray.healthy_life_app;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
+
 import com.blue_stingray.healthy_life_app.model.User;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.vendor.guice.GuiceModule;
 import com.blue_stingray.healthy_life_app.storage.cache.Cache;
 
@@ -24,6 +27,8 @@ public class App extends Application {
      */
     public Cache<String, com.blue_stingray.healthy_life_app.model.Application> appCache;
 
+    private SharedPreferencesHelper prefs;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,6 +47,9 @@ public class App extends Application {
      * @return User
      */
     public User getAuthUser(Activity context) {
+        prefs = new SharedPreferencesHelper(this);
+        // load auth user
+        authUser = prefs.getCurrentUser();
         return authUser;
     }
 
@@ -50,7 +58,12 @@ public class App extends Application {
      * @param user User
      */
     public void setAuthUser(User user) {
+        Log.d("USER", user.toString());
+        // store user
+        prefs = new SharedPreferencesHelper(this);
+        prefs.setCurrentUser(user);
         authUser = user;
     }
+
 
 }
