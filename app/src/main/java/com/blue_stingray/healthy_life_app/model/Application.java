@@ -147,8 +147,12 @@ public class Application implements Serializable {
     }
 
     public List<Goal> getGoals() {
-        List<Goal> list = dataHelper.getGoals(context, getPackageName());
-        active_goals = list.toArray(new Goal[list.size()]);
+        if(dataHelper != null) {
+            List<Goal> list = dataHelper.getGoals(context, getPackageName());
+            active_goals = list.toArray(new Goal[list.size()]);
+            return Arrays.asList(active_goals);
+        }
+
         return Arrays.asList(active_goals);
     }
 

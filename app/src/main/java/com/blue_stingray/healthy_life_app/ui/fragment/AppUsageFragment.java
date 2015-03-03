@@ -98,7 +98,8 @@ public class AppUsageFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(!user.canEdit()) {
+        User authUser = ((App) getActivity().getApplication()).getAuthUser(getActivity());
+        if(!authUser.canEdit()) {
             ViewGroup layout = (ViewGroup) editGoal.getParent();
             layout.removeView(editGoal);
         }
