@@ -90,9 +90,12 @@ public class ManageGoalsFragment extends RoboFragment {
 
     private void loadGoalView(boolean canEditFlag) {
 
-        if (!canEditFlag) {
-            blankMessage.setVisibility(View.GONE);
-            return;
+        // user itself or child goals
+        if (getArguments() == null) {
+            if (!canEditFlag) {
+                blankMessage.setVisibility(View.GONE);
+                return;
+            }
         }
 
         loadingDialog = ProgressDialog.show(getActivity(), "", "Loading Applications...", true);

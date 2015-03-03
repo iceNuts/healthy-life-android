@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
@@ -17,9 +18,12 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.plus.Account;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 import com.google.inject.Inject;
 
 import java.io.IOException;
@@ -27,9 +31,17 @@ import java.io.IOException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.activity.RoboActivity;
+
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import android.view.View;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by BillZeng on 1/21/15.
@@ -40,11 +52,11 @@ public class GoogleLoginActivity extends RoboActivity implements
 
     private static final String TAG = "GoogleLogin";
     private static final int RC_SIGN_IN = 0;
+    private static final int RC_REATUH = 10;
 
     private GoogleApiClient mGoogleApiClient;
 
-    public static final String SCOPES = "https://www.googleapis.com/auth/plus.login";
-
+    public static final String SCOPES = "oauth2:" + Scopes.PLUS_LOGIN + " https://www.googleapis.com/auth/plus.profile.emails.read";
     private Intent returnIntent;
 
     @Inject
@@ -66,6 +78,7 @@ public class GoogleLoginActivity extends RoboActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
         mSignInClicked = true;
     }
@@ -117,10 +130,10 @@ public class GoogleLoginActivity extends RoboActivity implements
                     token = GoogleAuthUtil.getToken(
                         GoogleLoginActivity.this,
                         Plus.AccountApi.getAccountName(mGoogleApiClient),
-                        "oauth2:"+SCOPES
+                        SCOPES
                     );
                 } catch (UserRecoverableAuthException e) {
-                    e.printStackTrace();
+                    startActivityForResult(e.getIntent(), RC_SIGN_IN);
                 } catch (GoogleAuthException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -132,12 +145,12 @@ public class GoogleLoginActivity extends RoboActivity implements
 
             @Override
             protected void onPostExecute(String token) {
-
-                Log.d(TAG, "Token Retrieved:" + token);
-                returnIntent.putExtra("google_result", "ok");
-                returnIntent.putExtra("token", token);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                if (token != null) {
+                    returnIntent.putExtra("google_result", "ok");
+                    returnIntent.putExtra("token", token);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
             }
         };
         task.execute();
