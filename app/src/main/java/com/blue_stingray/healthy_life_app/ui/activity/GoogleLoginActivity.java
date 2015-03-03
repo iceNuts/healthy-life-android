@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.ui.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
@@ -15,8 +16,10 @@ import com.blue_stingray.healthy_life_app.net.form.SocialSessionForm;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
@@ -56,7 +59,7 @@ public class GoogleLoginActivity extends RoboActivity implements
 
     private GoogleApiClient mGoogleApiClient;
 
-    public static final String SCOPES = "oauth2:" + Scopes.PLUS_LOGIN + " https://www.googleapis.com/auth/plus.profile.emails.read";
+    public static final String SCOPES = "oauth2:" + Scopes.PLUS_LOGIN + " https://www.googleapis.com/auth/plus.profile.emails.read https://www.googleapis.com/auth/plus.me";
     private Intent returnIntent;
 
     @Inject
@@ -78,7 +81,8 @@ public class GoogleLoginActivity extends RoboActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addScope(Plus.SCOPE_PLUS_PROFILE)
+                .addScope(new Scope("https://www.googleapis.com/auth/plus.profile.emails.read"))
+                .addScope(new Scope("https://www.googleapis.com/auth/plus.me"))
                 .build();
         mSignInClicked = true;
     }
@@ -132,6 +136,24 @@ public class GoogleLoginActivity extends RoboActivity implements
                         Plus.AccountApi.getAccountName(mGoogleApiClient),
                         SCOPES
                     );
+                    GoogleAuthUtil.invalidateToken(GoogleLoginActivity.this, token);
+                    token = GoogleAuthUtil.getToken(
+                            GoogleLoginActivity.this,
+                            Plus.AccountApi.getAccountName(mGoogleApiClient),
+                            SCOPES
+                    );
+                } catch (final GooglePlayServicesAvailabilityException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int statusCode = ((GooglePlayServicesAvailabilityException)e)
+                                    .getConnectionStatusCode();
+                            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(statusCode,
+                                    GoogleLoginActivity.this,
+                                    100);
+                            dialog.show();
+                        }
+                    });
                 } catch (UserRecoverableAuthException e) {
                     startActivityForResult(e.getIntent(), RC_SIGN_IN);
                 } catch (GoogleAuthException e) {

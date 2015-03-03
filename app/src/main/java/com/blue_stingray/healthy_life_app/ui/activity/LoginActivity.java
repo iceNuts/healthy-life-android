@@ -166,7 +166,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void success(User user, Response response) {
                 ((App) getApplication()).setAuthUser(user);
-
+                prefs.setUserID(user.id);
                 // sync my goals
                 rest.getMyGoals(new Callback<List<Goal>>() {
                     @Override
@@ -179,8 +179,6 @@ public class LoginActivity extends BaseActivity {
                             newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                             dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
                         }
-                        // fix logging out
-                        prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
                         startActivity(new Intent(LoginActivity.this, StartActivity.class));
                         finish();
                     }

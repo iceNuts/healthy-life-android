@@ -99,23 +99,14 @@ public class User implements Serializable {
     }
 
     public int getIsAdmin() {
-        if (is_admin == null) {
-            return 0;
-        }
         return Integer.valueOf(is_admin);
     }
 
     public int getMentorId() {
-        if (mentor_id == null) {
-            return 0;
-        }
         return Integer.valueOf(mentor_id);
     }
 
     public String getEmail() {
-        if (email == null) {
-            return "";
-        }
         return email;
     }
 
