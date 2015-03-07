@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,12 +46,20 @@ public class MainActivity extends BaseActivity {
 
     private SharedPreferences preferences;
 
+    private DrawerAdapter adapter;
+
+    private ListView drawerListView;
+
     private ActionBarDrawerToggle actionBarDrawerToggle;
+
+    final private int lifelineIndexMagicNumber = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // test only
+//        prefs.setNewLifelineRequest(true);
 
         preferences = getSharedPreferences("main", 0);
         authUser = ((App) getApplication()).getAuthUser(this);
@@ -123,7 +132,10 @@ public class MainActivity extends BaseActivity {
                 break;
             }
         }
-
+        // lifeline request
+        if (position == lifelineIndexMagicNumber) {
+            prefs.setNewLifelineRequest(false);
+        }
         drawerLayout.closeDrawers();
     }
 
@@ -136,29 +148,12 @@ public class MainActivity extends BaseActivity {
             add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
             add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
         }};
+        // check if it is admin
         if (prefs.getUserLevel() == 1) {
             drawerItems.add(new DrawerItem(ManageMentorFragment.class, "fa-users", "Manage Mentor", true));
         }
         drawerItems.add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
-    }
-
-    private void setupDrawer() {
-        DrawerAdapter adapter = new DrawerAdapter(this, drawerItems, R.layout.drawer_list_item);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView drawerListView = (ListView) findViewById(R.id.list_slidermenu);
-        drawerListView.setAdapter(adapter);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                0,  /* "open drawer" description */
-                0  /* "close drawer" description */
-        );
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
+        // remove unused options
         if(!authUser.isAdmin()) {
 
             List<DrawerItem> toRemove = new ArrayList<>();
@@ -173,6 +168,34 @@ public class MainActivity extends BaseActivity {
 
             drawerItems.removeAll(toRemove);
         }
+    }
+
+    private void setupDrawerView() {
+        adapter = new DrawerAdapter(this, drawerItems, R.layout.drawer_list_item, lifelineIndexMagicNumber, prefs);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerListView = (ListView) findViewById(R.id.list_slidermenu);
+        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        drawerListView.setAdapter(adapter);
+    }
+
+    private void setupDrawer() {
+        setupDrawerView();
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                0,  /* "open drawer" description */
+                0  /* "close drawer" description */
+        ) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                setupDrawerView();
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
     private void showSplashFragment() {

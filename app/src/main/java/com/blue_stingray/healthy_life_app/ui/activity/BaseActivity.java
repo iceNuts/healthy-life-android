@@ -33,6 +33,7 @@ public abstract class BaseActivity extends RoboFragmentActivity {
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         adminReceiverName = new ComponentName(this, UninstallBlockingAdminReceiver.class);
+
     }
 
     @Override

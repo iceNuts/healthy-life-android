@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,6 +41,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -65,6 +67,10 @@ public class ManageUsersFragment extends RoboFragment {
 
     private int lockGoalFlag;
 
+    private boolean countDownFlag;
+
+    private CountDownTimer timer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_users, container, false);
@@ -76,6 +82,18 @@ public class ManageUsersFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        countDownFlag = false;
+        timer = new CountDownTimer(1000*60*5, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countDownFlag = true;
+            }
+
+            @Override
+            public void onFinish() {
+                countDownFlag = false;
+            }
+        };
         createUserButton.setOnClickListener(new CreateUserListener());
         createList();
     }
@@ -107,6 +125,17 @@ public class ManageUsersFragment extends RoboFragment {
                 loading.cancel();
 
                 users = usersList;
+                // remove mentors
+                List<User> toRemove = new ArrayList<>();
+
+                for(User user : users) {
+
+                    if(user.isAdmin()) {
+                        toRemove.add(user);
+                    }
+                }
+
+                users.removeAll(toRemove);
                 userList.setAdapter(new UserListAdapter(getActivity(), users), new UserListClickListener());
             }
 
@@ -121,6 +150,7 @@ public class ManageUsersFragment extends RoboFragment {
 
         @Override
         public void onClick(View v) {
+
             final User user = users.get((int) v.getTag());
             final Dialog authDialog = new Dialog(getActivity());
             authDialog.setTitle("Authorization");
@@ -131,7 +161,10 @@ public class ManageUsersFragment extends RoboFragment {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_GO) {
-                        if (prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+                        if (countDownFlag == true || prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+                            if (countDownFlag == false) {
+                                timer.start();
+                            }
                             authDialog.cancel();
                             lockGoalFlag = -1;
                             rest.getUser(

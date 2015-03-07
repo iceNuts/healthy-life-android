@@ -90,6 +90,8 @@ public class GcmIntentService extends IntentService {
             // somebody ask you to approve a lifeline request
             else {
                 subject = message.getString("user")+" send you a lifeline request.";
+                prefs = new SharedPreferencesHelper(getApplicationContext());
+                prefs.setNewLifelineRequest(true);
             }
             fireNotification(subject);
         } catch (JSONException e) {

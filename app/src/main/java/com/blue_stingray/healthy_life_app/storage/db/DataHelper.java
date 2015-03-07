@@ -22,7 +22,9 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -98,6 +100,9 @@ public class DataHelper {
         List<ResolveInfo> resolveApps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
 
         for(ResolveInfo resolveInfo : resolveApps) {
+            // skip healthy app
+            if (resolveInfo.activityInfo.packageName.equals(context.getPackageName()))
+                continue;
             apps.add(resolveInfo.activityInfo.packageName);
         }
     }
@@ -514,6 +519,13 @@ public class DataHelper {
                 phoneUsageCursor.moveToFirst();
                 Integer totalSec = 0;
                 while (!phoneUsageCursor.isAfterLast()) {
+                    // skip nonsense
+                    String packageName = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME));
+                    if (is3rdParty(packageName) == false) {
+                        phoneUsageCursor.moveToNext();
+                        continue;
+                    }
+                    // Count
                     Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
                     Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
                     if (endTime != -1) {
@@ -558,6 +570,11 @@ public class DataHelper {
                 String packageName = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME));
                 Integer usedSec = usedTime / 60;
                 boolean notFound = true;
+                // skip nonsense
+                if (is3rdParty(packageName) == false) {
+                    phoneUsageCursor.moveToNext();
+                    continue;
+                }
                 for (DetailPhoneUsageTuple tp: list) {
                     if (packageName.equals(tp.packageName)) {
                         tp.value = (Integer)tp.value+usedSec;
@@ -576,6 +593,12 @@ public class DataHelper {
             phoneUsageCursor.close();
         }
         instance.db.endTransaction();
+        Collections.sort(list, new Comparator<DetailPhoneUsageTuple>() {
+            @Override
+            public int compare(DetailPhoneUsageTuple lhs, DetailPhoneUsageTuple rhs) {
+                return Integer.valueOf(String.valueOf(rhs.value)) - Integer.valueOf(String.valueOf(lhs.value));
+            }
+        });
         return list;
     }
 

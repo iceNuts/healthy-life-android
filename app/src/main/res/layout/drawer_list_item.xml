@@ -23,16 +23,32 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/title"
-            android:textSize="17dp"
-            android:textStyle="bold"
-            android:textColor="@color/grey_icon"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/title"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:textColor="@color/grey_icon"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/red_dot"
+                android:src="@drawable/ic_red_dot"
+                android:layout_gravity="top|right"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

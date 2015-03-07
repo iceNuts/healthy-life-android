@@ -1,6 +1,8 @@
 package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.IconTextView;
@@ -14,9 +16,12 @@ import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.LifelineUpdateForm;
 import com.google.inject.Inject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -41,9 +46,11 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
         convertView = super.getView(position, convertView, parent);
         currentLifeline = this.lifelines.get(position);
 
+        String localZoneTime = getLocalZoneTime(currentLifeline.requested_at);
+
         ((TextView) convertView.findViewById(R.id.user)).setText(currentLifeline.user_name);
         ((TextView) convertView.findViewById(R.id.app_name)).setText(currentLifeline.app_name);
-        ((TextView) convertView.findViewById(R.id.last_stat)).setText(currentLifeline.requested_at);
+        ((TextView) convertView.findViewById(R.id.last_stat)).setText(localZoneTime);
 
         View denyButton = convertView.findViewById(R.id.deny);
         View approveButton = convertView.findViewById(R.id.approve);
@@ -153,6 +160,19 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(c.getTime());
         return strDate;
+    }
+
+    private String getLocalZoneTime(String formattedDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = formatter.parse(formattedDate);
+            formatter.setTimeZone(TimeZone.getDefault());
+            return formatter.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return formattedDate;
+        }
     }
 
 }

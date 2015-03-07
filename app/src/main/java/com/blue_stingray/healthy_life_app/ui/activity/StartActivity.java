@@ -27,7 +27,7 @@ public class StartActivity extends BaseActivity {
 
         // TEST only
 //        prefs.setState(SharedPreferencesHelper.State.NONE);
-        Log.d("State", prefs.getState().toString());
+//        Log.d("State", prefs.getState().toString());
         switch (prefs.getState()) {
             case NONE:
                 startActivity(new Intent(this, LoginActivity.class));

@@ -23,7 +23,7 @@ public abstract class FormSubmitClickListener implements View.OnClickListener {
 
         progressDialog = new ProgressDialog(activity);
         progressDialog.setMessage(activity.getString(progressMessageId));
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
     }
 
 

@@ -219,7 +219,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wake Up Time"
+                android:text="How Many Times I Checked My Phone"
                 android:id="@+id/textView_WakeUpTime"
                 android:paddingBottom="4dp"
                 android:textColor="@color/grey_text_light" />

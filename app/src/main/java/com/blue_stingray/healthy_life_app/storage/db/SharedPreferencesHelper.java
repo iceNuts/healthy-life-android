@@ -28,6 +28,7 @@ public class SharedPreferencesHelper {
     private final static String PASSWD_USER_TOKEN = "PASSWD_USER_TOKEN";
     private final static String USER_ID = "USER_ID";
     private final static String CURRENT_USER = "CURRENT_USER";
+    private final static String NEW_LIFELINE_REQUEST = "NEW_LIFELINE_REQUEST";
     private final String LOCK_KEY;
     private SharedPreferences prefs;
 
@@ -171,6 +172,14 @@ public class SharedPreferencesHelper {
         return "";
     }
 
+    public void setNewLifelineRequest(boolean flag) {
+        prefs.edit().putBoolean(NEW_LIFELINE_REQUEST, flag).apply();
+    }
+
+    public boolean getNewLifelineRequest() {
+        return prefs.getBoolean(NEW_LIFELINE_REQUEST, false);
+    }
+
     public void setCurrentUser(User user) {
         prefs.edit().putString("id", user.id).apply();
         prefs.edit().putString("mentor_id", user.mentor_id).apply();
@@ -186,6 +195,7 @@ public class SharedPreferencesHelper {
         prefs.edit().putString("can_edit", user.can_edit).apply();
         prefs.edit().putInt("rank", user.rank).apply();
     }
+
 
     public User getCurrentUser() {
         if (getUserID().equals("")) {
