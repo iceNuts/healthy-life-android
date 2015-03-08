@@ -135,11 +135,12 @@ public class LoginActivity extends BaseActivity {
                             emailField.getText(),
                             passwordField.getText(),
                             prefs.getGCMRegId()),
-                    new Callback<SessionDevice>() {
+                    new RetrofitDialogCallback<SessionDevice>(
+                            LoginActivity.this,
+                            progressDialog
+                    ) {
                 @Override
-                public void success(SessionDevice sessionDevice, Response response) {
-                    progressDialog.cancel();
-                    progressDialog.dismiss();
+                public void onSuccess(SessionDevice sessionDevice, Response response) {
                     prefs.setDeviceId(sessionDevice.device.id);
                     prefs.setSession(sessionDevice.session.token);
                     prefs.setState(SharedPreferencesHelper.State.LOGGED_IN);
@@ -150,9 +151,7 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 @Override
-                public void failure(RetrofitError retrofitError) {
-                    progressDialog.cancel();
-                    progressDialog.dismiss();
+                public void onFailure(RetrofitError retrofitError) {
                     DialogHelper.createDismissiveDialog(LoginActivity.this, R.string.incorrect_credentials_title, R.string.incorrect_credentials_description).show();
                 }
             });
@@ -162,15 +161,22 @@ public class LoginActivity extends BaseActivity {
     private void getAuthUser() {
         progressDialog = ProgressDialog.show(LoginActivity.this, "", "Logging in...");
         // get the auth user
-        rest.getMyUser(new Callback<User>() {
+        rest.getMyUser(new RetrofitDialogCallback<User>(
+                LoginActivity.this,
+                progressDialog
+        ) {
             @Override
-            public void success(User user, Response response) {
+            public void onSuccess(User user, Response response) {
                 ((App) getApplication()).setAuthUser(user);
                 prefs.setUserID(user.id);
                 // sync my goals
-                rest.getMyGoals(new Callback<List<Goal>>() {
+                rest.getMyGoals(
+                        new RetrofitDialogCallback<List<Goal>>(
+                                LoginActivity.this,
+                                progressDialog
+                        ) {
                     @Override
-                    public void success(List<Goal> goals, Response response) {
+                    public void onSuccess(List<Goal> goals, Response response) {
                         for (Goal goal : goals) {
                             // TO FIX
                             // data type error when login in with Brian account
@@ -184,19 +190,15 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
                         Log.i("healthy", "Login /goal error");
-                        progressDialog.cancel();
-                        progressDialog.dismiss();
                     }
                 });
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
                 Log.i("healthy", "Login /user/me error");
-                progressDialog.cancel();
-                progressDialog.dismiss();
             }
         });
     }

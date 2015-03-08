@@ -12,6 +12,7 @@ import com.google.inject.Singleton;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * Provides preference manipulation ability
@@ -30,6 +31,8 @@ public class SharedPreferencesHelper {
     private final static String CURRENT_USER = "CURRENT_USER";
     private final static String NEW_LIFELINE_REQUEST = "NEW_LIFELINE_REQUEST";
     private final String LOCK_KEY;
+    private final String USER_EDIT_LOCK = "USER_EDIT_LOCK";
+    private final String USER_EDIT_LOCK_TIMER = "USER_EDIT_LOCK_TIMER";
     private SharedPreferences prefs;
 
     public static enum State {
@@ -178,6 +181,24 @@ public class SharedPreferencesHelper {
 
     public boolean getNewLifelineRequest() {
         return prefs.getBoolean(NEW_LIFELINE_REQUEST, false);
+    }
+
+    public void setUserEditLock(boolean flag) {
+        prefs.edit().putBoolean(USER_EDIT_LOCK, flag).apply();
+    }
+
+    public boolean getUserEditLock() {
+        return prefs.getBoolean(USER_EDIT_LOCK, false);
+    }
+
+    public void setUserEditLockTimer() {
+        prefs.edit().putString(USER_EDIT_LOCK_TIMER, String.valueOf(new Date().getTime() / 1000));
+    }
+
+    public boolean checkUserEditLockTimerExpired() {
+        long now = new Date().getTime() / 1000;
+        long past = Integer.valueOf(prefs.getString(USER_EDIT_LOCK_TIMER, "0"));
+        return now - past >= 5*60;
     }
 
     public void setCurrentUser(User user) {

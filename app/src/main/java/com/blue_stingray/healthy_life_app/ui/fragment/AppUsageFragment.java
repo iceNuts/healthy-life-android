@@ -19,6 +19,7 @@ import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.StatForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
@@ -119,9 +120,14 @@ public class AppUsageFragment extends RoboFragment {
 
             final ProgressDialog progress = ProgressDialog.show(getActivity(), "", "Loading...", true);
 
-            rest.getStatsByDate(new StatForm(app, start, end), new Callback<Stat[]>() {
+            rest.getStatsByDate(
+                    new StatForm(app, start, end),
+                    new RetrofitDialogCallback<Stat[]>(
+                            getActivity(),
+                            progress
+                    ) {
                 @Override
-                public void success(Stat[] stats, Response response) {
+                public void onSuccess(Stat[] stats, Response response) {
                     usageList.removeAllViews();
 
                     currentGoal.setText(String.valueOf(goal.getGoalTime()) + " hours");
@@ -138,13 +144,11 @@ public class AppUsageFragment extends RoboFragment {
                         empty.setText("No usage statistics.");
                         usageList.addView(empty);
                     }
-
-                    progress.cancel();
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    progress.cancel();
+                public void onFailure(RetrofitError error) {
+
                 }
             });
 
@@ -222,15 +226,20 @@ public class AppUsageFragment extends RoboFragment {
 
         @Override
         public void success(Application application, Response response) {
-            rest.getAppUsage(application.getId(), new Callback<AppUsage>() {
+            rest.getAppUsage(
+                    application.getId(),
+                    new RetrofitDialogCallback<AppUsage>(
+                            getActivity(),
+                            null
+                    ) {
                 @Override
-                public void success(AppUsage usage, Response response) {
+                public void onSuccess(AppUsage usage, Response response) {
                     setupChart(usage.getData());
                     percentUsage.setText(usage.getPercentageUseFormatted());
                 }
 
                 @Override
-                public void failure(RetrofitError error) {}
+                public void onFailure(RetrofitError error) {}
             });
         }
 

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RestInterfaceProvider;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
@@ -56,19 +57,21 @@ public class SettingsFragment extends PreferenceFragment {
         public boolean onPreferenceClick(Preference preference) {
             final ProgressDialog loading = ProgressDialog.show(getActivity(), "Settings", "Logging out...");
 
-            rest.destroySession(new Callback<Object>() {
+            rest.destroySession(new RetrofitDialogCallback<Object>(
+                    getActivity(),
+                    loading
+            ) {
                 @Override
-                public void success(Object o, Response response) {
+                public void onSuccess(Object o, Response response) {
                     dataHelper.removeGoals();
                     prefs.setUserID("");
+                    prefs.setUserEditLock(false);
                     ((BaseActivity) getActivity()).prefs.setState(SharedPreferencesHelper.State.NONE);
                     startActivity(new Intent(getActivity(), StartActivity.class));
-                    loading.dismiss();
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    loading.dismiss();
+                public void onFailure(RetrofitError error) {
 
                     DialogHelper.createServerErrorDialog(getActivity()).show();
                 }

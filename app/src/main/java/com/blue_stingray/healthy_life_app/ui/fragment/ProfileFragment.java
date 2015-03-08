@@ -135,11 +135,17 @@ public class ProfileFragment extends RoboFragment {
         shareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
             @Override
             public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
-                rest.updateUser(authUser.getId(), new UserForm(true), new Callback<User>() {
+                rest.updateUser(
+                        authUser.getId(),
+                        new UserForm(true),
+                        new RetrofitDialogCallback<User>(
+                                getActivity(),
+                                null
+                        ) {
                     @Override
-                    public void success(User user, Response response) {}
+                    public void onSuccess(User user, Response response) {}
                     @Override
-                    public void failure(RetrofitError error) {}
+                    public void onFailure(RetrofitError error) {}
                 });
 
                 return false;
@@ -158,9 +164,12 @@ public class ProfileFragment extends RoboFragment {
     private void setupLineChart() {
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
 
-        rest.getMyReport(new Callback<UsageReport>() {
+        rest.getMyReport(new RetrofitDialogCallback<UsageReport>(
+                getActivity(),
+                null
+        ) {
             @Override
-            public void success(UsageReport o, Response response) {
+            public void onSuccess(UsageReport o, Response response) {
                 scoresByMonth = o.getScoreHistoryByMonth();
 
                 ValueLineSeries series = new ValueLineSeries();
@@ -186,7 +195,7 @@ public class ProfileFragment extends RoboFragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
             }
         });

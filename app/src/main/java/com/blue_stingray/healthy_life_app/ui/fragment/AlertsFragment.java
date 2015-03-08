@@ -13,6 +13,7 @@ import com.blue_stingray.healthy_life_app.model.Alert;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RestInterfaceProvider;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.AlertListAdapter;
 import com.google.inject.Inject;
@@ -95,15 +96,18 @@ public class AlertsFragment extends RoboFragment {
      * Load in alerts from the currently authenticated user
      */
     public void loadAuthUserAlerts() {
-        rest.getAlerts(new Callback<List<Alert>>() {
+        rest.getAlerts(new RetrofitDialogCallback<List<Alert>>(
+            getActivity(),
+            null
+        ) {
             @Override
-            public void success(List<Alert> alerts, Response response) {
+            public void onSuccess(List<Alert> alerts, Response response) {
                 allAlerts = alerts;
                 createList();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
                 loading.cancel();
             }
         });
@@ -115,15 +119,20 @@ public class AlertsFragment extends RoboFragment {
     public void loadUserAlerts() {
         getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
 
-        rest.getUserAlerts(user.getId(), new Callback<List<Alert>>() {
+        rest.getUserAlerts(
+                user.getId(),
+                new RetrofitDialogCallback<List<Alert>>(
+                        getActivity(),
+                        null
+                ) {
             @Override
-            public void success(List<Alert> alerts, Response response) {
+            public void onSuccess(List<Alert> alerts, Response response) {
                 allAlerts = alerts;
                 createList();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
                 loading.cancel();
             }
         });

@@ -11,6 +11,7 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.AppGoal;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.AppProgressListAdapter;
 import com.blue_stingray.healthy_life_app.ui.widget.LinearList;
@@ -85,18 +86,21 @@ public class UserOverviewFragment extends RoboFragment {
      * Create app list with progress bars of percentage of goals completed
      */
     private void createProgressList() {
-        rest.getUserAppsUsage(user.getId(), new Callback<List<AppGoal>>() {
+        rest.getUserAppsUsage(
+                user.getId(),
+                new RetrofitDialogCallback<List<AppGoal>>(
+                        getActivity(),
+                        loading
+                ) {
             @Override
-            public void success(List<AppGoal> appGoals, Response response) {
+            public void onSuccess(List<AppGoal> appGoals, Response response) {
                 AppProgressListAdapter adapter = new AppProgressListAdapter(getActivity(), appGoals);
                 appProgressList.setAdapter(adapter);
-
-                loading.cancel();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loading.cancel();
+            public void onFailure(RetrofitError error) {
+
             }
         });
     }

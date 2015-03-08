@@ -18,6 +18,7 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Device;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.AppGoalListAdapter;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
@@ -74,14 +75,17 @@ public class ManageGoalsFragment extends RoboFragment {
 
         rest.getUser(
             Integer.valueOf(prefs.getUserID()),
-            new Callback<User>() {
+            new RetrofitDialogCallback<User>(
+                    getActivity(),
+                    null
+            ) {
                 @Override
-                public void success(User user, Response response) {
+                public void onSuccess(User user, Response response) {
                     loadGoalView(user.canEdit());
                 }
 
                 @Override
-                public void failure(RetrofitError error) {}
+                public void onFailure(RetrofitError error) {}
             }
         );
 
@@ -106,22 +110,29 @@ public class ManageGoalsFragment extends RoboFragment {
             user = (User) getArguments().getSerializable("user");
             getActivity().setTitle(getActivity().getTitle() + " - " + user.getName());
 
-            rest.getUserDevices(user.getId(), new Callback<List<Device>>() {
+            rest.getUserDevices(user.getId(), new RetrofitDialogCallback<List<Device>>(
+                    getActivity(),
+                    loadingDialog
+            ) {
                 @Override
-                public void success(final List<Device> devices, Response response) {
+                public void onSuccess(final List<Device> devices, Response response) {
 
                     if(devices.size() > 0) {
 
                         for(Device device : devices) {
-                            rest.getDeviceApps(device.id, new Callback<List<Application>>() {
+                            rest.getDeviceApps(
+                                    device.id,
+                                    new RetrofitDialogCallback<List<Application>>(
+                                            getActivity(),
+                                            loadingDialog
+                                    ) {
                                 @Override
-                                public void success(List<Application> applications, Response response) {
+                                public void onSuccess(List<Application> applications, Response response) {
                                     updateList(applications, devices.size());
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
-                                    loadingDialog.dismiss();
+                                public void onFailure(RetrofitError error) {
                                 }
                             });
                         }
@@ -133,8 +144,8 @@ public class ManageGoalsFragment extends RoboFragment {
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    loadingDialog.dismiss();
+                public void onFailure(RetrofitError error) {
+
                 }
             });
 

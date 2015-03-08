@@ -59,10 +59,9 @@ public class BlockerActivity extends BaseActivity{
 
         final ProgressDialog loading = ProgressDialog.show(this, "", "Loading...");
         rest.getMyUser(
-            new Callback<User>() {
+            new RetrofitDialogCallback<User>(this, loading) {
                 @Override
-                public void success(User user, Response response) {
-                    loading.cancel();
+                public void onSuccess(User user, Response response) {
                     // it is admin
                     if (1 == user.getIsAdmin()) {
                         // has mentor?
@@ -83,8 +82,7 @@ public class BlockerActivity extends BaseActivity{
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    loading.cancel();
+                public void onFailure(RetrofitError error) {
                     showBlockerDialog();
                 }
             }

@@ -89,15 +89,20 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
                     @Override
                     public void onSuccess(Lifeline lifeline, Response response) {
 
-                        rest.destroyLifeline(lifelineId, new Callback<Object>() {
+                        rest.destroyLifeline(
+                                lifelineId,
+                                new RetrofitDialogCallback<Object>(
+                                        activity,
+                                        null
+                                ) {
                             @Override
-                            public void success(Object o, Response response) {
+                            public void onSuccess(Object o, Response response) {
                                 lifelines.remove((int) v.getTag());
                                 adapter.notifyDataSetChanged();
                             }
 
                             @Override
-                            public void failure(RetrofitError error) {}
+                            public void onFailure(RetrofitError error) {}
                         });
 
                     }
@@ -135,15 +140,20 @@ public class LifelineRequestListAdapter extends BaseListAdapter<Lifeline> {
                         @Override
                         public void onSuccess(Lifeline lifeline, Response response) {
 
-                            rest.destroyLifeline(lifelineId, new Callback<Object>() {
+                            rest.destroyLifeline(
+                                    lifelineId,
+                                    new RetrofitDialogCallback<Object>(
+                                            activity,
+                                            null
+                                    ) {
                                 @Override
-                                public void success(Object o, Response response) {
+                                public void onSuccess(Object o, Response response) {
                                     lifelines.remove((int) v.getTag());
                                     adapter.notifyDataSetChanged();
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {}
+                                public void onFailure(RetrofitError error) {}
                             });
 
                         }

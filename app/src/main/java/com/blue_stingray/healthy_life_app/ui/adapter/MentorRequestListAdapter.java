@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.MentorRequest;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.UpdateMentorRequestForm;
 
 import java.util.List;
@@ -69,15 +70,18 @@ public class MentorRequestListAdapter extends BaseListAdapter<MentorRequest> {
             rest.updateMentorRequest(
                 mentorRequestId,
                 new UpdateMentorRequestForm(false),
-                new Callback<Object>() {
+                new RetrofitDialogCallback<Object>(
+                        activity,
+                        null
+                ) {
                     @Override
-                    public void success(Object o, Response response) {
+                    public void onSuccess(Object o, Response response) {
                         mentorRequestList.remove((int) v.getTag());
                         adapter.notifyDataSetChanged();
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {}
+                    public void onFailure(RetrofitError error) {}
                 }
             );
             Toast.makeText(activity, "Request Denied", Toast.LENGTH_SHORT).show();
@@ -99,15 +103,18 @@ public class MentorRequestListAdapter extends BaseListAdapter<MentorRequest> {
             rest.updateMentorRequest(
                     mentorRequestId,
                     new UpdateMentorRequestForm(true),
-                    new Callback<Object>() {
+                    new RetrofitDialogCallback<Object>(
+                            activity,
+                            null
+                    ) {
                         @Override
-                        public void success(Object o, Response response) {
+                        public void onSuccess(Object o, Response response) {
                             mentorRequestList.remove((int) v.getTag());
                             adapter.notifyDataSetChanged();
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {}
+                        public void onFailure(RetrofitError error) {}
                     }
             );
             Toast.makeText(activity, "Request Accepted", Toast.LENGTH_SHORT).show();

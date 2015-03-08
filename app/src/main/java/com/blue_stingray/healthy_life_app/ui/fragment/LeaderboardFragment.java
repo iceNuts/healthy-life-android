@@ -12,6 +12,7 @@ import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.UserListAdapter;
 import com.blue_stingray.healthy_life_app.ui.widget.LinearList;
@@ -69,18 +70,19 @@ public class LeaderboardFragment extends RoboFragment {
     public void createList() {
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
 
-        rest.getLeaderboard(new Callback<List<User>>() {
+        rest.getLeaderboard(new RetrofitDialogCallback<List<User>>(
+                getActivity(),
+                loading
+        ) {
             @Override
-            public void success(List<User> users, Response response) {
+            public void onSuccess(List<User> users, Response response) {
                 final UserListAdapter adapter = new UserListAdapter(getActivity(), users, R.layout.user_list_row_simple);
                 userList.setAdapter(adapter);
 
-                loading.cancel();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loading.cancel();
+            public void onFailure(RetrofitError error) {
             }
         });
     }

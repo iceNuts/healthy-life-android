@@ -23,6 +23,7 @@ import roboguice.inject.InjectView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.net.form.RequestMentorForm;
 import com.blue_stingray.healthy_life_app.net.form.SearchMentorForm;
@@ -104,10 +105,12 @@ public class CreateMentorFragment extends RoboFragment {
             final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
             rest.searchMentor(
                 new SearchMentorForm(query),
-                new Callback<List<User>>() {
+                new RetrofitDialogCallback<List<User>>(
+                        getActivity(),
+                        loading
+                ) {
                     @Override
-                    public void success(List<User> users, Response response) {
-                        loading.cancel();
+                    public void onSuccess(List<User> users, Response response) {
                         // hide/show blank message
                         if (users.size() == 0) {
                             blankMessage.setVisibility(View.VISIBLE);
@@ -126,8 +129,7 @@ public class CreateMentorFragment extends RoboFragment {
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
-                        loading.cancel();
+                    public void onFailure(RetrofitError error) {
                         // show blank message
                     }
                 }
@@ -152,15 +154,17 @@ public class CreateMentorFragment extends RoboFragment {
                         final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
                         rest.requestMentor(
                             new RequestMentorForm(mentor.getId()),
-                            new Callback<Object>() {
+                            new RetrofitDialogCallback<Object>(
+                                    getActivity(),
+                                    loading
+                            ) {
                                 @Override
-                                public void success(Object o, Response response) {
-                                    loading.cancel();
+                                public void onSuccess(Object o, Response response) {
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
-                                    loading.cancel();
+                                public void onFailure(RetrofitError error) {
+
                                 }
                             }
                         );

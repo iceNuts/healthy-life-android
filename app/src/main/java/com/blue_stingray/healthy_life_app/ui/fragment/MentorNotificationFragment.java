@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.MentorRequest;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.ui.adapter.MentorRequestListAdapter;
 import com.google.inject.Inject;
 
@@ -56,9 +57,12 @@ public class MentorNotificationFragment extends RoboFragment{
 
     public void createList() {
         rest.getMentorRequest(
-            new Callback<List<MentorRequest>>() {
+            new RetrofitDialogCallback<List<MentorRequest>>(
+                    getActivity(),
+                    null
+            ) {
                 @Override
-                public void success(List<MentorRequest> mentorRequests, Response response) {
+                public void onSuccess(List<MentorRequest> mentorRequests, Response response) {
                     loading.cancel();
                     final ArrayList<MentorRequest> mentorRequestArray = new ArrayList<MentorRequest>(mentorRequests);
 
@@ -75,7 +79,7 @@ public class MentorNotificationFragment extends RoboFragment{
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void onFailure(RetrofitError error) {
                     loading.cancel();
                 }
             }

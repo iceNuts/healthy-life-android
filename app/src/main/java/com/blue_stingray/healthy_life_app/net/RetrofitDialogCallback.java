@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.blue_stingray.healthy_life_app.ui.dialog.DialogHelper;
 
@@ -24,13 +25,6 @@ public abstract class RetrofitDialogCallback<T> implements Callback<T> {
     public RetrofitDialogCallback(Context context, ProgressDialog dialog) {
         this.context = context;
         this.dialog = dialog;
-        this.dialog.setCancelable(true);
-        this.dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                onFailure(RetrofitError.networkError("", new IOException()));
-            }
-        });
     }
 
     @Override

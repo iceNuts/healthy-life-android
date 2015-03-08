@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
@@ -67,8 +68,6 @@ public class ManageUsersFragment extends RoboFragment {
 
     private int lockGoalFlag;
 
-    private boolean countDownFlag;
-
     private CountDownTimer timer;
 
     @Override
@@ -82,18 +81,23 @@ public class ManageUsersFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        countDownFlag = false;
         timer = new CountDownTimer(1000*60*5, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countDownFlag = true;
+                // unlock
+                prefs.setUserEditLock(true);
             }
 
             @Override
             public void onFinish() {
-                countDownFlag = false;
+                prefs.setUserEditLock(false);
             }
         };
+
+        if (prefs.checkUserEditLockTimerExpired() == true) {
+            prefs.setUserEditLock(false);
+        }
+
         createUserButton.setOnClickListener(new CreateUserListener());
         createList();
     }
@@ -119,9 +123,12 @@ public class ManageUsersFragment extends RoboFragment {
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
 
-        rest.getMyUsers(new Callback<List<User>>() {
+        rest.getMyUsers(new RetrofitDialogCallback<List<User>>(
+                getActivity(),
+                loading
+        ) {
             @Override
-            public void success(List<User> usersList, Response response) {
+            public void onSuccess(List<User> usersList, Response response) {
                 loading.cancel();
 
                 users = usersList;
@@ -140,7 +147,7 @@ public class ManageUsersFragment extends RoboFragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
                 loading.cancel();
             }
         });
@@ -161,36 +168,14 @@ public class ManageUsersFragment extends RoboFragment {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_GO) {
-                        if (countDownFlag == true || prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
-                            if (countDownFlag == false) {
+                        if (prefs.getUserEditLock() == true || prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+                            if (prefs.getUserEditLock() == false) {
                                 timer.start();
                             }
                             authDialog.cancel();
-                            lockGoalFlag = -1;
-                            rest.getUser(
-                                user.getId(),
-                                new Callback<User>() {
-                                    @Override
-                                    public void success(User user, Response response) {
-                                        if (user.canEdit()) {
-                                            lockGoalFlag = 1;
-                                            final String[] options = getResources().getStringArray(R.array.user_lock_selection);
-                                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_lock_selection, new UserSelectionDialogClickListener(user, options)).show();
-                                        }
-                                        else {
-                                            lockGoalFlag = 0;
-                                            final String[] options = getResources().getStringArray(R.array.user_unlock_selection);
-                                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unlock_selection, new UserSelectionDialogClickListener(user, options)).show();
-                                        }
-                                    }
-                                    @Override
-                                    public void failure(RetrofitError error) {
-                                        lockGoalFlag = -1;
-                                        final String[] options = getResources().getStringArray(R.array.user_unavailable_selection);
-                                        DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unavailable_selection, new UserSelectionDialogClickListener(user, options)).show();
-                                    }
-                                }
-                            );
+                            // show manage view
+                            prefs.setUserEditLockTimer();
+                            showManageView(user);
                         }
                         // show wrong password
                         else {
@@ -201,8 +186,45 @@ public class ManageUsersFragment extends RoboFragment {
                     return false;
                 }
             });
-            authDialog.show();
+            // Avoid keep typing password
+            if (prefs.getUserEditLock() == true) {
+                showManageView(user);
+            }
+            else {
+                authDialog.show();
+            }
         }
+    }
+
+    private void showManageView(final User user) {
+        lockGoalFlag = -1;
+        rest.getUser(
+                user.getId(),
+                new RetrofitDialogCallback<User>(
+                        getActivity(),
+                        null
+                ) {
+                    @Override
+                    public void onSuccess(User user, Response response) {
+                        if (user.canEdit()) {
+                            lockGoalFlag = 1;
+                            final String[] options = getResources().getStringArray(R.array.user_lock_selection);
+                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_lock_selection, new UserSelectionDialogClickListener(user, options)).show();
+                        }
+                        else {
+                            lockGoalFlag = 0;
+                            final String[] options = getResources().getStringArray(R.array.user_unlock_selection);
+                            DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unlock_selection, new UserSelectionDialogClickListener(user, options)).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(RetrofitError error) {
+                        lockGoalFlag = -1;
+                        final String[] options = getResources().getStringArray(R.array.user_unavailable_selection);
+                        DialogHelper.createSingleSelectionDialog(getActivity(), user.getName(), R.array.user_unavailable_selection, new UserSelectionDialogClickListener(user, options)).show();
+                    }
+                }
+        );
     }
 
     private class UserSelectionDialogClickListener implements DialogInterface.OnClickListener {
@@ -245,15 +267,18 @@ public class ManageUsersFragment extends RoboFragment {
                             new UserForm(
                                     1
                             ),
-                            new Callback<User>() {
+                            new RetrofitDialogCallback<User>(
+                                    getActivity(),
+                                    null
+                            ) {
                                 @Override
-                                public void success(User user, Response response) {
+                                public void onSuccess(User user, Response response) {
                                     loading.cancel();
                                     Toast.makeText(getActivity(), "Successful", Toast.LENGTH_LONG);
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
+                                public void onFailure(RetrofitError error) {
                                     loading.cancel();
                                     Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG);
                                 }
@@ -268,15 +293,18 @@ public class ManageUsersFragment extends RoboFragment {
                         new UserForm(
                             0
                         ),
-                        new Callback<User>() {
+                        new RetrofitDialogCallback<User>(
+                                getActivity(),
+                                null
+                        ) {
                             @Override
-                            public void success(User user, Response response) {
+                            public void onSuccess(User user, Response response) {
                                 loading.cancel();
                                 Toast.makeText(getActivity(), "Successful", Toast.LENGTH_LONG);
                             }
 
                             @Override
-                            public void failure(RetrofitError error) {
+                            public void onFailure(RetrofitError error) {
                                 loading.cancel();
                                 Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG);
                             }
@@ -314,15 +342,20 @@ public class ManageUsersFragment extends RoboFragment {
 
                             @Override
                             public void onClick(final DialogInterface choiceDialog, int which) {
-                                rest.destroyUser(user.getId(), new Callback<Object>() {
+                                rest.destroyUser(
+                                        user.getId(),
+                                        new RetrofitDialogCallback<Object>(
+                                                getActivity(),
+                                                null
+                                        ) {
                                     @Override
-                                    public void success(Object o, Response response) {
+                                    public void onSuccess(Object o, Response response) {
                                         ViewHelper.injectFragment(new ManageUsersFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
                                         choiceDialog.cancel();
                                     }
 
                                     @Override
-                                    public void failure(RetrofitError error) {}
+                                    public void onFailure(RetrofitError error) {}
                                 });
                             }
                         },

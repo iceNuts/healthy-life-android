@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
+import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.adapter.UserListAdapter;
@@ -110,9 +111,12 @@ public class ManageMentorFragment extends RoboFragment {
     private void createList() {
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
         rest.getMyUser(
-            new Callback<User>() {
+            new RetrofitDialogCallback<User>(
+                    getActivity(),
+                    loading
+            ) {
                 @Override
-                public void success(User user, Response response) {
+                public void onSuccess(User user, Response response) {
                     try {
                         // has mentor
                         Integer mentorId = user.getMentorId();
@@ -120,10 +124,12 @@ public class ManageMentorFragment extends RoboFragment {
                         // Get User information
                         rest.getUser(
                             mentorId,
-                            new Callback<User>() {
+                            new RetrofitDialogCallback<User>(
+                                    getActivity(),
+                                    loading
+                            ) {
                                 @Override
-                                public void success(User user, Response response) {
-                                    loading.cancel();
+                                public void onSuccess(User user, Response response) {
                                     // parsing user info
                                     mentors.add(user);
                                     userList.setAdapter(new UserListAdapter(getActivity(), mentors), new MentorListClickListener());
@@ -131,8 +137,7 @@ public class ManageMentorFragment extends RoboFragment {
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
-                                    loading.cancel();
+                                public void onFailure(RetrofitError error) {
                                     // show bad request page
                                     blankTextView.setText(R.string.network_error);
                                     blankMessage.setVisibility(View.VISIBLE);
@@ -151,7 +156,7 @@ public class ManageMentorFragment extends RoboFragment {
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void onFailure(RetrofitError error) {
                     loading.cancel();
                     blankTextView.setText(R.string.network_error);
                     createMentorButton.setVisibility(View.GONE);
@@ -227,9 +232,12 @@ public class ManageMentorFragment extends RoboFragment {
                             @Override
                             public void onClick(final DialogInterface choiceDialog, int which) {
                                 rest.removeMentor(
-                                    new Callback() {
+                                    new RetrofitDialogCallback<Object>(
+                                            getActivity(),
+                                            null
+                                    ) {
                                         @Override
-                                        public void success(Object o, Response response) {
+                                        public void onSuccess(Object o, Response response) {
                                             choiceDialog.cancel();
                                             Toast.makeText(
                                                 getActivity(),
@@ -243,7 +251,7 @@ public class ManageMentorFragment extends RoboFragment {
                                         }
 
                                         @Override
-                                        public void failure(RetrofitError error) {
+                                        public void onFailure(RetrofitError error) {
                                             choiceDialog.cancel();
                                             Toast.makeText(
                                                 getActivity(),
