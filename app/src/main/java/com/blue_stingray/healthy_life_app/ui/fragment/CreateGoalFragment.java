@@ -106,6 +106,8 @@ public class CreateGoalFragment extends RoboFragment {
 
     private DataHelper dataHelper;
 
+    final private int magicStep = 15;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_create_goal, container,false);
@@ -142,6 +144,15 @@ public class CreateGoalFragment extends RoboFragment {
         fridaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         saturdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         sundaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
+
+        // Set increment step
+        mondaySeekBar.incrementProgressBy(magicStep);
+        tuesdaySeekBar.incrementProgressBy(magicStep);
+        wednesdaySeekBar.incrementProgressBy(magicStep);
+        thursdaySeekBar.incrementProgressBy(magicStep);
+        fridaySeekBar.incrementProgressBy(magicStep);
+        saturdaySeekBar.incrementProgressBy(magicStep);
+        sundaySeekBar.incrementProgressBy(magicStep);
     }
 
     private class CreateGoalButtonListener extends FormSubmitClickListener {
@@ -167,9 +178,9 @@ public class CreateGoalFragment extends RoboFragment {
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            HashMap<Integer, Integer> dayMap = getDayHours();
+            HashMap<Integer, Double> dayMap = getDayHours();
             dataHelper.createNewGoal(app.getPackageName(), dayMap);
-            Map<Integer, Integer> conDayMap = new ConcurrentHashMap<Integer, Integer>(dayMap);
+            Map<Integer, Double> conDayMap = new ConcurrentHashMap<Integer, Double>(dayMap);
             final Iterator it = conDayMap.entrySet().iterator();
             progressDialog.show();
             rest.createApp(
@@ -188,7 +199,7 @@ public class CreateGoalFragment extends RoboFragment {
                         while(it.hasNext()) {
                             Map.Entry data = (Map.Entry) it.next();
                             String dayString = DayTranslate((Integer)data.getKey());
-                            Integer hours = (Integer)data.getValue();
+                            Double hours = (Double)data.getValue();
                             rest.createGoal(
                                     new GoalForm(
                                             app,
@@ -222,29 +233,36 @@ public class CreateGoalFragment extends RoboFragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-            String hours = (String.valueOf(progress) + " hour") + (progress > 0 ? "s" : "");
+            String time;
+            progress *= 15;
+            if (progress < 60) {
+                time = String.valueOf(progress)+" minutes";
+            }
+            else {
+                time = String.valueOf(progress/60)+" hours "+String.valueOf(progress%60)+" min";
+            }
 
             switch(getResources().getResourceName(seekBar.getId())) {
                 case "com.blue_stingray.healthy_life_app:id/monday_seek_bar":
-                    monday.setText(hours);
+                    monday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/tuesday_seek_bar":
-                    tuesday.setText(hours);
+                    tuesday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/wednesday_seek_bar":
-                    wednesday.setText(hours);
+                    wednesday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/thursday_seek_bar":
-                    thursday.setText(hours);
+                    thursday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/friday_seek_bar":
-                    friday.setText(hours);
+                    friday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/saturday_seek_bar":
-                    saturday.setText(hours);
+                    saturday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/sunday_seek_bar":
-                    sunday.setText(hours);
+                    sunday.setText(time);
                     break;
             }
         }
@@ -280,15 +298,15 @@ public class CreateGoalFragment extends RoboFragment {
         }
     }
 
-    public HashMap<Integer, Integer> getDayHours() {
-        HashMap<Integer, Integer> dayMap = new HashMap<>();
-        dayMap.put(Calendar.MONDAY, mondaySeekBar.getProgress());
-        dayMap.put(Calendar.TUESDAY, tuesdaySeekBar.getProgress());
-        dayMap.put(Calendar.WEDNESDAY, wednesdaySeekBar.getProgress());
-        dayMap.put(Calendar.THURSDAY, thursdaySeekBar.getProgress());
-        dayMap.put(Calendar.FRIDAY, fridaySeekBar.getProgress());
-        dayMap.put(Calendar.SATURDAY, saturdaySeekBar.getProgress());
-        dayMap.put(Calendar.SUNDAY, sundaySeekBar.getProgress());
+    public HashMap<Integer, Double> getDayHours() {
+        HashMap<Integer, Double> dayMap = new HashMap<>();
+        dayMap.put(Calendar.MONDAY, (double)mondaySeekBar.getProgress());
+        dayMap.put(Calendar.TUESDAY, (double)tuesdaySeekBar.getProgress());
+        dayMap.put(Calendar.WEDNESDAY, (double)wednesdaySeekBar.getProgress());
+        dayMap.put(Calendar.THURSDAY, (double)thursdaySeekBar.getProgress());
+        dayMap.put(Calendar.FRIDAY, (double)fridaySeekBar.getProgress());
+        dayMap.put(Calendar.SATURDAY, (double)saturdaySeekBar.getProgress());
+        dayMap.put(Calendar.SUNDAY, (double)sundaySeekBar.getProgress());
         return dayMap;
     }
 

@@ -1,12 +1,18 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.R;
@@ -48,7 +54,10 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.main_prefs);
         dataHelper = DataHelper.getInstance(getActivity());
 
+
         findPreference("logout").setOnPreferenceClickListener(new OnLogoutListener());
+        findPreference("update user profile").setOnPreferenceClickListener(new OnUpdateUserListener());
+        findPreference("update user passwd").setOnPreferenceClickListener(new OnChangePasswordListener());
     }
 
     private class OnLogoutListener implements Preference.OnPreferenceClickListener {
@@ -81,4 +90,43 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
+    private class OnUpdateUserListener implements Preference.OnPreferenceClickListener {
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            ViewHelper.injectFragment(new UpdateUserFragment(), getFragmentManager(), R.id.frame_container);
+            return true;
+        }
+    }
+
+    private class OnChangePasswordListener implements Preference.OnPreferenceClickListener {
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            final Dialog authDialog = new Dialog(getActivity());
+            authDialog.setTitle("Old Password");
+            authDialog.setContentView(R.layout.password_alert_dialog);
+            final EditText passwdTextView = (EditText) authDialog.findViewById(R.id.passwordField);
+            passwdTextView.setTextColor(Color.BLACK);
+            passwdTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_GO) {
+                        if (prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+                            authDialog.cancel();
+                            ViewHelper.injectFragment(new ChangePasswordFragment(), getFragmentManager(), R.id.frame_container);
+                        }
+                        // show wrong password
+                        else {
+                            passwdTextView.setError("Password is wrong");
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            authDialog.show();
+            return true;
+        }
+    }
 }

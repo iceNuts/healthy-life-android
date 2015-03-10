@@ -215,6 +215,7 @@ public class SharedPreferencesHelper {
         prefs.edit().putString("percentage", user.percentage).apply();
         prefs.edit().putString("can_edit", user.can_edit).apply();
         prefs.edit().putInt("rank", user.rank).apply();
+        prefs.edit().putBoolean("is_public", user.is_public).apply();
     }
 
 
@@ -235,8 +236,10 @@ public class SharedPreferencesHelper {
                 prefs.getString("score", null),
                 prefs.getString("percentage", null),
                 prefs.getString("can_edit", null),
-                prefs.getInt("rank", -1)
+                prefs.getInt("rank", -1),
+                prefs.getBoolean("is_public", false)
         );
         return user;
     }
+
 }

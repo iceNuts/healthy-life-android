@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             GOAL_TABLE,
             USER_ID + " text not null",
             PACKAGE_NAME + " text not null",
-            TIME_LIMIT + " integer not null",
+            TIME_LIMIT + " real not null",
             LIMIT_DAY + " integer not null"
     );
 
@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     );
 
     private static final String DB_NAME = "app.db";
-    private static final int SCHEMA_VERSION = 8;
+    private static final int SCHEMA_VERSION = 9;
 
 
     @Inject

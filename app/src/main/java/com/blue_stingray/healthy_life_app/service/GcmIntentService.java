@@ -105,8 +105,8 @@ public class GcmIntentService extends IntentService {
             String goalHour = new JSONObject(message.getString("goal")).getString("hours");
             String packageName = message.getString("package_name");
 
-            HashMap<Integer, Integer> newGoalMap = new HashMap<>();
-            newGoalMap.put(Time.dayTranslate(goalDay), Integer.valueOf(goalHour));
+            HashMap<Integer, Double> newGoalMap = new HashMap<>();
+            newGoalMap.put(Time.dayTranslate(goalDay), Double.valueOf(goalHour)*60);
 
             dataHelper.createNewGoal(packageName, newGoalMap);
             final PackageManager pm = getApplicationContext().getPackageManager();

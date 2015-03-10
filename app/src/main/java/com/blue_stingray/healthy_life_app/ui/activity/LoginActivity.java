@@ -163,7 +163,7 @@ public class LoginActivity extends BaseActivity {
         // get the auth user
         rest.getMyUser(new RetrofitDialogCallback<User>(
                 LoginActivity.this,
-                progressDialog
+                null
         ) {
             @Override
             public void onSuccess(User user, Response response) {
@@ -181,7 +181,7 @@ public class LoginActivity extends BaseActivity {
                             // TO FIX
                             // data type error when login in with Brian account
                             // 0.2 ? int type
-                            HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                            HashMap<Integer, Double> newGoalMap = new HashMap<>();
                             newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                             dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
                         }
@@ -199,6 +199,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onFailure(RetrofitError error) {
                 Log.i("healthy", "Login /user/me error");
+                progressDialog.cancel();
             }
         });
     }

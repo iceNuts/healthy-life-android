@@ -54,8 +54,6 @@ public class EditGoalFragment extends RoboFragment {
     @InjectView(R.id.edit_goal)
     private Button editGoalButton;
 
-    @InjectView(R.id.app_spinner)
-    private Spinner appSpinner;
 
     @InjectView(R.id.monday)
     private TextView monday;
@@ -113,17 +111,21 @@ public class EditGoalFragment extends RoboFragment {
 
     private User user;
 
+    private String viewUserID;
+
+    final private int magicStep = 15;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (Application) getArguments().getSerializable("appinfo");
-        user = (User) getArguments().getSerializable("user");
+        viewUserID = getArguments().getString("userID");
+        getActivity().setTitle(app.getName());
         return inflater.inflate(R.layout.fragment_edit_goal, container,false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(R.string.title_edit_goal);
 
         validationManager = new FormValidationManager();
         dataHelper = DataHelper.getInstance(getActivity().getApplicationContext());
@@ -131,8 +133,6 @@ public class EditGoalFragment extends RoboFragment {
         // app spinner
         ArrayList<String> keys = new ArrayList<>(((App) getActivity().getApplication()).appCache.snapshot().keySet());
         Collections.sort(keys);
-        appSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, keys));
-        appSpinner.setSelection(keys.indexOf(app.getName()));
 
         editGoalButton.setOnClickListener(new EditGoalButtonListener());
 
@@ -144,37 +144,46 @@ public class EditGoalFragment extends RoboFragment {
         saturdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         sundaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
 
+        // Set increment step
+        mondaySeekBar.incrementProgressBy(magicStep);
+        tuesdaySeekBar.incrementProgressBy(magicStep);
+        wednesdaySeekBar.incrementProgressBy(magicStep);
+        thursdaySeekBar.incrementProgressBy(magicStep);
+        fridaySeekBar.incrementProgressBy(magicStep);
+        saturdaySeekBar.incrementProgressBy(magicStep);
+        sundaySeekBar.incrementProgressBy(magicStep);
+
         // prepopulate seek bars
         List<Goal> goals = app.getGoals();
         for(Goal goal : goals) {
 
             if(goal.getLimitDay() == Calendar.MONDAY)
             {
-                mondaySeekBar.setProgress(goal.getGoalTime());
+                mondaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.TUESDAY)
             {
-                tuesdaySeekBar.setProgress(goal.getGoalTime());
+                tuesdaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.WEDNESDAY)
             {
-                wednesdaySeekBar.setProgress(goal.getGoalTime());
+                wednesdaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.THURSDAY)
             {
-                thursdaySeekBar.setProgress(goal.getGoalTime());
+                thursdaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.FRIDAY)
             {
-                fridaySeekBar.setProgress(goal.getGoalTime());
+                fridaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.SATURDAY)
             {
-                saturdaySeekBar.setProgress(goal.getGoalTime());
+                saturdaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
             else if(goal.getLimitDay() == Calendar.SUNDAY)
             {
-                sundaySeekBar.setProgress(goal.getGoalTime());
+                sundaySeekBar.setProgress((int)(goal.getGoalTime()*60/15));
             }
         }
     }
@@ -200,7 +209,7 @@ public class EditGoalFragment extends RoboFragment {
                 goalForms.add(
                         new GoalForm(
                                 app,
-                                hours,
+                                (double)hours,
                                 dayString,
                                 prefs.getDeviceId()
                         )
@@ -212,6 +221,7 @@ public class EditGoalFragment extends RoboFragment {
                 deviceID = prefs.getDeviceId();
             }
             ManyGoalForm goalForm = new ManyGoalForm(deviceID, goalForms.toArray(new GoalForm[goalForms.size()]));
+            progressDialog = ProgressDialog.show(getActivity(), "Update Goal", "Loading");
             rest.createGoalMany(goalForm, new CreateManyGoalsCallback(progressDialog));
         }
     }
@@ -221,29 +231,36 @@ public class EditGoalFragment extends RoboFragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-            String hours = (String.valueOf(progress) + " hour") + (progress > 0 ? "s" : "");
+            String time;
+            progress *= 15;
+            if (progress < 60) {
+                time = String.valueOf(progress)+" minutes";
+            }
+            else {
+                time = String.valueOf(progress/60)+" hours "+String.valueOf(progress%60)+" min";
+            }
 
             switch(getResources().getResourceName(seekBar.getId())) {
                 case "com.blue_stingray.healthy_life_app:id/monday_seek_bar":
-                    monday.setText(hours);
+                    monday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/tuesday_seek_bar":
-                    tuesday.setText(hours);
+                    tuesday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/wednesday_seek_bar":
-                    wednesday.setText(hours);
+                    wednesday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/thursday_seek_bar":
-                    thursday.setText(hours);
+                    thursday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/friday_seek_bar":
-                    friday.setText(hours);
+                    friday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/saturday_seek_bar":
-                    saturday.setText(hours);
+                    saturday.setText(time);
                     break;
                 case "com.blue_stingray.healthy_life_app:id/sunday_seek_bar":
-                    sunday.setText(hours);
+                    sunday.setText(time);
                     break;
             }
         }
@@ -301,9 +318,9 @@ public class EditGoalFragment extends RoboFragment {
 
         @Override
         public void success(List<Goal> goals, Response response) {
-            if(app.getDeviceId() == prefs.getDeviceId()) {
+            if(viewUserID.equals(String.valueOf(prefs.getCurrentUser().getId()))) {
                 for(Goal goal : goals) {
-                    HashMap<Integer, Integer> newGoalMap = new HashMap<>();
+                    HashMap<Integer, Double> newGoalMap = new HashMap<>();
                     newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
                     dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
                 }
@@ -311,16 +328,7 @@ public class EditGoalFragment extends RoboFragment {
                 app.setActiveGoals(goals.toArray(new Goal[goals.size()]));
             }
 
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("appinfo", app);
-
-            if(user != null) {
-                bundle.putSerializable("user", user);
-            }
-
-            Fragment fragment = new AppUsageFragment();
-            fragment.setArguments(bundle);
-            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
+            getFragmentManager().popBackStack();
             Toast.makeText(getActivity(), "Successful Edit", Toast.LENGTH_LONG).show();
 
             progressDialog.cancel();

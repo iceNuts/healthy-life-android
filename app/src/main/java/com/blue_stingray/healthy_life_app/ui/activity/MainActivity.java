@@ -52,6 +52,8 @@ public class MainActivity extends BaseActivity {
 
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
+    private boolean viewStatusChanged;
+
     final private int lifelineIndexMagicNumber = 2;
 
     @Override
@@ -68,6 +70,8 @@ public class MainActivity extends BaseActivity {
             finish();
             return;
         }
+
+        viewStatusChanged = false;
 
         setupDrawerItems();
         setupDrawer();
@@ -134,6 +138,7 @@ public class MainActivity extends BaseActivity {
         }
         // lifeline request
         if (position == lifelineIndexMagicNumber) {
+            viewStatusChanged = true;
             prefs.setNewLifelineRequest(false);
         }
         drawerLayout.closeDrawers();
@@ -192,7 +197,10 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                setupDrawerView();
+                if (viewStatusChanged || prefs.getNewLifelineRequest() == true) {
+                    setupDrawerView();
+                    viewStatusChanged = false;
+                }
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);

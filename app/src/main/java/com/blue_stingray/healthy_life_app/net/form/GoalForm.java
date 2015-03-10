@@ -4,12 +4,12 @@ import com.blue_stingray.healthy_life_app.model.Application;
 
 public class GoalForm {
 
-    private final int hours;
+    private final Double hours;
     private final String day;
     private final AppForm app;
     private final Integer device_id;
 
-    public GoalForm(Application app, int hours, String day, Integer device_id) {
+    public GoalForm(Application app, Double hours, String day, Integer device_id) {
         this.hours = hours;
         this.day = day;
         this.app = new AppForm(app);

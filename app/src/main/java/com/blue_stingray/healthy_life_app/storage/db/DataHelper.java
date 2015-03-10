@@ -52,7 +52,7 @@ public class DataHelper {
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private static DataHelper instance = null;
-    private HashMap<String, Integer> goalCache;
+    private HashMap<String, Double> goalCache; // secs
     private SharedPreferencesHelper prefs;
     private HashMap<String, Integer> blockedList;
     private HashMap<String, Integer> extendList;
@@ -109,7 +109,7 @@ public class DataHelper {
 
     // Please refer goal table in database helper
 
-    public void createNewGoal(final String packageName, final HashMap<Integer, Integer> dayMap) {
+    public void createNewGoal(final String packageName, final HashMap<Integer, Double> dayMap) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -154,7 +154,7 @@ public class DataHelper {
     }
 
     private void __loadGoalCache() {
-        HashMap<String, Integer> cache = new HashMap<>();
+        HashMap<String, Double> cache = new HashMap<>();
         Cursor goalCursor = db.rawQuery(
                 "SELECT * FROM goal_table WHERE user_id=\"" + prefs.getUserID() + "\"",
                 new String[]{
@@ -164,9 +164,9 @@ public class DataHelper {
             goalCursor.moveToFirst();
             while (goalCursor.isAfterLast() == false) {
                 String packageName = goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME));
-                Integer hrs = goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT));
+                Double hrs = goalCursor.getDouble(goalCursor.getColumnIndex(TIME_LIMIT));
                 Integer day = goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY));
-                cache.put(packageName + String.valueOf(day), hrs);
+                cache.put(packageName + String.valueOf(day), hrs*60*60);
                 goalCursor.moveToNext();
             }
         }
@@ -183,11 +183,11 @@ public class DataHelper {
         return instance.goalCache.containsKey(packageName+currentDayOfWeek);
     }
 
-    public Integer getGoalTime(String packageName) {
+    public Double getGoalTime(String packageName) {
         return getGoalTime(packageName, Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
     }
 
-    public Integer getGoalTime(String packageName, int day) {
+    public Double getGoalTime(String packageName, int day) {
         return instance.goalCache.get(packageName + String.valueOf(Calendar.getInstance().get(day)));
     }
 
@@ -205,7 +205,7 @@ public class DataHelper {
         if(goalCursor.getCount() > 0) {
             goalCursor.moveToFirst();
             goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
-            goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
+            goal.setTimeLimit(goalCursor.getDouble(goalCursor.getColumnIndex(TIME_LIMIT)));
             goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
             goalCursor.close();
 
@@ -229,7 +229,7 @@ public class DataHelper {
             while (goalCursor.moveToNext()) {
                 Goal goal = new Goal(context);
                 goal.setPackageName(goalCursor.getString(goalCursor.getColumnIndex(PACKAGE_NAME)));
-                goal.setTimeLimit(goalCursor.getInt(goalCursor.getColumnIndex(TIME_LIMIT)));
+                goal.setTimeLimit(goalCursor.getDouble(goalCursor.getColumnIndex(TIME_LIMIT)));
                 goal.setLimitDay(goalCursor.getInt(goalCursor.getColumnIndex(LIMIT_DAY)));
                 goals.add(goal);
             }
@@ -324,9 +324,8 @@ public class DataHelper {
 
         Integer totalTime = getDBRecordedTotalTime(packageName);
 
-        // As we only stores number 1,2,3.. so here convert it to minutes.
-
-        Integer goalTime = goalCache.get(packageName+currentDayOfWeek)*60;//*60;
+        // stores sec
+        Integer goalTime = (int)(goalCache.get(packageName+currentDayOfWeek)*1);
         totalTime += currentSec;
 
 
@@ -401,14 +400,12 @@ public class DataHelper {
             blockedList.remove(packageName);
         }
 
-        // As we only stores number 1,2,3.. so here convert it to minutes.
-
         if (goalCache.containsKey(key)) {
             extendList.put(
                     packageName,
                 extendList.containsKey(packageName)?
-                    extendList.get(packageName)+goalCache.get(key)*60
-                :   goalCache.get(key)*60
+                    extendList.get(packageName)+(int)(goalCache.get(key)*1)
+                :   (int)(goalCache.get(key)*1)
             );
         }
     }
@@ -658,5 +655,167 @@ public class DataHelper {
         }
     }
 
+    public class DBAppUsage<X, Y> {
+        public  X key;
+        public  Y value;
+        public DBAppUsage(X key, Y value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public HashMap<String, String> getAppUsageTodayByPackageName(String packageName) {
+        int usedTime = 0;
+        Integer totalSec = 0;
+
+        Calendar c = Calendar.getInstance();
+        Map<String, String> today = new HashMap<String, String>();
+        today.put("year", String.valueOf(c.get(Calendar.YEAR)));
+        today.put("month", String.valueOf(c.get(Calendar.MONTH)));
+        today.put("day", String.valueOf(c.get(Calendar.DATE)));
+        today.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
+        today.put("timestamp", String.valueOf(new Date().getTime()/1000));
+
+        instance.db.beginTransaction();
+        Cursor phoneUsageCursor = db.rawQuery(
+                "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
+                new String[]{
+                        today.get("year"),
+                        today.get("month"),
+                        today.get("day"),
+                        today.get("day_of_week"),
+                        prefs.getUserID()
+                }
+        );
+        try {
+            phoneUsageCursor.moveToFirst();
+            while (!phoneUsageCursor.isAfterLast()) {
+                // skip nonsense
+                String _packageName = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME));
+                if (is3rdParty(packageName) == false) {
+                    phoneUsageCursor.moveToNext();
+                    continue;
+                }
+                // Count
+                Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                if (endTime != -1) {
+                    totalSec += (endTime - startTime);
+                    if (packageName.equals(_packageName)) {
+                        usedTime += (endTime - startTime);
+                    }
+                }
+                phoneUsageCursor.moveToNext();
+            }
+        }
+        finally {
+            phoneUsageCursor.close();
+        }
+        instance.db.endTransaction();
+        HashMap<String, String> appUsage = new HashMap<>();
+        appUsage.put("totalSec", String.valueOf(totalSec));
+        appUsage.put("usedTime", String.valueOf(usedTime));
+        return appUsage;
+    }
+
+    public List<DBAppUsage> getRecentAppUsageByPackageName(String packageName, int option) {
+        instance.db.beginTransaction();
+        List<DBAppUsage> list = new ArrayList<>();
+        List<Map<String, String>> recentDays = getRecentDaysInCalendar(option);
+        for (int i = 0; i < recentDays.size(); i++) {
+            Map<String, String> day = recentDays.get(i);
+            Cursor phoneUsageCursor = db.rawQuery(
+                    "SELECT * FROM application_usage WHERE package_name=? and usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
+                    new String[]{
+                            packageName,
+                            day.get("year"),
+                            day.get("month"),
+                            day.get("day"),
+                            day.get("day_of_week"),
+                            prefs.getUserID()
+                    }
+            );
+
+            try {
+                Integer usedTime = 0;
+                phoneUsageCursor.moveToFirst();
+                while (!phoneUsageCursor.isAfterLast()) {
+                    Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                    Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                    usedTime += (endTime - startTime);
+                    phoneUsageCursor.moveToNext();
+                }
+                DBAppUsage<String, Float> tuple = new DBAppUsage(
+                        String.valueOf(Integer.valueOf(day.get("month")) + 1) + "/" + day.get("day"),
+                        (float)(usedTime/60));
+                list.add(tuple);
+            }
+            finally {
+                phoneUsageCursor.close();
+            }
+        }
+        instance.db.endTransaction();
+        return list;
+    }
+
+    public List<DBAppUsage> getTodayAppUsageByPackageName(String packageName) {
+        instance.db.beginTransaction();
+        List<DBAppUsage> list = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+        Map<String, String> today = new HashMap<String, String>();
+        today.put("year", String.valueOf(c.get(Calendar.YEAR)));
+        today.put("month", String.valueOf(c.get(Calendar.MONTH)));
+        today.put("day", String.valueOf(c.get(Calendar.DATE)));
+        today.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
+        today.put("timestamp", String.valueOf(new Date().getTime()/1000));
+
+        for (int i = 1; i < 24; i++) {
+            Cursor phoneUsageCursor = db.rawQuery(
+                    "SELECT * FROM application_usage WHERE package_name=? and usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1 and start_time < ? and end_time > ?",
+                    new String[]{
+                            packageName,
+                            today.get("year"),
+                            today.get("month"),
+                            today.get("day"),
+                            today.get("day_of_week"),
+                            prefs.getUserID(),
+                            getHourTimestampInToday(i),     // start < like 2
+                            getHourTimestampInToday(i-1)    // end > like 1
+                    }
+            );
+
+            try {
+                Integer usedTime = 0;
+                phoneUsageCursor.moveToFirst();
+                while (!phoneUsageCursor.isAfterLast()) {
+                    Integer startTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(START_TIME)));
+                    Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
+                    usedTime += (endTime - startTime);
+                    phoneUsageCursor.moveToNext();
+                }
+                DBAppUsage<String, Float> tuple = new DBAppUsage(
+                        String.valueOf(i),
+                        (float)(usedTime/60));
+                list.add(tuple);
+            }
+            finally {
+                phoneUsageCursor.close();
+            }
+        }
+        instance.db.endTransaction();
+        return list;
+    }
+
+    private String getHourTimestampInToday(int hrs) {
+        // Generate the ZERO timestamp
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.HOUR_OF_DAY, hrs);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        String hrTimestamp = String.valueOf(c.getTimeInMillis() / 1000);
+        return hrTimestamp;
+    }
 }
 

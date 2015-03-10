@@ -65,6 +65,7 @@ public class SocialConnectFragment extends RoboFragment {
         View view = inflater.inflate(R.layout.activity_social_connect, container, false);
 
         LoginButton authButton = (LoginButton) view.findViewById(R.id.facebookAuthButton);
+        authButton.setReadPermissions("email");
         authButton.setFragment(this);
         return view;
     }

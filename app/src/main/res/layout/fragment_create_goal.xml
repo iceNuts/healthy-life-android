@@ -79,9 +79,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/monday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
 
         </LinearLayout>
 
@@ -130,9 +130,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tuesday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -180,9 +180,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/wednesday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -230,9 +230,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/thursday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -280,9 +280,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/friday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -330,9 +330,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/saturday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -380,9 +380,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/sunday_seek_bar"
-                android:max="24"
+                android:max="96"
                 android:indeterminate="false"
-                android:progress="24" />
+                android:progress="1" />
         </LinearLayout>
 
         <Button

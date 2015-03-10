@@ -20,7 +20,7 @@ public class Goal implements Serializable {
     private Double timeRemaining;
     private Application app;
 
-    private transient Float timeLimit;
+    private transient Double timeLimit;
     private transient Float limitDay;
     public transient DataHelper dataHelper;
 
@@ -40,12 +40,12 @@ public class Goal implements Serializable {
         return packageName;
     }
 
-    public int getGoalTime() {
+    public double getGoalTime() {
         if(hours == null) {
             hours = String.valueOf(timeLimit);
         }
 
-        return (int) Float.parseFloat(hours);
+        return Double.valueOf(hours);
     }
 
     public String getDay() {
@@ -84,7 +84,7 @@ public class Goal implements Serializable {
         this.packageName = packageName;
     }
 
-    public void setTimeLimit(float timeLimit) {
+    public void setTimeLimit(Double timeLimit) {
         this.timeLimit = timeLimit;
     }
 

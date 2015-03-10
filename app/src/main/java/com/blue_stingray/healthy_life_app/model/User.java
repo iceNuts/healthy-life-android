@@ -18,6 +18,7 @@ public class User implements Serializable {
     public String score;
     public String percentage;
     public String can_edit;
+    public boolean is_public;
     public int rank;
 
     public User(String name) {
@@ -36,7 +37,9 @@ public class User implements Serializable {
                 String score,
                 String percentage,
                 String can_edit,
-                int rank) {
+                int rank,
+                boolean is_public
+    ) {
         this.id = id;
         this.mentor_id = mentor_id;
         this.name = name;
@@ -50,6 +53,7 @@ public class User implements Serializable {
         this.percentage = percentage;
         this.can_edit = can_edit;
         this.rank = rank;
+        this.is_public = is_public;
     }
 
     public int getId() {

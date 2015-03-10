@@ -74,7 +74,7 @@ public class ApplicationLoggingService extends RoboService {
     private Thread remoteLoggingThread;
     private Thread timeCountThread;
     private TimedRunnable timedRunnable;
-    private static final int POLL_DELAY_MS = 60*1000;//30*60*1000;
+    private static final int POLL_DELAY_MS = 30*60*1000;
     private static final int SEC_POLL_DELAY = 1000;
     @Inject private LocalBroadcastManager localBroadcastManager;
 

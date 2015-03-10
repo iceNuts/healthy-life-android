@@ -125,35 +125,41 @@
             style="@style/Card"
             android:orientation="vertical"
             android:weightSum="2"
-            android:id="@+id/usage"
-            android:layout_gravity="center_horizontal">
+            android:id="@+id/app_usage_layout">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/inner" >
-
+                android:layout_height="wrap_content">
+                <Spinner
+                    android:id="@+id/view_type_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingBottom="4dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_alignParentRight="true"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Usage Statistics"
-                    android:id="@+id/textView10"
+                    android:text="App Usage"
+                    android:id="@+id/textView_AppUsage"
                     android:textSize="20dp"
                     android:paddingBottom="4dp"
-                    android:textStyle="bold" />
+                    android:layout_alignParentLeft="true"/>
+            </RelativeLayout>
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/usage_list">
-
-                </LinearLayout>
-
-            </LinearLayout>
-
+            <org.eazegraph.lib.charts.BarChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/app_usage_graph"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:egUseCubic="true"
+                app:egUseOverlapFill="true"
+                app:egCurveSmoothness="0.4"
+                app:egIndicatorLineColor="#FE6DA8"
+                app:egLegendHeight="40dp"
+                app:egShowStandardValue="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -164,9 +170,19 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="fill_parent">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="App Usage Today"
+                android:id="@+id/textView_TodayAppUsage"
+                android:textSize="20dp"
+                android:paddingBottom="4dp"
+                android:layout_alignParentLeft="true"/>
+
             <org.eazegraph.lib.charts.ValueLineChart
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/usage_chart"
+                android:id="@+id/today_app_usage_chart"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
                 app:egUseCubic="true"
