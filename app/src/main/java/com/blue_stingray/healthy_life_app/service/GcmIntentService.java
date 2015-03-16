@@ -2,6 +2,7 @@ package com.blue_stingray.healthy_life_app.service;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -12,6 +13,7 @@ import com.blue_stingray.healthy_life_app.receiver.GcmBroadcastReceiver;
 import com.blue_stingray.healthy_life_app.receiver.LocalBroadcastManagerProvider;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.inject.Inject;
@@ -143,5 +145,4 @@ public class GcmIntentService extends IntentService {
         int mId = 10002;
         mNotificationManager.notify(mId, mBuilder.build());
     }
-
 }

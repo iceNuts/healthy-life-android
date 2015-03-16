@@ -13,6 +13,7 @@ import com.blue_stingray.healthy_life_app.model.MentorRequest;
 import com.blue_stingray.healthy_life_app.model.Session;
 import com.blue_stingray.healthy_life_app.model.SessionDevice;
 import com.blue_stingray.healthy_life_app.model.Stat;
+import com.blue_stingray.healthy_life_app.model.Tip;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
@@ -173,6 +174,7 @@ public interface RestInterface {
     @POST("/mentor/request/update/{id}")
     void updateMentorRequest(@Path("id") int id, @Body UpdateMentorRequestForm updateMentorRequestForm, RetrofitDialogCallback<Object> cb);
 
-
+    @GET("/tips/random")
+    void getRandomTip(RetrofitDialogCallback<Tip> cb);
 
 }

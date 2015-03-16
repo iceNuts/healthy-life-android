@@ -16,7 +16,11 @@ import com.blue_stingray.healthy_life_app.util.Time;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class AlertListAdapter extends BaseListAdapter<Alert> {
 
@@ -62,10 +66,12 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
     private View getApplicationView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, inflater.inflate(R.layout.alert_list_row, parent, false), parent);
 
+        String localZoneTime = getLocalZoneTime(alert.getCreated_at());
+
         ((TextView) view.findViewById(R.id.subject)).setText(alert.getSubject());
         ((TextView) view.findViewById(R.id.action)).setText(alert.getAction());
         ((TextView) view.findViewById(R.id.target)).setText(alert.getTarget());
-        ((TextView) view.findViewById(R.id.created_at)).setText(Time.getPrettyTime(alert.getCreatedAt()));
+        ((TextView) view.findViewById(R.id.created_at)).setText(localZoneTime);
 
         return view;
     }
@@ -73,12 +79,14 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
     private View getUsageReportView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, inflater.inflate(R.layout.alert_usage_report_list_row, parent, false), parent);
 
+        String localZoneTime = getLocalZoneTime(alert.getCreated_at());
+
         view.findViewById(R.id.alert_container).setOnClickListener(new LinkToListener(alert.getTarget() + "?id=" + alert.getTargetId()));
         ((TextView) view.findViewById(R.id.subject)).setText(alert.getSubject());
         ((TextView) view.findViewById(R.id.action)).setText("has a new");
         ((TextView) view.findViewById(R.id.target)).setText("usage report");
         ((TextView) view.findViewById(R.id.url)).setText(alert.getTarget());
-        ((TextView) view.findViewById(R.id.created_at)).setText(Time.getPrettyTime(alert.getCreatedAt()));
+        ((TextView) view.findViewById(R.id.created_at)).setText(localZoneTime);
 
         return view;
     }
@@ -86,11 +94,13 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
     private View getGoalView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, inflater.inflate(R.layout.alert_goal_list_row, parent, false), parent);
 
+        String localZoneTime = getLocalZoneTime(alert.getCreated_at());
+
         ((TextView) view.findViewById(R.id.subject)).setText(alert.getSubject());
         ((TextView) view.findViewById(R.id.action)).setText(alert.getAction());
         ((TextView) view.findViewById(R.id.target)).setText("goal");
         ((TextView) view.findViewById(R.id.goal_name)).setText(alert.getTarget());
-        ((TextView) view.findViewById(R.id.created_at)).setText(Time.getPrettyTime(alert.getCreatedAt()));
+        ((TextView) view.findViewById(R.id.created_at)).setText(localZoneTime);
 
         return view;
     }
@@ -113,6 +123,19 @@ public class AlertListAdapter extends BaseListAdapter<Alert> {
             activity.startActivity(browserIntent);
         }
 
+    }
+
+    private String getLocalZoneTime(String formattedDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = formatter.parse(formattedDate);
+            formatter.setTimeZone(TimeZone.getDefault());
+            return formatter.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return formattedDate;
+        }
     }
 
 }

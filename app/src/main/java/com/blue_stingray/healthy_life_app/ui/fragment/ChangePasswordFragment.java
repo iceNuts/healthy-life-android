@@ -85,9 +85,7 @@ public class ChangePasswordFragment extends RoboFragment{
                             user.name,
                             user.email,
                             newPasswordAgainView.getText().toString(),
-                            Integer.valueOf(user.is_admin),
-                            Integer.valueOf(user.mentor_id),
-                            user.is_public
+                            Integer.valueOf(user.is_admin)
                     ),
                     new RetrofitDialogCallback<User>(
                             getActivity(),
@@ -104,6 +102,7 @@ public class ChangePasswordFragment extends RoboFragment{
                                         @Override
                                         public void onSuccess(User user, Response response) {
                                             prefs.setCurrentUser(user);
+                                            prefs.setUserPasswdToken(newPasswordAgainView.getText().toString());
                                             Toast.makeText(getActivity(), "Update Successfully", Toast.LENGTH_LONG);
                                             getFragmentManager().popBackStack();
                                         }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +80,7 @@ public class UpdateUserFragment extends RoboFragment {
                     new UserForm(
                             userNameView.getText().toString(),
                             userEmailView.getText().toString(),
-                            null,
-                            Integer.valueOf(user.is_admin),
-                            Integer.valueOf(user.mentor_id),
-                            user.is_public
+                            Integer.valueOf(user.is_admin)
                     ),
                     new RetrofitDialogCallback<User>(
                            getActivity(),

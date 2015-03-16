@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Tip;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
@@ -41,6 +42,9 @@ public class LeaderboardFragment extends RoboFragment {
     @InjectView(R.id.percentile_ranking)
     private TextView percentileRanking;
 
+    @InjectView(R.id.tip_info)
+    private TextView tipInfo;
+
     private final ArrayList<User> users = new ArrayList<User>();
 
     private User authUser;
@@ -65,6 +69,7 @@ public class LeaderboardFragment extends RoboFragment {
         currentScore.setText(String.valueOf(authUser.getScore()));
         percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         createList();
+        setupRandomTip();
     }
 
     public void createList() {
@@ -83,6 +88,23 @@ public class LeaderboardFragment extends RoboFragment {
 
             @Override
             public void onFailure(RetrofitError error) {
+            }
+        });
+    }
+
+    private void setupRandomTip() {
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
+        rest.getRandomTip(new RetrofitDialogCallback<Tip>(
+                getActivity(),
+                loading
+        ) {
+            @Override
+            public void onSuccess(Tip tip, Response response) {
+                tipInfo.setText(tip.content);
+            }
+
+            @Override
+            public void onFailure(RetrofitError retrofitError) {
             }
         });
     }

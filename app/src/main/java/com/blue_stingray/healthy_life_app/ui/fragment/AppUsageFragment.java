@@ -20,6 +20,7 @@ import com.blue_stingray.healthy_life_app.model.AppUsage;
 import com.blue_stingray.healthy_life_app.model.Application;
 import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.model.Stat;
+import com.blue_stingray.healthy_life_app.model.Tip;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
@@ -83,6 +84,9 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.today_app_usage_chart)
     private ValueLineChart TodayAppUsageTimeChart;
 
+    @InjectView(R.id.tip_info)
+    private TextView tipInfo;
+
     @Inject
     private SharedPreferencesHelper prefs;
 
@@ -119,6 +123,7 @@ public class AppUsageFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setup();
+        setupRandomTip();
     }
 
     public void setup() {
@@ -173,8 +178,8 @@ public class AppUsageFragment extends RoboFragment {
             timeUsed += String.valueOf(remain/60)+"min"+String.valueOf(remain%60)+"s";
         }
         appTimeUsed.setText(timeUsed);
-        int hour = (int)goal.getGoalTime()/60;
-        int minute = (int)goal.getGoalTime()%60;
+        int hour = (int)goal.getGoalTime();
+        int minute = (int)((goal.getGoalTime()-(int)goal.getGoalTime())*60);
         currentGoal.setText(String.valueOf(hour)+"h"+String.valueOf(minute)+"min");
 
         viewOption = 0;
@@ -297,6 +302,23 @@ public class AppUsageFragment extends RoboFragment {
 
             ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
         }
+    }
+
+    private void setupRandomTip() {
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
+        rest.getRandomTip(new RetrofitDialogCallback<Tip>(
+                getActivity(),
+                loading
+        ) {
+            @Override
+            public void onSuccess(Tip tip, Response response) {
+                tipInfo.setText(tip.content);
+            }
+
+            @Override
+            public void onFailure(RetrofitError retrofitError) {
+            }
+        });
     }
 
 }

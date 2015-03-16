@@ -27,6 +27,16 @@ public class UserForm {
         this(name, email, null, 1, null, null);
     }
 
+    public UserForm(String name, String email, Integer is_admin) {
+
+        this(name, email, null, is_admin, null, null);
+    }
+
+    public UserForm(String name, String email, String password, Integer is_admin) {
+
+        this(name, email, password, is_admin, null, null);
+    }
+
     public UserForm(String name, String email, String password) {
         this(name, email, password, 1, null, null);
     }

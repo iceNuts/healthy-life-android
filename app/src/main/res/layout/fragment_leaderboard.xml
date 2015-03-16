@@ -17,6 +17,23 @@
             android:gravity="center">
 
             <LinearLayout
+                style="@style/Card"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:gravity="top|center"
+                android:id="@+id/tip_card">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/tip_info"
+                    android:text="Find a friend to work out together!"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -109,6 +126,7 @@
                 android:id="@+id/users" />
 
         </LinearLayout>
+
     </RelativeLayout>
 
 </ScrollView>

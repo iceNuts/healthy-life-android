@@ -5,6 +5,52 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        style="@style/Card"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center|center_vertical"
+        android:id="@+id/tip_card">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/tip_info"
+            android:text="Find a friend to work out together!"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/blank_message"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_background_light"
+        android:gravity="center" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="No usage data yet :("
+                android:id="@+id/textView18"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/grey_icon" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

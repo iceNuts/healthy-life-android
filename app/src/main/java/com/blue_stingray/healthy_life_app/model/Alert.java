@@ -69,6 +69,8 @@ public class Alert {
         return Time.parseSqlDate(created_at);
     }
 
+    public String getCreated_at() {return created_at;}
+
     public Timestamp getUpdatedAt() {
         return Time.parseSqlDate(updated_at);
     }

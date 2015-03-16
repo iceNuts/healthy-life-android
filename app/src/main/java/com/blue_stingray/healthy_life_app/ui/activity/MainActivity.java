@@ -20,6 +20,7 @@ import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.ui.adapter.DrawerAdapter;
 import com.blue_stingray.healthy_life_app.ui.fragment.AlertsFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.DetailedPhoneUsageFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LeaderboardFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
@@ -208,12 +209,30 @@ public class MainActivity extends BaseActivity {
 
     private void showSplashFragment() {
         boolean firstRun = preferences.getBoolean("firstRun", true);
-        if (firstRun) {
-            ViewHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("firstRun", false);
-            editor.commit();
+        try {
+            // open daily usage
+            if (getIntent().getAction().equals("OPEN_DAILY_USAGE")) {
+                showDetailedUsageInfo(1);
+                return;
+            }
+        } catch (Exception e) {
+            // skip
+            if (firstRun) {
+                ViewHelper.injectFragment(new ProfileFragment(), getSupportFragmentManager(), R.id.frame_container);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("firstRun", false);
+                editor.commit();
+            }
         }
+    }
+
+    private void showDetailedUsageInfo(int dayCount) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("DayCount", dayCount);
+        bundle.putInt("Option", 0);
+        DetailedPhoneUsageFragment fragment = new DetailedPhoneUsageFragment();
+        fragment.setArguments(bundle);
+        ViewHelper.injectFragment(fragment, getSupportFragmentManager(), R.id.frame_container);
     }
 
 }

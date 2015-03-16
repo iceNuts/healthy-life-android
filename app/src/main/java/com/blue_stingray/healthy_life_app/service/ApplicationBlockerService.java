@@ -23,6 +23,10 @@ import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import roboguice.service.RoboService;
 
@@ -37,6 +41,7 @@ public class ApplicationBlockerService  extends RoboService {
     private ApplicationChangeReceiver appChangeReceiver = null;
     private ApplicationDynamicReceiver applicationDynamicReceiver = null;
     private DataHelper dataHelper;
+    private Timer timer;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -47,6 +52,21 @@ public class ApplicationBlockerService  extends RoboService {
             dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
             applicationDynamicReceiver = new ApplicationDynamicReceiver();
+
+            // fire 10 am notification
+            Calendar c = Calendar.getInstance();
+            timer = new Timer();
+            timer.schedule(
+                    new UsageReportNotification(),
+                    new Date(
+                            c.get(Calendar.YEAR),
+                            c.get(Calendar.MONTH),
+                            c.get(Calendar.DAY_OF_MONTH),
+                            10,
+                            0
+                    ),
+                    24*60*60*1000
+            );
         }
 
         return START_STICKY;
@@ -201,4 +221,35 @@ public class ApplicationBlockerService  extends RoboService {
             currentSec++;
         }
     }
+
+    private void fireClickableNotification() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setAutoCancel(true)
+                        .setSubText("Click to view")
+                        .setContentText("Yesterday Phone Usage Report is available");
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int mId = 10003;
+        Intent dailyReportIntent = new Intent(this, MainActivity.class);
+        dailyReportIntent.setAction("OPEN_DAILY_USAGE");
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                dailyReportIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(pendingIntent);
+        mNotificationManager.notify(mId, mBuilder.build());
+    }
+
+    private class UsageReportNotification extends TimerTask {
+
+        @Override
+        public void run() {
+            fireClickableNotification();
+        }
+    }
+
 }

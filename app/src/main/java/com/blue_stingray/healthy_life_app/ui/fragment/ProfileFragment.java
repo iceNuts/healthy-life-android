@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.App;
 import com.blue_stingray.healthy_life_app.R;
+import com.blue_stingray.healthy_life_app.model.Tip;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
@@ -82,6 +83,9 @@ public class ProfileFragment extends RoboFragment {
     @InjectView(R.id.view_type_spinner)
     private Spinner viewTypeSpinner;
 
+    @InjectView(R.id.tip_info)
+    private TextView tipInfo;
+
     private User authUser;
 
     private Integer[] scoresByMonth;
@@ -125,6 +129,7 @@ public class ProfileFragment extends RoboFragment {
         setupLineChart();
         // setup phone usage graph
         setupPhoneUsageChart();
+        setupRandomTip();
     }
 
     @Override
@@ -295,6 +300,23 @@ public class ProfileFragment extends RoboFragment {
         public void onClick(View v) {
             ViewHelper.injectFragment(new LeaderboardFragment(), getActivity().getSupportFragmentManager(), R.id.frame_container);
         }
+    }
+
+    private void setupRandomTip() {
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "", "Loading...");
+        rest.getRandomTip(new RetrofitDialogCallback<Tip>(
+            getActivity(),
+            loading
+        ) {
+            @Override
+            public void onSuccess(Tip tip, Response response) {
+                tipInfo.setText(tip.content);
+            }
+
+            @Override
+            public void onFailure(RetrofitError retrofitError) {
+            }
+        });
     }
 
 }

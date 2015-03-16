@@ -22,6 +22,7 @@ public class ViewHelper {
         transaction.commit();
     }
 
+
     public static void injectFragment(Fragment fragment, int container) {
         injectFragment(fragment, fragment.getFragmentManager(), container);
     }
