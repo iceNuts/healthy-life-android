@@ -52,21 +52,7 @@ public class ApplicationBlockerService  extends RoboService {
             dataHelper = DataHelper.getInstance(getApplicationContext());
             appChangeReceiver = new ApplicationChangeReceiver();
             applicationDynamicReceiver = new ApplicationDynamicReceiver();
-
-            // fire 10 am notification
-            Calendar c = Calendar.getInstance();
-            timer = new Timer();
-            timer.schedule(
-                    new UsageReportNotification(),
-                    new Date(
-                            c.get(Calendar.YEAR),
-                            c.get(Calendar.MONTH),
-                            c.get(Calendar.DAY_OF_MONTH),
-                            10,
-                            0
-                    ),
-                    24*60*60*1000
-            );
+            setupAutoNotificationForPhoneUsage();
         }
 
         return START_STICKY;
@@ -250,6 +236,21 @@ public class ApplicationBlockerService  extends RoboService {
         public void run() {
             fireClickableNotification();
         }
+    }
+
+    private void setupAutoNotificationForPhoneUsage() {
+        // fire 10 am notification
+        Calendar c = Calendar.getInstance();
+        Date time = new Date();
+        time.setHours(10);
+        time.setMinutes(0);
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(
+                new UsageReportNotification(),
+                time,
+                24*60*60*1000
+        );
+
     }
 
 }
