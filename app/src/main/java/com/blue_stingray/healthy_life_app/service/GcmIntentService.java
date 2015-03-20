@@ -68,6 +68,9 @@ public class GcmIntentService extends IntentService {
                     else if (message.has("mentorRequest")) {
                         notifyMentorRequest(message);
                     }
+                    else if (message.has("remove_goal")) {
+                        removeUserGoal(message);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -95,7 +98,7 @@ public class GcmIntentService extends IntentService {
                 prefs = new SharedPreferencesHelper(getApplicationContext());
                 prefs.setNewLifelineRequest(true);
             }
-            fireNotification(subject);
+            fireLifelineRequestClickableNotification(subject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -108,7 +111,7 @@ public class GcmIntentService extends IntentService {
             String packageName = message.getString("package_name");
 
             HashMap<Integer, Double> newGoalMap = new HashMap<>();
-            newGoalMap.put(Time.dayTranslate(goalDay), Double.valueOf(goalHour)*60);
+            newGoalMap.put(Time.dayTranslate(goalDay), Double.valueOf(goalHour));
 
             dataHelper.createNewGoal(packageName, newGoalMap);
             final PackageManager pm = getApplicationContext().getPackageManager();
@@ -144,5 +147,40 @@ public class GcmIntentService extends IntentService {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int mId = 10002;
         mNotificationManager.notify(mId, mBuilder.build());
+    }
+
+    private void fireLifelineRequestClickableNotification(String subject) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setAutoCancel(true)
+                        .setSubText("Click to view")
+                        .setContentText(subject);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int mId = 10004;
+        Intent lifelineRequestIntent = new Intent(this, MainActivity.class);
+        lifelineRequestIntent.setAction("OPEN_LIFELINE_REQUEST");
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                lifelineRequestIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(pendingIntent);
+        mNotificationManager.notify(mId, mBuilder.build());
+    }
+
+    private void removeUserGoal(JSONObject message) {
+        prefs = new SharedPreferencesHelper(getApplicationContext());
+        try {
+            // avoid deleting user self goal
+            if (message.getString("user_id").equals(String.valueOf(prefs.getCurrentUser().getId())))
+                return;
+            String subject = message.getString("description");
+            fireNotification(subject);
+            dataHelper.removeGoal(message.getString("user_id"), message.getString("package_name"));
+        } catch (JSONException e) {
+        }
     }
 }

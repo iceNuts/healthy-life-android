@@ -38,28 +38,6 @@
                 android:textSize="20dp" />
         </LinearLayout>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Goal"
-            android:id="@+id/create_goal"
-            android:background="@color/blue_primary"
-            android:textColor="@color/white"
-            android:layout_marginTop="12dp"
-            android:textStyle="bold"
-            android:textSize="16dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Goal"
-            android:id="@+id/edit_goal"
-            android:background="@color/blue_primary"
-            android:textColor="@color/white"
-            android:layout_marginTop="12dp"
-            android:textStyle="bold"
-            android:textSize="16dp" />
-
         <LinearLayout
             style="@style/Card"
             android:orientation="vertical"

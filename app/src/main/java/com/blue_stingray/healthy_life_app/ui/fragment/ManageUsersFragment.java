@@ -159,40 +159,41 @@ public class ManageUsersFragment extends RoboFragment {
         public void onClick(View v) {
 
             final User user = users.get((int) v.getTag());
-            final Dialog authDialog = new Dialog(getActivity());
-            authDialog.setTitle("Authorization");
-            authDialog.setContentView(R.layout.password_alert_dialog);
-            final EditText passwdTextView = (EditText) authDialog.findViewById(R.id.passwordField);
-            passwdTextView.setTextColor(Color.BLACK);
-            passwdTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_GO) {
-                        if (prefs.getUserEditLock() == true || prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
-                            if (prefs.getUserEditLock() == false) {
-                                timer.start();
-                            }
-                            authDialog.cancel();
-                            // show manage view
-                            prefs.setUserEditLockTimer();
-                            showManageView(user);
-                        }
-                        // show wrong password
-                        else {
-                            passwdTextView.setError("Password is wrong");
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-            });
+//            final Dialog authDialog = new Dialog(getActivity());
+//            authDialog.setTitle("Authorization");
+//            authDialog.setContentView(R.layout.password_alert_dialog);
+//            final EditText passwdTextView = (EditText) authDialog.findViewById(R.id.passwordField);
+//            passwdTextView.setTextColor(Color.BLACK);
+//            passwdTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                @Override
+//                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                    if (actionId == EditorInfo.IME_ACTION_GO) {
+//                        if (prefs.getUserEditLock() == true || prefs.verifyUserPasswdToken(passwdTextView.getText().toString())) {
+//                            if (prefs.getUserEditLock() == false) {
+//                                timer.start();
+//                            }
+//                            authDialog.cancel();
+//                            // show manage view
+//                            prefs.setUserEditLockTimer();
+//                            showManageView(user);
+//                        }
+//                        // show wrong password
+//                        else {
+//                            passwdTextView.setError("Password is wrong");
+//                        }
+//                        return true;
+//                    }
+//                    return false;
+//                }
+//            });
+            showManageView(user);
             // Avoid keep typing password
-            if (prefs.getUserEditLock() == true) {
-                showManageView(user);
-            }
-            else {
-                authDialog.show();
-            }
+//            if (prefs.getUserEditLock() == true) {
+//                showManageView(user);
+//            }
+//            else {
+//                authDialog.show();
+//            }
         }
     }
 

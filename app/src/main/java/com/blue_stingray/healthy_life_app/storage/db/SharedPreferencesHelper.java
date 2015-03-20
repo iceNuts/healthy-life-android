@@ -148,6 +148,10 @@ public class SharedPreferencesHelper {
         return false;
     }
 
+    public String getUserPasswd() {
+        return prefs.getString(PASSWD_USER_TOKEN, "");
+    }
+
     public void setUserID(String userid) {
         prefs.edit().putString(USER_ID, userid).apply();
     }
@@ -199,6 +203,10 @@ public class SharedPreferencesHelper {
         long now = new Date().getTime() / 1000;
         long past = Integer.valueOf(prefs.getString(USER_EDIT_LOCK_TIMER, "0"));
         return now - past >= 5*60;
+    }
+
+    public String getDeviceName() {
+        return android.os.Build.MODEL;
     }
 
     public void setCurrentUser(User user) {

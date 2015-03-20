@@ -215,6 +215,11 @@ public class MainActivity extends BaseActivity {
                 showDetailedUsageInfo(1);
                 return;
             }
+            // open lifeline request
+            else if (getIntent().getAction().equals("OPEN_LIFELINE_REQUEST")) {
+                ViewHelper.injectFragment(new LifelineRequestFragment(), getSupportFragmentManager(), R.id.frame_container);
+                return;
+            }
         } catch (Exception e) {
             // skip
             if (firstRun) {

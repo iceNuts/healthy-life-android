@@ -17,6 +17,7 @@ import com.blue_stingray.healthy_life_app.model.Tip;
 import com.blue_stingray.healthy_life_app.model.UsageReport;
 import com.blue_stingray.healthy_life_app.model.User;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
+import com.blue_stingray.healthy_life_app.net.form.DeleteGoalForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
 import com.blue_stingray.healthy_life_app.net.form.IconForm;
 import com.blue_stingray.healthy_life_app.net.form.LifelineForm;
@@ -116,6 +117,9 @@ public interface RestInterface {
     @POST("/goal/many")
     void createGoalMany(@Body ManyGoalForm goalForms, Callback<List<Goal>> cb);
 
+    @POST("/goal/delete")
+    void removeGoal(@Body DeleteGoalForm deleteGoalForm, RetrofitDialogCallback<Object> cb);
+
     // Stat
     @GET("/stat/lastUpdate")
     void getStatLastUpdateStamp(RetrofitDialogCallback<Stat> cb);
@@ -176,5 +180,6 @@ public interface RestInterface {
 
     @GET("/tips/random")
     void getRandomTip(RetrofitDialogCallback<Tip> cb);
+
 
 }

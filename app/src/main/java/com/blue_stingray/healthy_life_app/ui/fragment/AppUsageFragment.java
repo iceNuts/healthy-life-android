@@ -60,12 +60,6 @@ public class AppUsageFragment extends RoboFragment {
     @InjectView(R.id.time_used)
     private TextView appTimeUsed;
 
-    @InjectView(R.id.create_goal)
-    private Button createGoal;
-
-    @InjectView(R.id.edit_goal)
-    private Button editGoal;
-
     @InjectView(R.id.user)
     private LinearLayout userLayout;
 
@@ -127,25 +121,6 @@ public class AppUsageFragment extends RoboFragment {
     }
 
     public void setup() {
-
-        // toggle data based on if goal exists
-        if(app.hasGoal()) {
-            createGoal.setVisibility(View.GONE);
-        } else {
-            editGoal.setVisibility(View.GONE);
-            userLayout.setVisibility(View.GONE);
-            barchartContainer.setVisibility(View.GONE);
-        }
-
-        // set create goal button listener
-        if(createGoal != null) {
-            createGoal.setOnClickListener(new CreateGoalButtonListener());
-        }
-
-        // set edit goal button listener
-        if(editGoal != null) {
-            editGoal.setOnClickListener(new EditGoalButtonListener());
-        }
 
         int totalSec = Integer.valueOf(appUsage.get("totalSec"));
         int usedTime = Integer.valueOf(appUsage.get("usedTime"));
@@ -268,40 +243,6 @@ public class AppUsageFragment extends RoboFragment {
         }
         TodayAppUsageTimeChart.addSeries(series);
         TodayAppUsageTimeChart.startAnimation();
-    }
-
-    private class CreateGoalButtonListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString("appName", app.getName());
-            bundle.putString("userID", String.valueOf(user.getId()));
-
-            Fragment fragment = new CreateGoalFragment();
-            fragment.setArguments(bundle);
-
-            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
-        }
-    }
-
-    private class EditGoalButtonListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("appinfo", app);
-            bundle.putString("userID", String.valueOf(user.getId()));
-
-            if(user != null) {
-                bundle.putSerializable("user", user);
-            }
-
-            Fragment fragment = new EditGoalFragment();
-            fragment.setArguments(bundle);
-
-            ViewHelper.injectFragment(fragment, getFragmentManager(), R.id.frame_container);
-        }
     }
 
     private void setupRandomTip() {

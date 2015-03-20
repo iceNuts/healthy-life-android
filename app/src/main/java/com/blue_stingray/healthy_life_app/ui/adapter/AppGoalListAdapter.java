@@ -29,6 +29,10 @@ public class AppGoalListAdapter extends BaseListAdapter<Application> {
 
         this.activity = activity;
 
+        shuffle();
+    }
+
+    public void shuffle() {
         Collections.sort(data, new Comparator<Application>() {
             @Override
             public int compare(Application lhs, Application rhs) {
@@ -45,7 +49,6 @@ public class AppGoalListAdapter extends BaseListAdapter<Application> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = super.getView(position, convertView, parent);
-
         Application app = data.get(position);
 
         ((TextView) convertView.findViewById(R.id.app_name)).setText(app.getName());
@@ -65,6 +68,7 @@ public class AppGoalListAdapter extends BaseListAdapter<Application> {
             ((TextView) convertView.findViewById(R.id.message)).setText("No goal currently set");
             convertView.findViewById(R.id.container).setBackgroundColor(activity.getResources().getColor(R.color.white));
         }
+        ((TextView) convertView.findViewById(R.id.device_name)).setText(app.getDeviceName());
 
         return convertView;
     }

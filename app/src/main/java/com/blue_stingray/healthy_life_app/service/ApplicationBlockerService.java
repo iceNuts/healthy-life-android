@@ -208,7 +208,7 @@ public class ApplicationBlockerService  extends RoboService {
         }
     }
 
-    private void fireClickableNotification() {
+    private void fireDailyReportClickableNotification() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -234,7 +234,7 @@ public class ApplicationBlockerService  extends RoboService {
 
         @Override
         public void run() {
-            fireClickableNotification();
+            fireDailyReportClickableNotification();
         }
     }
 

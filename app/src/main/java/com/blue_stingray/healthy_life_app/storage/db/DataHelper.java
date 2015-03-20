@@ -86,7 +86,7 @@ public class DataHelper {
             };
         }
         instance.load3rdPartyPackageNames(context);
-        instance.loadGoalCache();
+        instance.loadGoalCache(false);
         return instance;
     }
 
@@ -136,14 +136,14 @@ public class DataHelper {
                 instance.db.endTransaction();
             }
         }).start();
-        instance.loadGoalCache();
+        instance.loadGoalCache(false);
     }
 
     // GoalCache key is packageName+dayOfWeek, other cache is only packageName as key
 
-    private void loadGoalCache() {
+    private void loadGoalCache(boolean force) {
 
-        if (instance.goalCache == null && !isLoading) {
+        if ((instance.goalCache == null && !isLoading) || force == true) {
             __loadGoalCache();
         }
 
@@ -242,6 +242,17 @@ public class DataHelper {
 
     public void removeGoals() {
         db.delete(GOAL_TABLE, null, null);
+    }
+
+    public void removeGoal(String userID, String packageName) {
+        instance.db.beginTransaction();
+        instance.db.delete(GOAL_TABLE, "package_name=? and user_id=?", new String[]{
+                packageName,
+                userID
+        });
+        instance.db.setTransactionSuccessful();
+        instance.db.endTransaction();
+        instance.loadGoalCache(true);
     }
 
     public Integer packageRemainingTime(String packageName) {

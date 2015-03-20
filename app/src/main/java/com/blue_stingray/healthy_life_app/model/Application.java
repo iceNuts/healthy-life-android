@@ -43,6 +43,7 @@ public class Application implements Serializable {
     private String updatedAt;
     private String deletedAt;
     private Goal[] active_goals;
+    private String deviceName;
 
     /**
      * @param pm PackageManager
@@ -59,6 +60,20 @@ public class Application implements Serializable {
         this.name = getApplicationName(pm);
         this.package_name = package_name;
         this.version = getApplicationVersion(pm);
+    }
+
+    public void setDeviceID(String device_id) {
+        this.device_id = device_id;
+    }
+
+    public String getDeviceID() {return this.device_id;}
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getDeviceName() {
+        return this.deviceName;
     }
 
     public String getApplicationVersion(PackageManager pm) {

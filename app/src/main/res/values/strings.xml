@@ -139,14 +139,24 @@
         <item>15 Day View</item>
     </string-array>
 
+    <string-array name="manage_goal_long_click">
+        <item>App Usage</item>
+        <item>Update Goal</item>
+        <item>Delete Goal</item>
+    </string-array>
+
     <!-- Mentors -->
     <string-array name="mentor_selection">
         <item>Remove</item>
     </string-array>
+
     <string name="mentor_removed_success">Removed Successfully</string>
     <string name="mentor_removed_failure">Removed Filed</string>
 
     <string name="no_mentor">No mentor yet :(</string>
     <string name="network_error">Network Connection Failed</string>
+    <string name="manage_goal_fragment">Manage_Goal_Fragment</string>
+    <string name="no_password_option">Because you are logged in by Third-Party account, you can\'t change your password.</string>
+    <string name="we_are_sorry">We are sorry...</string>
 
 </resources>

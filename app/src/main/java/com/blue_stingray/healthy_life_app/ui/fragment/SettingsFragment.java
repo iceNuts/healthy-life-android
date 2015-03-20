@@ -75,6 +75,7 @@ public class SettingsFragment extends PreferenceFragment {
                     dataHelper.removeGoals();
                     prefs.setUserID("");
                     prefs.setUserEditLock(false);
+                    prefs.setUserPasswdToken("");
                     ((BaseActivity) getActivity()).prefs.setState(SharedPreferencesHelper.State.NONE);
                     startActivity(new Intent(getActivity(), StartActivity.class));
                 }
@@ -103,6 +104,14 @@ public class SettingsFragment extends PreferenceFragment {
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
+            // show alert
+            if (prefs.getUserPasswd().equals(prefs.md5(""))) {
+                DialogHelper.createDismissiveDialog(
+                        getActivity(),
+                        R.string.we_are_sorry,
+                        R.string.no_password_option).show();
+                return true;
+            }
             final Dialog authDialog = new Dialog(getActivity());
             authDialog.setTitle("Old Password");
             authDialog.setContentView(R.layout.password_alert_dialog);

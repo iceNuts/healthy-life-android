@@ -153,6 +153,14 @@ public class CreateGoalFragment extends RoboFragment {
         fridaySeekBar.incrementProgressBy(magicStep);
         saturdaySeekBar.incrementProgressBy(magicStep);
         sundaySeekBar.incrementProgressBy(magicStep);
+
+        mondaySeekBar.setProgress(0);
+        tuesdaySeekBar.setProgress(0);
+        wednesdaySeekBar.setProgress(0);
+        thursdaySeekBar.setProgress(0);
+        fridaySeekBar.setProgress(0);
+        saturdaySeekBar.setProgress(0);
+        sundaySeekBar.setProgress(0);
     }
 
     private class CreateGoalButtonListener extends FormSubmitClickListener {
@@ -300,13 +308,13 @@ public class CreateGoalFragment extends RoboFragment {
 
     public HashMap<Integer, Double> getDayHours() {
         HashMap<Integer, Double> dayMap = new HashMap<>();
-        dayMap.put(Calendar.MONDAY, (double)mondaySeekBar.getProgress());
-        dayMap.put(Calendar.TUESDAY, (double)tuesdaySeekBar.getProgress());
-        dayMap.put(Calendar.WEDNESDAY, (double)wednesdaySeekBar.getProgress());
-        dayMap.put(Calendar.THURSDAY, (double)thursdaySeekBar.getProgress());
-        dayMap.put(Calendar.FRIDAY, (double)fridaySeekBar.getProgress());
-        dayMap.put(Calendar.SATURDAY, (double)saturdaySeekBar.getProgress());
-        dayMap.put(Calendar.SUNDAY, (double)sundaySeekBar.getProgress());
+        dayMap.put(Calendar.MONDAY, (double)mondaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.TUESDAY, (double)tuesdaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.WEDNESDAY, (double)wednesdaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.THURSDAY, (double)thursdaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.FRIDAY, (double)fridaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.SATURDAY, (double)saturdaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.SUNDAY, (double)sundaySeekBar.getProgress()/4);
         return dayMap;
     }
 
