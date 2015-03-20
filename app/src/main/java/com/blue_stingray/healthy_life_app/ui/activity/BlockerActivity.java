@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.*;
 import android.os.Process;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.model.Lifeline;
@@ -132,6 +133,7 @@ public class BlockerActivity extends BaseActivity{
                     );
                 }
             });
+            builder.setCancelable(false);
             builder.create();
             builder.show();
         }
@@ -145,6 +147,7 @@ public class BlockerActivity extends BaseActivity{
                     finish();
                 }
             });
+            builder.setCancelable(false);
             builder.create();
             builder.show();
         }
