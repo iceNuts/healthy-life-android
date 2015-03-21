@@ -183,7 +183,7 @@ public class LoginActivity extends BaseActivity {
                             // 0.2 ? int type
                             HashMap<Integer, Double> newGoalMap = new HashMap<>();
                             newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
-                            dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                            dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap, false);
                         }
                         startActivity(new Intent(LoginActivity.this, StartActivity.class));
                         finish();

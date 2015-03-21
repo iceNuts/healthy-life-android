@@ -113,7 +113,7 @@ public class GcmIntentService extends IntentService {
             HashMap<Integer, Double> newGoalMap = new HashMap<>();
             newGoalMap.put(Time.dayTranslate(goalDay), Double.valueOf(goalHour));
 
-            dataHelper.createNewGoal(packageName, newGoalMap);
+            dataHelper.createNewGoal(packageName, newGoalMap, true);
             final PackageManager pm = getApplicationContext().getPackageManager();
             ApplicationInfo ai;
             try {

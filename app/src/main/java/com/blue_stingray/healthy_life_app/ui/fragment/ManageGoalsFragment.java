@@ -171,24 +171,6 @@ public class ManageGoalsFragment extends RoboFragment {
 
         } else {
             new CreateList().start();
-            setHasOptionsMenu(true);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.manage_goals_fragment_actions, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_create_goal:
-                ViewHelper.injectFragment(new CreateGoalFragment(), getFragmentManager(), R.id.frame_container);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -384,6 +366,10 @@ public class ManageGoalsFragment extends RoboFragment {
             } else {
 
                 Bundle bundle = new Bundle();
+                if (user == null) {
+                    user = prefs.getCurrentUser();
+                }
+                bundle.putString("userID", String.valueOf(user.getId()));
                 bundle.putString("appName", app.getName());
 
                 Fragment fragment = new CreateGoalFragment();

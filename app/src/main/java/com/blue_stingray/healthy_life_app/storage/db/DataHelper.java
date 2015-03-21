@@ -109,7 +109,7 @@ public class DataHelper {
 
     // Please refer goal table in database helper
 
-    public void createNewGoal(final String packageName, final HashMap<Integer, Double> dayMap) {
+    public void createNewGoal(final String packageName, final HashMap<Integer, Double> dayMap, boolean force) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -136,7 +136,7 @@ public class DataHelper {
                 instance.db.endTransaction();
             }
         }).start();
-        instance.loadGoalCache(false);
+        instance.loadGoalCache(force);
     }
 
     // GoalCache key is packageName+dayOfWeek, other cache is only packageName as key

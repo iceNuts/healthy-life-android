@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,11 +22,13 @@ import com.blue_stingray.healthy_life_app.model.Goal;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.AppForm;
 import com.blue_stingray.healthy_life_app.net.form.GoalForm;
+import com.blue_stingray.healthy_life_app.net.form.ManyGoalForm;
 import com.blue_stingray.healthy_life_app.net.form.validation.FormValidationManager;
 import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.form.FormSubmitClickListener;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
+import com.blue_stingray.healthy_life_app.util.Time;
 import com.google.inject.Inject;
 
 import java.io.ByteArrayOutputStream;
@@ -34,14 +37,17 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Provides a form to create a goal.
@@ -108,8 +114,11 @@ public class CreateGoalFragment extends RoboFragment {
 
     final private int magicStep = 15;
 
+    private String viewUserID;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        viewUserID = getArguments().getString("userID");
         return inflater.inflate(R.layout.fragment_create_goal, container,false);
     }
 
@@ -187,52 +196,88 @@ public class CreateGoalFragment extends RoboFragment {
                 e.printStackTrace();
             }
             HashMap<Integer, Double> dayMap = getDayHours();
-            dataHelper.createNewGoal(app.getPackageName(), dayMap);
-            Map<Integer, Double> conDayMap = new ConcurrentHashMap<Integer, Double>(dayMap);
+            dataHelper.createNewGoal(app.getPackageName(), dayMap, true);
+            final Map<Integer, Double> conDayMap = new ConcurrentHashMap<Integer, Double>(dayMap);
             final Iterator it = conDayMap.entrySet().iterator();
-            progressDialog.show();
+            progressDialog = ProgressDialog.show(getActivity(), "", "Loading...");
             rest.createApp(
-                new AppForm(
-                    app.getPackageName(),
-                    app.getName(),
-                    appVersion,
-                    iconData == null? "" : iconData.toString()
-                ),
-                new RetrofitDialogCallback<Application>(
-                    getActivity(),
-                    null
-                ) {
-                    @Override
-                    public void onSuccess(Application application, Response response) {
-                        while(it.hasNext()) {
-                            Map.Entry data = (Map.Entry) it.next();
-                            String dayString = DayTranslate((Integer)data.getKey());
-                            Double hours = (Double)data.getValue();
-                            rest.createGoal(
-                                    new GoalForm(
-                                            app,
-                                            hours,
-                                            dayString,
-                                            prefs.getDeviceId()
-                                    ),
-                                    new RetrofitDialogCallback<Goal>(
-                                            getActivity(),
-                                            progressDialog) {
-                                        @Override
-                                        public void onSuccess(Goal goal, Response response) {}
-                                        @Override
-                                        public void onFailure(RetrofitError retrofitError) {}
-                                    }
-                            );
-                            it.remove();
+                    new AppForm(
+                            app.getPackageName(),
+                            app.getName(),
+                            appVersion,
+                            iconData == null ? "" : iconData.toString()
+                    ),
+                    new RetrofitDialogCallback<Application>(
+                            getActivity(),
+                            null
+                    ) {
+                        @Override
+                        public void onSuccess(Application application, Response response) {
+                            final Iterator it = conDayMap.entrySet().iterator();
+                            ArrayList<GoalForm> goalForms = new ArrayList<>();
+                            while(it.hasNext()) {
+                                Map.Entry data = (Map.Entry) it.next();
+                                String dayString = DayTranslate((Integer)data.getKey());
+                                Double hours = (Double)data.getValue();
+                                goalForms.add(
+                                        new GoalForm(
+                                                app,
+                                                hours,
+                                                dayString,
+                                                prefs.getDeviceId()
+                                        )
+                                );
+                                it.remove();
+                            }
+                            int deviceID = app.getDeviceId();
+                            if (-1 == app.getDeviceId()) {
+                                deviceID = prefs.getDeviceId();
+                            }
+                            ManyGoalForm goalForm = new ManyGoalForm(deviceID, goalForms.toArray(new GoalForm[goalForms.size()]));
+                            rest.createGoalMany(goalForm, new CreateManyGoalsCallback(progressDialog, app));
+                        }
+
+                        @Override
+                        public void onFailure(RetrofitError retrofitError) {
+                        /*nothing much to do*/
+                            Toast.makeText(getActivity(), "Create Goal Failed", Toast.LENGTH_LONG);
                         }
                     }
-                    @Override
-                    public void onFailure(RetrofitError retrofitError) {/*nothing much to do*/}
-                }
             );
-            progressDialog.dismiss();
-            getActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
+
+    private class CreateManyGoalsCallback implements Callback<List<Goal>> {
+
+        private ProgressDialog progressDialog;
+        private Application app;
+
+        public CreateManyGoalsCallback(ProgressDialog progressDialog, Application app) {
+            this.progressDialog = progressDialog;
+            this.app = app;
+        }
+
+        @Override
+        public void success(List<Goal> goals, Response response) {
+            if(viewUserID.equals(String.valueOf(prefs.getCurrentUser().getId()))) {
+                for(Goal goal : goals) {
+                    HashMap<Integer, Double> newGoalMap = new HashMap<>();
+                    newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
+                    dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap, true);
+                }
+            } else {
+                app.setActiveGoals(goals.toArray(new Goal[goals.size()]));
+            }
+
+            getFragmentManager().popBackStack();
+            Toast.makeText(getActivity(), "Successful Edit", Toast.LENGTH_LONG).show();
+
+            progressDialog.cancel();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            progressDialog.cancel();
         }
     }
 

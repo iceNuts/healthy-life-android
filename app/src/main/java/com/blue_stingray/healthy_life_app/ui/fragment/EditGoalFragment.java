@@ -322,7 +322,7 @@ public class EditGoalFragment extends RoboFragment {
                 for(Goal goal : goals) {
                     HashMap<Integer, Double> newGoalMap = new HashMap<>();
                     newGoalMap.put(Time.dayTranslate(goal.getDay()), goal.getGoalTime());
-                    dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap);
+                    dataHelper.createNewGoal(goal.getApp().getPackageName(), newGoalMap, false);
                 }
             } else {
                 app.setActiveGoals(goals.toArray(new Goal[goals.size()]));
