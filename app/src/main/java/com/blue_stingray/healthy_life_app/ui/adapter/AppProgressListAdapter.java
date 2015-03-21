@@ -29,10 +29,10 @@ public class AppProgressListAdapter extends BaseListAdapter<AppGoal> {
         RoundCornerProgressBar progressBar = (RoundCornerProgressBar) convertView.findViewById(R.id.progress);
 
         ((TextView) convertView.findViewById(R.id.app_name)).setText(app.name);
-        ((TextView) convertView.findViewById(R.id.time_remaining)).setText(app.remaining + " hours remaining");
-        ((TextView) convertView.findViewById(R.id.hours_used)).setText(app.spent + " of " + app.total + " used");
-        progressBar.setProgress(app.spent);
-        progressBar.setMax(app.total);
+        ((TextView) convertView.findViewById(R.id.time_remaining)).setText(app.remaining*60 + " minutes remaining");
+        ((TextView) convertView.findViewById(R.id.hours_used)).setText(app.spent + "h of " + app.total + "h used");
+        progressBar.setProgress((int)(app.spent*60));
+        progressBar.setMax((int)(app.total*60));
 
         return convertView;
     }
