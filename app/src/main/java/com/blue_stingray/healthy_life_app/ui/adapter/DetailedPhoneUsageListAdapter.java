@@ -41,7 +41,7 @@ public class DetailedPhoneUsageListAdapter extends BaseListAdapter<DataHelper.De
 
         currentAppUsage = appUsagelist.get(position);
         String packageName = (String)currentAppUsage.packageName;
-        int minutes = (int)currentAppUsage.value;
+        int secs = (int)currentAppUsage.value;
 
         ApplicationInfo ai;
 
@@ -55,13 +55,23 @@ public class DetailedPhoneUsageListAdapter extends BaseListAdapter<DataHelper.De
 
             String usedTime;
 
-            if (minutes == 0) {
-                usedTime = "less than 1 min";
-            } else if (minutes > 60) {
-                usedTime = String.valueOf(minutes/60)+"hr"+String.valueOf(minutes%60)+"min";
+            if (secs < 60) {
+                usedTime = String.valueOf(secs)+"s";
+            } else if (secs == 60) {
+                usedTime = "1min";
             }
             else {
-                usedTime = String.valueOf(minutes)+"min";
+                int min = secs / 60;
+                secs = secs % 60;
+                if (min < 60) {
+                    usedTime = String.valueOf(min)+"min"+String.valueOf(secs)+"s";
+                }
+                else if (min == 60) {
+                    usedTime = "1h0min"+String.valueOf(secs)+"s";
+                }
+                else {
+                    usedTime = String.valueOf(min/60)+"h"+String.valueOf(min%60)+"min"+String.valueOf(secs)+"s";
+                }
             }
 
             ((TextView) convertView.findViewById(R.id.total_hours)).setText(usedTime);

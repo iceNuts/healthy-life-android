@@ -576,7 +576,7 @@ public class DataHelper {
                 Integer endTime = Integer.valueOf(phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(END_TIME)));
                 Integer usedTime = endTime - startTime;
                 String packageName = phoneUsageCursor.getString(phoneUsageCursor.getColumnIndex(PACKAGE_NAME));
-                Integer usedSec = usedTime / 60;
+                Integer usedSec = usedTime;
                 boolean notFound = true;
                 // skip nonsense
                 if (is3rdParty(packageName) == false) {
@@ -687,10 +687,13 @@ public class DataHelper {
         today.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
         today.put("timestamp", String.valueOf(new Date().getTime()/1000));
 
+        Log.d("TODAY", today.toString());
+
         instance.db.beginTransaction();
         Cursor phoneUsageCursor = db.rawQuery(
-                "SELECT * FROM application_usage WHERE usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
+                "SELECT * FROM application_usage WHERE package_name=? and usage_year=? and usage_month=? and usage_day=? and usage_day_of_week=? and user_id=? and end_time <> -1",
                 new String[]{
+                        packageName,
                         today.get("year"),
                         today.get("month"),
                         today.get("day"),

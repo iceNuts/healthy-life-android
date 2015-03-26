@@ -196,7 +196,6 @@ public class CreateGoalFragment extends RoboFragment {
                 e.printStackTrace();
             }
             HashMap<Integer, Double> dayMap = getDayHours();
-            dataHelper.createNewGoal(app.getPackageName(), dayMap, true);
             final Map<Integer, Double> conDayMap = new ConcurrentHashMap<Integer, Double>(dayMap);
             final Iterator it = conDayMap.entrySet().iterator();
             progressDialog = ProgressDialog.show(getActivity(), "", "Loading...");
@@ -353,13 +352,13 @@ public class CreateGoalFragment extends RoboFragment {
 
     public HashMap<Integer, Double> getDayHours() {
         HashMap<Integer, Double> dayMap = new HashMap<>();
-        dayMap.put(Calendar.MONDAY, (double)mondaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.TUESDAY, (double)tuesdaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.WEDNESDAY, (double)wednesdaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.THURSDAY, (double)thursdaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.FRIDAY, (double)fridaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.SATURDAY, (double)saturdaySeekBar.getProgress()/4);
-        dayMap.put(Calendar.SUNDAY, (double)sundaySeekBar.getProgress()/4);
+        dayMap.put(Calendar.MONDAY, (double)mondaySeekBar.getProgress());
+        dayMap.put(Calendar.TUESDAY, (double)tuesdaySeekBar.getProgress());
+        dayMap.put(Calendar.WEDNESDAY, (double)wednesdaySeekBar.getProgress());
+        dayMap.put(Calendar.THURSDAY, (double)thursdaySeekBar.getProgress());
+        dayMap.put(Calendar.FRIDAY, (double)fridaySeekBar.getProgress());
+        dayMap.put(Calendar.SATURDAY, (double)saturdaySeekBar.getProgress());
+        dayMap.put(Calendar.SUNDAY, (double)sundaySeekBar.getProgress());
         return dayMap;
     }
 

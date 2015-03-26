@@ -1,5 +1,6 @@
 package com.blue_stingray.healthy_life_app.service;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -70,11 +71,13 @@ public class ApplicationLoggingService extends RoboService {
     @Inject private SharedPreferencesHelper prefs;
     private DataHelper dataHelper;
     @Inject private RestInterface rest;
+    @Inject
+    private ActivityManager activityManager;
 
     private Thread remoteLoggingThread;
     private Thread timeCountThread;
     private TimedRunnable timedRunnable;
-    private static final int POLL_DELAY_MS = 30*60*1000;
+    private static final int POLL_DELAY_MS = 5*60*1000;
     private static final int SEC_POLL_DELAY = 1000;
     @Inject private LocalBroadcastManager localBroadcastManager;
 
@@ -435,9 +438,13 @@ public class ApplicationLoggingService extends RoboService {
 
             if (intent.getAction() == "android.intent.action.SCREEN_ON") {
                 timedRunnable.onResume();
+                ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);
+                ComponentName currentComponent = currentTask.baseIntent.getComponent();
+                _recordUsage(currentComponent, false);
             }
             else {
                 timedRunnable.onPause();
+                _recordUsage(null, true);
             }
         }
     }
@@ -464,7 +471,7 @@ public class ApplicationLoggingService extends RoboService {
                     timedCount = 0;
                     Intent dialogIntent = new Intent(getBaseContext(), BlockerActivity.class);
                     dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    dialogIntent.putExtra("AlertInfo", "You've used your phone for 90 minutes today. Take a break!");
+                    dialogIntent.putExtra("AlertInfo", "You've used your phone for 90 minutes NON-STOP. Please take a break!");
                     getApplication().startActivity(dialogIntent);
                 }
                 timedCount++;
@@ -521,6 +528,31 @@ public class ApplicationLoggingService extends RoboService {
     // log usage whenever surface app change
     // this could guarantee each goal app usage is recorded correctly
 
+    private void _recordUsage(ComponentName currentComponent, boolean screenOff) {
+        Map<String, String> currentTime = currentTime();
+        if (currentComponent == null && screenOff == true) {
+            // Log the LAST APP END TIME
+            if (lastComponent != null) {
+                logAppUsage(lastComponent, currentTime, ENDFLAG);
+            }
+        }
+        if (currentComponent != null) {
+            // App Changed
+            if (lastComponent != currentComponent) {
+                // Log the CURRENT APP START TIME
+                if (dataHelper.is3rdParty(currentComponent.getPackageName())) {
+//                    now need to record all 3rd party time used
+                    logAppUsage(currentComponent, currentTime, STARTFLAG);
+                }
+                // Log the LAST APP END TIME
+                if (lastComponent != null) {
+                    logAppUsage(lastComponent, currentTime, ENDFLAG);
+                }
+            }
+            lastComponent = currentComponent;
+        }
+    }
+
     private class ApplicationChangeReceiver extends SelfAttachingReceiver {
 
         public ApplicationChangeReceiver() {
@@ -531,22 +563,7 @@ public class ApplicationLoggingService extends RoboService {
         public void onReceive(Context context, Intent intent) {
 
             ComponentName currentComponent = intent.getParcelableExtra(getString(R.string.component_name));
-            if (currentComponent != null) {
-                Map<String, String> currentTime = currentTime();
-                // App Changed
-                if (lastComponent != currentComponent) {
-                    // Log the CURRENT APP START TIME
-                    if (dataHelper.is3rdParty(currentComponent.getPackageName())) {
-//                    now need to record all 3rd party time used
-                        logAppUsage(currentComponent, currentTime, STARTFLAG);
-                    }
-                    // Log the LAST APP END TIME
-                    if (lastComponent != null) {
-                        logAppUsage(lastComponent, currentTime, ENDFLAG);
-                    }
-                }
-                lastComponent = currentComponent;
-            }
+            _recordUsage(currentComponent, false);
         }
 
     }
