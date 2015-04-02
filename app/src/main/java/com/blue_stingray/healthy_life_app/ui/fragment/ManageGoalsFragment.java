@@ -183,6 +183,7 @@ public class ManageGoalsFragment extends RoboFragment {
     }
 
     private void createList() {
+        filterApps();
         adapter = new AppGoalListAdapter(getActivity(), apps);
         appList.setAdapter(adapter);
         appList.setOnItemClickListener(new ChildOnClickListener());
@@ -195,6 +196,7 @@ public class ManageGoalsFragment extends RoboFragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                filterApps();
                 adapter = new AppGoalListAdapter(getActivity(), apps);
                 appList.setAdapter(adapter);
                 blankMessage.setVisibility(View.GONE);
@@ -202,6 +204,16 @@ public class ManageGoalsFragment extends RoboFragment {
                 appList.setOnItemClickListener(new AuthOnClickListener());
             }
         });
+    }
+
+    private void filterApps() {
+        // remove healthy app
+        for (Application app : apps) {
+            if (app.getPackageName().equals(getActivity().getPackageName())) {
+                apps.remove(app);
+                break;
+            }
+        }
     }
 
     private class CreateList extends Thread {

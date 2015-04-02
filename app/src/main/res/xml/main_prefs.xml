@@ -8,6 +8,12 @@
         android:key="@string/update_user_passwd"
         android:title="Change Password"/>
     <Preference
+        android:key="FAQ"
+        android:title="FAQ"/>
+    <Preference
+        android:key="Feedback"
+        android:title="Feedback"/>
+    <Preference
         android:key="@string/logout_prefs_key"
         android:title="Logout" />
 </PreferenceScreen>

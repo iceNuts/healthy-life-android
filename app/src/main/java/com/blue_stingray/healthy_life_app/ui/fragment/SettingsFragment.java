@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -58,6 +59,8 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference("logout").setOnPreferenceClickListener(new OnLogoutListener());
         findPreference("update user profile").setOnPreferenceClickListener(new OnUpdateUserListener());
         findPreference("update user passwd").setOnPreferenceClickListener(new OnChangePasswordListener());
+        findPreference("FAQ").setOnPreferenceClickListener(new OnRedirectPageListener("http://healthyapphealthylife.com/faq"));
+        findPreference("Feedback").setOnPreferenceClickListener(new OnRedirectPageListener("http://healthyapphealthylife.com/contact"));
     }
 
     private class OnLogoutListener implements Preference.OnPreferenceClickListener {
@@ -136,6 +139,22 @@ public class SettingsFragment extends PreferenceFragment {
             });
             authDialog.show();
             return true;
+        }
+    }
+
+    private class OnRedirectPageListener implements Preference.OnPreferenceClickListener {
+
+        String url;
+
+        public OnRedirectPageListener(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
+            return false;
         }
     }
 }

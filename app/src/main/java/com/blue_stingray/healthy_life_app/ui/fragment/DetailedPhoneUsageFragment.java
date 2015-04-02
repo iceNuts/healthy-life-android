@@ -69,9 +69,15 @@ public class DetailedPhoneUsageFragment extends RoboFragment {
     }
 
     private void createList() {
-        Bundle bundle = getArguments();
-        int dayCount = bundle.getInt("DayCount");
-        int option = bundle.getInt("Option");
+        int dayCount, option;
+        try {
+            Bundle bundle = getArguments();
+            dayCount = bundle.getInt("DayCount");
+            option = bundle.getInt("Option");
+        }catch (Exception e) {
+            dayCount = 0;
+            option = 0;
+        }
         dataHelper = DataHelper.getInstance(getActivity());
         detailedPhoneUsage = dataHelper.getDetailedPhoneUsage(dayCount, option);
         appUsageList.setClickable(false);

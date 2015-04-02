@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity {
 
     private boolean viewStatusChanged;
 
-    final private int lifelineIndexMagicNumber = 2;
+    final private int lifelineIndexMagicNumber = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,17 +147,18 @@ public class MainActivity extends BaseActivity {
 
     private void setupDrawerItems() {
         drawerItems = new ArrayList<DrawerItem>() {{
-            add(new DrawerItem(ProfileFragment.class, "fa-bullhorn", "Profile"));
-            add(new DrawerItem(AlertsFragment.class, "fa-globe", "Alerts"));
+            add(new DrawerItem(ProfileFragment.class, "fa-home", "Home"));
+            add(new DrawerItem(DetailedPhoneUsageFragment.class, "fa-bar-chart", "Daily Usage"));
+            add(new DrawerItem(ManageGoalsFragment.class, "fa-android", "Manage Goals"));
             add(new DrawerItem(LifelineRequestFragment.class, "fa-flag", "Lifeline Requests", true));
-            add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
-            add(new DrawerItem(ManageGoalsFragment.class, "fa-bar-chart", "Manage Goals"));
             add(new DrawerItem(ManageUsersFragment.class, "fa-users", "Manage Users", true));
         }};
         // check if it is admin
         if (prefs.getUserLevel() == 1) {
-            drawerItems.add(new DrawerItem(ManageMentorFragment.class, "fa-users", "Manage Mentor", true));
+            drawerItems.add(new DrawerItem(ManageMentorFragment.class, "fa-gamepad", "Friends", true));
         }
+        drawerItems.add(new DrawerItem(LeaderboardFragment.class, "fa-trophy", "Leaderboard"));
+        drawerItems.add(new DrawerItem(AlertsFragment.class, "fa-warning", "Alerts"));
         drawerItems.add(new DrawerItem(SettingsFragment.class, "fa-gear", "Settings", true));
         // remove unused options
         if(!authUser.isAdmin()) {

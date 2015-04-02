@@ -8,7 +8,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Mentor"
+        android:text="Search A Friend"
         android:id="@+id/create_mentor_button"
         android:background="@color/blue_primary"
         android:textColor="@color/white"
@@ -34,11 +34,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="No mentor yet :("
+                android:text="You can select a friend to help you unlock your apps remotely when they are locked :)"
                 android:id="@+id/textView13"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="@color/grey_icon" />
         </LinearLayout>

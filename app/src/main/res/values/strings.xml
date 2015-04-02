@@ -29,7 +29,7 @@
     <string name="title_leaderboard">Leaderboard</string>
     <string name="title_edit_goal">Edit Goal</string>
     <string name="title_edit_user">Edit User</string>
-    <string name="title_manage_mentor">Manage Mentor</string>
+    <string name="title_manage_mentor">Friends</string>
 
     <!-- HTTP -->
     <string name="server_error_title">Server Error</string>
@@ -153,7 +153,7 @@
     <string name="mentor_removed_success">Removed Successfully</string>
     <string name="mentor_removed_failure">Removed Filed</string>
 
-    <string name="no_mentor">No mentor yet :(</string>
+    <string name="no_mentor">You can select a friend to help you unlock your apps remotely when they are locked :)</string>
     <string name="network_error">Network Connection Failed</string>
     <string name="manage_goal_fragment">Manage_Goal_Fragment</string>
     <string name="no_password_option">Because you are logged in by Third-Party account, you can\'t change your password.</string>
