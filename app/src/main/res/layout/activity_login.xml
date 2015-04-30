@@ -83,6 +83,17 @@
                 android:textColor="@color/blue_primary"
                 android:onClick="showSocialConnect"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:paddingTop="20dp"
+                android:clickable="true"
+                android:textColor="@color/white"
+                android:text="forget password?"
+                android:layout_gravity="center_horizontal|bottom"
+                android:id="@+id/forget_password"/>
+
         </LinearLayout>
 
     </RelativeLayout>

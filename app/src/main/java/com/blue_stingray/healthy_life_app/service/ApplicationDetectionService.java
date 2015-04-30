@@ -95,7 +95,7 @@ public class ApplicationDetectionService extends RoboService {
 
             @Override
             public void run() {
-                Log.i(LOG_TAG, "Application Detection has started");
+//                Log.i(LOG_TAG, "Application Detection has started");
 
 
                 while (!Thread.interrupted()) {

@@ -687,7 +687,7 @@ public class DataHelper {
         today.put("day_of_week", String.valueOf(c.get(Calendar.DAY_OF_WEEK)));
         today.put("timestamp", String.valueOf(new Date().getTime()/1000));
 
-        Log.d("TODAY", today.toString());
+//        Log.d("TODAY", today.toString());
 
         instance.db.beginTransaction();
         Cursor phoneUsageCursor = db.rawQuery(

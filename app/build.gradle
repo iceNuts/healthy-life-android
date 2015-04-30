@@ -49,9 +49,12 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField "String", "ENDPOINT_URL", '"https://healthyapphealthylife.com/api"'
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            buildConfigField "String", "ENDPOINT_URL", '"https://healthyapphealthylife.com/api"'
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            buildConfigField "String", "ENDPOINT_URL", '"http://healthyapphealthylife.com/api"'
+            buildConfigField "String", "GCM_APP_KEY", '"AIzaSyDPZYu3Hp94xG3N3qI9HGT_oj1_gUz0I08"'
+            buildConfigField "String", "GCM_APP_ID", '"147028396651"'
         }
         debug {
             buildConfigField "String", "ENDPOINT_URL", '"http://healthyapphealthylife.com/api"'

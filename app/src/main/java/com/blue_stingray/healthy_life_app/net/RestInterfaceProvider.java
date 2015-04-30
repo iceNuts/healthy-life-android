@@ -35,13 +35,13 @@ public class RestInterfaceProvider implements Provider<RestInterface> {
         adapter = new RestAdapter.Builder()
                 .setRequestInterceptor(interceptor)
                 .setEndpoint(BuildConfig.ENDPOINT_URL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setLog(new RestAdapter.Log() {
-                    @Override
-                    public void log(String msg) {
-                        Log.i("healthy", msg);
-                    }
-                })
+//                .setLogLevel(RestAdapter.LogLevel.FULL)
+//                .setLog(new RestAdapter.Log() {
+//                    @Override
+//                    public void log(String msg) {
+//                        Log.i("healthy", msg);
+//                    }
+//                })
                 .setExecutors(mExecutorService, new MainThreadExecutor())
                 .build();
         service = adapter.create(RestInterface.class);

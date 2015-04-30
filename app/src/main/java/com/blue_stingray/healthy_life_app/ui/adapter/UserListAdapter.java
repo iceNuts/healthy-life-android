@@ -1,6 +1,7 @@
 package com.blue_stingray.healthy_life_app.ui.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public class UserListAdapter extends BaseListAdapter<User> {
 
         User user = data.get(position);
         TextView name = ((TextView) convertView.findViewById(R.id.user_name));
-        TextView score = ((TextView) convertView.findViewById(R.id.score));
+        TextView score = ((TextView) convertView.findViewById(R.id.textView));
         TextView email = ((TextView) convertView.findViewById(R.id.email));
 
         if(name != null) {

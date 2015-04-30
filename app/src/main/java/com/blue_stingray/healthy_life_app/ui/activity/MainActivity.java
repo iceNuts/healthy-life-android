@@ -26,6 +26,7 @@ import com.blue_stingray.healthy_life_app.ui.fragment.LifelineRequestFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageGoalsFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageMentorFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ManageUsersFragment;
+import com.blue_stingray.healthy_life_app.ui.fragment.MentorNotificationFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.ProfileFragment;
 import com.blue_stingray.healthy_life_app.ui.fragment.SettingsFragment;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
@@ -219,6 +220,11 @@ public class MainActivity extends BaseActivity {
             // open lifeline request
             else if (getIntent().getAction().equals("OPEN_LIFELINE_REQUEST")) {
                 ViewHelper.injectFragment(new LifelineRequestFragment(), getSupportFragmentManager(), R.id.frame_container);
+                return;
+            }
+            // open mentor request
+            else if (getIntent().getAction().equals("OPEN_MENTOR_REQUEST")) {
+                ViewHelper.injectFragment(new MentorNotificationFragment(), getSupportFragmentManager(), R.id.frame_container);
                 return;
             }
         } catch (Exception e) {

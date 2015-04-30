@@ -81,7 +81,7 @@ public class LeaderboardFragment extends RoboFragment {
         ) {
             @Override
             public void onSuccess(List<User> users, Response response) {
-                final UserListAdapter adapter = new UserListAdapter(getActivity(), users, R.layout.user_list_row_simple);
+                final UserListAdapter adapter = new UserListAdapter(getActivity(), users, R.layout.user_list_row);
                 userList.setAdapter(adapter);
 
             }

@@ -125,7 +125,7 @@ public class GoogleLoginActivity extends RoboActivity implements
     @Override
     public void onConnected(Bundle bundle) {
 
-        Log.d("Google", "Social Login Connected");
+//        Log.d("Google", "Social Login Connected");
         AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {

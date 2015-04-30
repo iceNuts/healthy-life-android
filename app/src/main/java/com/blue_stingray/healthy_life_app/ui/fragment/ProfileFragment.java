@@ -30,6 +30,7 @@ import com.blue_stingray.healthy_life_app.net.RestInterface;
 import com.blue_stingray.healthy_life_app.net.RetrofitDialogCallback;
 import com.blue_stingray.healthy_life_app.net.form.UserForm;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
+import com.blue_stingray.healthy_life_app.storage.db.SharedPreferencesHelper;
 import com.blue_stingray.healthy_life_app.ui.ViewHelper;
 import com.blue_stingray.healthy_life_app.ui.activity.MainActivity;
 import com.google.inject.Inject;
@@ -98,6 +99,9 @@ public class ProfileFragment extends RoboFragment {
 
     private int viewOption;
 
+    @Inject
+    public SharedPreferencesHelper prefs;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,9 +127,8 @@ public class ProfileFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(authUser.getName());
         viewOption = 0;
-        currentScore.setText(String.valueOf(authUser.getScore()));
-        percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
         detailsButton.setOnClickListener(new OnDetailsClickListener());
+        setupUserScore();
         setupLineChart();
         // setup phone usage graph
         setupPhoneUsageChart();
@@ -243,6 +246,30 @@ public class ProfileFragment extends RoboFragment {
                 });
             }
         }).start();
+    }
+
+    private void setupUserScore() {
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Loading...");
+        rest.getUser(
+            authUser.getId(),
+            new RetrofitDialogCallback<User>(
+                getActivity(),
+                progressDialog
+            ) {
+                @Override
+                public void onSuccess(User user, Response response) {
+                    currentScore.setText(String.valueOf(user.getScore()));
+                    percentileRanking.setText("You rank in the top " + user.getPercentileFormatted() + " of healthy life users.");
+                    prefs.setCurrentUser(user);
+                }
+
+                @Override
+                public void onFailure(RetrofitError retrofitError) {
+                    currentScore.setText(String.valueOf(authUser.getScore()));
+                    percentileRanking.setText("You rank in the top " + authUser.getPercentileFormatted() + " of healthy life users.");
+                }
+            }
+        );
     }
 
     private void showLineChart(int option) {

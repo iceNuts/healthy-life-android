@@ -4,11 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blue_stingray.healthy_life_app.App;
@@ -55,6 +57,9 @@ public class LoginActivity extends BaseActivity {
     @InjectView(R.id.login)
     private Button loginButton;
 
+    @InjectView(R.id.forget_password)
+    private TextView forgetPassword;
+
     @Inject
     private RestInterface rest;
 
@@ -87,6 +92,13 @@ public class LoginActivity extends BaseActivity {
         validationManager.addField(passwordField, ValidationRule.newPasswordValidationRule(this));
 
         loginButton.setOnClickListener(new LoginButtonListener());
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.healthyapphealthylife.com/password/remind"));
+                startActivity(browserIntent);
+            }
+        });
 
         SharedPreferences preferences = getSharedPreferences("main", 0);
         SharedPreferences.Editor editor = preferences.edit();
@@ -191,14 +203,14 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(RetrofitError error) {
-                        Log.i("healthy", "Login /goal error");
+//                        Log.i("healthy", "Login /goal error");
                     }
                 });
             }
 
             @Override
             public void onFailure(RetrofitError error) {
-                Log.i("healthy", "Login /user/me error");
+//                Log.i("healthy", "Login /user/me error");
                 progressDialog.cancel();
             }
         });

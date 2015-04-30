@@ -148,7 +148,7 @@ public class Application implements Serializable {
             Goal today = null;
 
             for(Goal goal : active_goals) {
-                Log.i("healthy", "Today " + Calendar.DAY_OF_WEEK + " vs " + goal.getLimitDay());
+//                Log.i("healthy", "Today " + Calendar.DAY_OF_WEEK + " vs " + goal.getLimitDay());
                 if(goal.getLimitDay() == Calendar.DAY_OF_WEEK) {
                     today = goal;
                     break;

@@ -49,14 +49,14 @@ public class GcmIntentService extends IntentService {
         if (!extras.isEmpty()) {
 
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                Log.d("GCM", extras.toString());
+//                Log.d("GCM", extras.toString());
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                Log.d("GCM", extras.toString());
+//                Log.d("GCM", extras.toString());
             }
             // Right place
             else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                Log.d("GCM", String.valueOf(extras.get("message")));
+//                Log.d("GCM", String.valueOf(extras.get("message")));
                 try {
                     JSONObject message = new JSONObject(String.valueOf(extras.get("message")));
                     if (message.has("verdict")) {
@@ -130,7 +130,7 @@ public class GcmIntentService extends IntentService {
         try {
             prefs = new SharedPreferencesHelper(getApplicationContext());
             String subject = message.getString("description");
-            fireNotification(subject);
+            fireMentorRequestClickableNotification(subject);
             Intent broadcast = new Intent("mem_notification");
             prefs.setMentorNotificationStatus(true);
             localBroadcastManager.sendBroadcast(broadcast);
@@ -146,6 +146,28 @@ public class GcmIntentService extends IntentService {
                         .setContentText(subject);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int mId = 10002;
+        mNotificationManager.notify(mId, mBuilder.build());
+    }
+
+    private void fireMentorRequestClickableNotification(String subject) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setAutoCancel(true)
+                        .setSubText("Click to view")
+                        .setContentText(subject);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int mId = 10005;
+        Intent MentorRequestIntent = new Intent(this, MainActivity.class);
+        MentorRequestIntent.setAction("OPEN_MENTOR_REQUEST");
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                MentorRequestIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(pendingIntent);
         mNotificationManager.notify(mId, mBuilder.build());
     }
 

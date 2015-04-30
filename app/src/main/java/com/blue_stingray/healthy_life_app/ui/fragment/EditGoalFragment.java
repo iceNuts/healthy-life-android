@@ -54,6 +54,8 @@ public class EditGoalFragment extends RoboFragment {
     @InjectView(R.id.edit_goal)
     private Button editGoalButton;
 
+    @InjectView(R.id.main)
+    private TextView mainText;
 
     @InjectView(R.id.monday)
     private TextView monday;
@@ -75,6 +77,9 @@ public class EditGoalFragment extends RoboFragment {
 
     @InjectView(R.id.sunday)
     private TextView sunday;
+
+    @InjectView(R.id.main_seek_bar)
+    private SeekBar mainSeekBar;
 
     @InjectView(R.id.monday_seek_bar)
     private SeekBar mondaySeekBar;
@@ -136,6 +141,7 @@ public class EditGoalFragment extends RoboFragment {
 
         editGoalButton.setOnClickListener(new EditGoalButtonListener());
 
+        mainSeekBar.setOnSeekBarChangeListener(new MainTimeLimitSeekBarListener());
         mondaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         tuesdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
         wednesdaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
@@ -145,6 +151,7 @@ public class EditGoalFragment extends RoboFragment {
         sundaySeekBar.setOnSeekBarChangeListener(new TimeLimitSeekBarListener());
 
         // Set increment step
+        mainSeekBar.incrementProgressBy(magicStep);
         mondaySeekBar.incrementProgressBy(magicStep);
         tuesdaySeekBar.incrementProgressBy(magicStep);
         wednesdaySeekBar.incrementProgressBy(magicStep);
@@ -154,6 +161,7 @@ public class EditGoalFragment extends RoboFragment {
         sundaySeekBar.incrementProgressBy(magicStep);
 
         // prepopulate seek bars
+        mainSeekBar.setProgress(0);
         List<Goal> goals = app.getGoals();
         for(Goal goal : goals) {
 
@@ -223,6 +231,48 @@ public class EditGoalFragment extends RoboFragment {
             ManyGoalForm goalForm = new ManyGoalForm(deviceID, goalForms.toArray(new GoalForm[goalForms.size()]));
             progressDialog = ProgressDialog.show(getActivity(), "Update Goal", "Loading");
             rest.createGoalMany(goalForm, new CreateManyGoalsCallback(progressDialog));
+        }
+    }
+
+    private class MainTimeLimitSeekBarListener implements SeekBar.OnSeekBarChangeListener {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            mondaySeekBar.setProgress(progress);
+            tuesdaySeekBar.setProgress(progress);
+            wednesdaySeekBar.setProgress(progress);
+            thursdaySeekBar.setProgress(progress);
+            fridaySeekBar.setProgress(progress);
+            saturdaySeekBar.setProgress(progress);
+            sundaySeekBar.setProgress(progress);
+
+            String time;
+            progress *= 15;
+            if (progress < 60) {
+                time = String.valueOf(progress)+" minutes";
+            }
+            else {
+                time = String.valueOf(progress/60)+" hours "+String.valueOf(progress%60)+" min";
+            }
+            mainText.setText(time);
+            monday.setText(time);
+            tuesday.setText(time);
+            wednesday.setText(time);
+            thursday.setText(time);
+            friday.setText(time);
+            saturday.setText(time);
+            sunday.setText(time);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
         }
     }
 

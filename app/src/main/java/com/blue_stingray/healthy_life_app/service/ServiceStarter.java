@@ -46,7 +46,7 @@ public class ServiceStarter {
             new AdminRemovalDetectionReceiver(applicationContext);
 
             started = true;
-            Log.i(getClass().getSimpleName(), "Services Started");
+//            Log.i(getClass().getSimpleName(), "Services Started");
         }
     }
 }
