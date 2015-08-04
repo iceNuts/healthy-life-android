@@ -14,6 +14,9 @@ import android.util.Log;
 import com.blue_stingray.healthy_life_app.R;
 import com.blue_stingray.healthy_life_app.storage.db.DataHelper;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import roboguice.service.RoboService;
 
 import javax.inject.Inject;
@@ -104,8 +107,7 @@ public class ApplicationDetectionService extends RoboService {
                     } catch (InterruptedException e) {
                         break;
                     }
-                    ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);
-                    ComponentName currentComponent = currentTask.baseIntent.getComponent();
+                    ComponentName currentComponent = getTopAppComponent();
 
                     // always sending a surface component state
                     if (currentComponent != null) {
@@ -135,5 +137,43 @@ public class ApplicationDetectionService extends RoboService {
             }
         });
         activityPollThread.start();
+    }
+
+    // works for L and 4.0+
+
+    private ComponentName getTopAppComponent() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final int PROCESS_STATE_TOP = 2;
+            ActivityManager.RunningAppProcessInfo currentInfo = null;
+            Field field = null;
+            try {
+                field = ActivityManager.RunningAppProcessInfo.class.getDeclaredField("processState");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            ActivityManager am = (ActivityManager) this.getSystemService(getApplicationContext().ACTIVITY_SERVICE);
+            List<ActivityManager.RunningAppProcessInfo> appList = am.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo app : appList) {
+                if (app.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND &&
+                        app.importanceReasonCode == 0 ) {
+                    Integer state = null;
+                    try {
+                        state = field.getInt(app);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    if (state != null && state == PROCESS_STATE_TOP) {
+                        currentInfo = app;
+                        break;
+                    }
+                }
+            }
+            ComponentName currentComponent = new ComponentName(currentInfo.pkgList[0], "");
+            return currentComponent;
+        }
+        else {
+            ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);
+            return currentTask.baseIntent.getComponent();
+        }
     }
 }
