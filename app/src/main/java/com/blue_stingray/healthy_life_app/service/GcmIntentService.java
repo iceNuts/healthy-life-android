@@ -49,14 +49,11 @@ public class GcmIntentService extends IntentService {
         if (!extras.isEmpty()) {
 
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-//                Log.d("GCM", extras.toString());
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-//                Log.d("GCM", extras.toString());
             }
             // Right place
             else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-//                Log.d("GCM", String.valueOf(extras.get("message")));
                 try {
                     JSONObject message = new JSONObject(String.valueOf(extras.get("message")));
                     if (message.has("verdict")) {

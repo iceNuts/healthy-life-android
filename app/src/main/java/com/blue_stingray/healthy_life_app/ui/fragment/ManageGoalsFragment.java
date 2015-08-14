@@ -369,7 +369,7 @@ public class ManageGoalsFragment extends RoboFragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-            Application app = apps.get(position);
+            Application app = apps.get( position );
 
             if(app.hasGoal()) {
 

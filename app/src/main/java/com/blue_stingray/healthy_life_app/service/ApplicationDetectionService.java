@@ -98,8 +98,6 @@ public class ApplicationDetectionService extends RoboService {
 
             @Override
             public void run() {
-//                Log.i(LOG_TAG, "Application Detection has started");
-
 
                 while (!Thread.interrupted()) {
                     try {
@@ -168,8 +166,13 @@ public class ApplicationDetectionService extends RoboService {
                     }
                 }
             }
-            ComponentName currentComponent = new ComponentName(currentInfo.pkgList[0], "");
-            return currentComponent;
+            if (currentInfo != null && currentInfo.pkgList != null) {
+                ComponentName currentComponent = new ComponentName(currentInfo.pkgList[0], "");
+                return currentComponent;
+            }
+            else {
+                return null;
+            }
         }
         else {
             ActivityManager.RecentTaskInfo currentTask = activityManager.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE).get(0);

@@ -38,10 +38,11 @@ import roboguice.service.RoboService;
 
 public class ApplicationBlockerService  extends RoboService {
 
-    private ApplicationChangeReceiver appChangeReceiver = null;
-    private ApplicationDynamicReceiver applicationDynamicReceiver = null;
     private DataHelper dataHelper;
     private Timer timer;
+    private ApplicationChangeReceiver appChangeReceiver = null;
+    private ApplicationDynamicReceiver applicationDynamicReceiver = null;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

@@ -74,12 +74,13 @@ public class ApplicationLoggingService extends RoboService {
     @Inject
     private ActivityManager activityManager;
 
+    @Inject private LocalBroadcastManager localBroadcastManager;
+
     private Thread remoteLoggingThread;
     private Thread timeCountThread;
     private TimedRunnable timedRunnable;
     private static final int POLL_DELAY_MS = 5*60*1000;
     private static final int SEC_POLL_DELAY = 1000;
-    @Inject private LocalBroadcastManager localBroadcastManager;
 
     private final int STARTFLAG = 1001;
     private final int ENDFLAG = 1002;

@@ -35,6 +35,9 @@ public class DetailedPhoneUsageFragment extends RoboFragment {
     private List<DataHelper.DetailPhoneUsageTuple> detailedPhoneUsage;
     private ProgressDialog loading;
 
+    @Inject
+    private RestInterface rest;
+
     @InjectView(R.id.apps_usage_list)
     private ListView appUsageList;
 
@@ -44,8 +47,6 @@ public class DetailedPhoneUsageFragment extends RoboFragment {
     @InjectView(R.id.tip_info)
     private TextView tipInfo;
 
-    @Inject
-    private RestInterface rest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

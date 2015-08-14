@@ -41,9 +41,9 @@ public class SplashFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
 
         ((TextView) view.findViewById(R.id.healthy_one)).setTypeface(delius);
-        ((TextView) view.findViewById(R.id.healthy_two)).setTypeface(delius);
         ((TextView) view.findViewById(R.id.app)).setTypeface(delius);
         ((TextView) view.findViewById(R.id.life)).setTypeface(delius);
+        ((TextView) view.findViewById(R.id.healthy_two)).setTypeface(delius);
     }
 
 }
